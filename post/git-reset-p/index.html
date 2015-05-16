@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>git reset -p &middot; Kris Hicks</title>
+
+  
+  <link rel="stylesheet" href="http://www.krishicks.com//css/poole.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/poole-overrides.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>Kris Hicks</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="http://www.krishicks.com//">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="https://www.github.com/krishicks"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="https://www.twitter.com/krishicks"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015<br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>git reset -p</h1>
+    <span class="post-date">May 16, 2012 &middot; 3 minute read
+    
+    <br/>
+    
+    <a class="label" href="http://www.krishicks.com//categories/git">git</a>
+    </span>
+    <p>I&rsquo;ve been using <code>git reset -p</code> a lot recently and I think it makes sense to clarify what it is that it does because when I first started using it I found it a little confusing.</p>
+
+<p>I sometimes realize that an earlier commit contains some change that I don&rsquo;t want, so I want to remove it from the commit. This also works when not rebasing, so for simplicity I&rsquo;ll use an example where the commit to be modified is already HEAD. Previously I would have done:</p>
+
+<pre><code>git reset HEAD~1
+git add -p
+git commit -C &lt;treeish&gt;
+git checkout .
+</code></pre>
+
+<p>Or, in English:</p>
+
+<ul>
+<li>take off the HEAD commit, adding it to the working directory</li>
+<li>add back the parts you want to keep</li>
+<li>make a new commit using the message from what used to be the HEAD commit</li>
+<li>throw away the changes you didn&rsquo;t want</li>
+</ul>
+
+<p>With git reset -p this process is a little different. Here&rsquo;s what it looks like:</p>
+
+<pre><code>git reset -p HEAD~1
+git commit --amend -C HEAD
+git checkout .
+</code></pre>
+
+<p>Again, in English:</p>
+
+<ul>
+<li>apply to the index the negations of certain parts of the HEAD commit</li>
+<li>amend the HEAD commit with the negations</li>
+<li>throw away the changes you don&rsquo;t want</li>
+</ul>
+
+<p>How does this work?</p>
+
+<p>In the second example you added <code>-p</code> to the <code>reset</code> command. This will reset only parts of the original commit, leaving it intact otherwise. That&rsquo;s worth stating a different way: When you <code>reset -p</code>, <strong>the original commit remains unchanged</strong>. The only changes are made to your working directory and index.</p>
+
+<p>The trick is to know what you&rsquo;re doing when you&rsquo;re saying &ldquo;y&rdquo; to a hunk git presents to you for resetting. Say you added a line to the commit originally:</p>
+
+<pre><code>foo
++ bar
+baz
+</code></pre>
+
+<p>But you want to get rid of it. When you git reset -p, git will ask you:</p>
+
+<pre><code>foo
+- bar
+baz
+</code></pre>
+
+<p>Apply this hunk to index [y,n,q,a,d,/,e,?]?</p>
+
+<p>If you say &lsquo;y&rsquo;, Git will apply that hunk to the index. What you also get, however, is the original hunk (that added &ldquo;bar&rdquo;) in your working directory.</p>
+
+<p>To summarize, your working directory will have:</p>
+
+<pre><code>foo
++ bar
+baz
+</code></pre>
+
+<p>While the index has:</p>
+
+<pre><code>foo
+- bar
+baz
+</code></pre>
+
+<p>While the commit (unchanged, remember) has:
+    foo
+    + bar
+    baz</p>
+
+<p>You now have a chance to tell git what you want to do, without having done anything to the original commit yet. In the example above, you wanted to get rid of the addition of the &ldquo;bar&rdquo; line. To do that, you want to take what&rsquo;s in the index (the negation of the addition of &ldquo;bar&rdquo;) and apply it to the commit, making it go away:</p>
+
+<pre><code>git commit --amend -C HEAD
+</code></pre>
+
+<p>Then you still have in your working directory the adding of &ldquo;bar&rdquo;, which in this case you just want to get rid of, so:</p>
+
+<pre><code>git checkout .
+</code></pre>
+
+<p>I like using <code>reset -p</code> because it makes it really easy to make small changes to a commit, removing something I added or putting back something I deleted.</p>
+
+<p><code>reset -p</code> allows you to more easily get a grip on the changes you&rsquo;ve made and the ones you&rsquo;re about to make. It also makes much better use of Git, in that you can do even more interesting operations when in the resulting state, which I won&rsquo;t go into now as to avoid information overload.</p>
+
+<p>And there you have it.</p>
+
+  </div>
+  
+</div>
+
+
+
+
+
+
+<script>
+  var _gaq=[['_setAccount','UA-38009560-1'],['_trackPageview']];
+  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+
+</body>
+</html>

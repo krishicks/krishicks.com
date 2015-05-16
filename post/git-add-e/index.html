@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>git add -e &middot; Kris Hicks</title>
+
+  
+  <link rel="stylesheet" href="http://www.krishicks.com//css/poole.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/poole-overrides.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>Kris Hicks</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="http://www.krishicks.com//">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="https://www.github.com/krishicks"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="https://www.twitter.com/krishicks"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015<br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>git add -e</h1>
+    <span class="post-date">May 21, 2012 &middot; 3 minute read
+    
+    <br/>
+    
+    <a class="label" href="http://www.krishicks.com//categories/git">git</a>
+    </span>
+    <p><code>git add -e</code> is like <code>git add -p</code>, except instead of adding things at the hunk level, you edit the entire patch at once.</p>
+
+<p>Or, in other words, whereas <code>git add -p</code> will show you each hunk for every file and ask what you want to do for each of them, <code>git add -e</code> will show you the entire patch and allow you to edit it at will. I used this trick to recently split apart one massive commit into 28 smaller, digestible ones.</p>
+
+<p>Say you&rsquo;ve replaced a line containing &ldquo;baz&rdquo; with one containing &ldquo;bar&rdquo;. When you <code>git add -e</code>, you&rsquo;ll be presented with a diff like so:</p>
+
+<pre><code>foo
+- baz
++ bar
+</code></pre>
+
+<p>From here you can decide, actually, you don&rsquo;t want to delete baz, you just want to add bar. And you want to add it above baz.</p>
+
+<p>From this spot you can just change the minus to a space, making that line context for the diff. Then you can move the line that adds bar above baz, with this result:</p>
+
+<pre><code>foo
++ bar
+baz
+</code></pre>
+
+<p>After saving and closing the editor you&rsquo;ll be able to look at the result of your work in the index with <code>git diff --cached</code>:</p>
+
+<pre><code>foo
++ bar
+baz
+</code></pre>
+
+<p>And the line you made into context remains in your working directory, which you can see with <code>git diff</code>:</p>
+
+<pre><code>foo
+bar
+-baz
+</code></pre>
+
+<p>But what if you end up modifying the diff in a way that makes it a patch that doesn&rsquo;t apply? Git&rsquo;s got you covered there.</p>
+
+<p>Let&rsquo;s say that when you moved bar above baz, after removing the minus from baz, you added an extra line on accident, making the patch invalid:</p>
+
+<pre><code>foo
+
++ bar
+baz
+</code></pre>
+
+<p>When you save and close the editor Git will tell you of the problem:</p>
+
+<pre><code>error: patch failed: &amp;lt;some_filename&amp;gt;:1
+error: file.txt: patch does not apply
+fatal: Could not apply '.git/ADD_EDIT.patch'
+</code></pre>
+
+<p>In which case you&rsquo;ll be able to attempt the <code>add -e</code> again, as Git will not have made any changes to the working directory or index at this point.</p>
+
+<p>In some cases Git will attempt to apply the patch and give you the option of retrying the add, re-opening the editor with the modified .git/ADD_EDIT.patch if you choose to retry. If you don&rsquo;t choose to retry, Git will delete .git/ADD_EDIT.patch.</p>
+
+<p>In addition to editing the patch wholesale via <code>git add -e</code>, you can also choose <em>during <code>git add -p</code></em> to edit a particular hunk manually by choosing &lsquo;e&rsquo; to edit it instead of simply adding it via &lsquo;a&rsquo;. You can also add a file glob to the end of <code>add -e</code> as you would any other command to limit the size of the patch you&rsquo;re about to edit.</p>
+
+  </div>
+  
+</div>
+
+
+
+
+
+
+<script>
+  var _gaq=[['_setAccount','UA-38009560-1'],['_trackPageview']];
+  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+
+</body>
+</html>
