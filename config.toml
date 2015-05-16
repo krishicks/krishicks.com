@@ -9,3 +9,4 @@ theme = "hyde-x"
 [params]
 github = "https://www.github.com/krishicks"
 twitter = "https://www.twitter.com/krishicks"
+googleAnalytics = "UA-38009560-1"
