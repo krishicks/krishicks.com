@@ -1,0 +1,10 @@
+baseurl = "http://www.krishicks.com/"
+languageCode = "en-us"
+title = "krishicks.com"
+
+[author]
+  name = "Kris Hicks"
+
+[params]
+github = "https://www.github.com/krishicks"
+twitter = "https://www.twitter.com/krishicks"
