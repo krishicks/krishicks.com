@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://www.krishicks.com/</loc>
+    <lastmod>2014-05-23T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/phone-interviews/</loc>
+    <lastmod>2014-05-23T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/on-consulting/</loc>
+    <lastmod>2013-03-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</loc>
+    <lastmod>2013-02-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/rewinding-git-pull/</loc>
+    <lastmod>2012-07-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/quick-tips/</loc>
+    <lastmod>2012-07-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/rewinding-git-commit-amend/</loc>
+    <lastmod>2012-06-25T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/rerere/</loc>
+    <lastmod>2012-06-13T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/git-rebase-onto/</loc>
+    <lastmod>2012-05-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/git-add-e/</loc>
+    <lastmod>2012-05-21T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/git-reset-p/</loc>
+    <lastmod>2012-05-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/exec/</loc>
+    <lastmod>2012-04-06T00:00:00+00:00</lastmod>
+  </url>
+  
+</urlset>
