@@ -1,6 +1,7 @@
 baseurl = "http://www.krishicks.com/"
 languageCode = "en-us"
 title = "krishicks.com"
+theme = "hyde-x"
 
 [author]
   name = "Kris Hicks"
