@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>rewinding git commit --amend &middot; Kris Hicks</title>
+
+  
+  <link rel="stylesheet" href="http://www.krishicks.com//css/poole.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/poole-overrides.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>Kris Hicks</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="http://www.krishicks.com//">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="https://www.github.com/krishicks"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="https://www.twitter.com/krishicks"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015<br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>rewinding git commit --amend</h1>
+    <p>It may come to pass that you will <code>git commit --amend</code> by mistake.</p>
+
+<p>When this happens, you&rsquo;ll want to rewind that operation you just did, and apply it to the correct commit. With simple changes you may find <a href="/blog/2012/05/16/git-reset-p/" title="git reset -p">git reset -p</a> handy. For times when the changes are far too large and intertwined to the commit, you will want to refer to <code>git reflog</code> for help.</p>
+
+<p>The reflog records when the tip of a branch is updated. The tip is updated any time you create a new commit, amend a commit, reset a commit, switch branches, etc. Basically, any time HEAD changes, you will get a reflog entry. The reflog therefore is a great tool for understanding how the repository came to be in a particular state.</p>
+
+<p><code>git reflog -2</code> will give you the last two operations that Git performed. In this case, it will look something like:</p>
+
+<pre><code>8751261 HEAD@{0}: commit (amend): Something something something commit message
+9d3a192 HEAD@{1}: reset: moving to HEAD~1
+</code></pre>
+
+<p><code>git commit --amend</code> is kind of shorthand for (given changes have been made, and are either in the index or in the working directory):</p>
+
+<pre><code>git stash
+git reset HEAD~1
+git stash pop
+git add .
+git commit
+</code></pre>
+
+<p>Or, in English:</p>
+
+<ul>
+<li>Save the changes that you want to apply to the HEAD commit off in the stash</li>
+<li>Remove the HEAD commit and put its contents in the index</li>
+<li>Apply the stashed changes to the working directory, adding them to the changes from the commit that was reset</li>
+<li>Make a new commit.</li>
+</ul>
+
+<p>Thus, the last two operations in the reflog are <strong>reset</strong> and <strong>commit</strong>.</p>
+
+<p>So, what can we do with this? Well, 9d3a192 was HEAD before the amend (specifically, before the reset) happened. 8751261 was the commit that resulted at the end of the amend process. <code>git diff 8751261..9d3a192</code> will show you what changes were applied as part of the amend.</p>
+
+<p>From here, you can use <code>git apply</code> to apply the difference from before the amend to after the amend to your working tree via <code>git diff</code>:</p>
+
+<pre><code>git diff 8751261..9d3a192 | git apply -
+</code></pre>
+
+<ul>
+<li>Note: The hyphen in <code>git apply -</code> causes <code>git apply</code> to take stdin as input.</li>
+<li>Extra Note: The arguments here are given in reverse order, with the later commit happening first to show the reverse of the amend. It&rsquo;s the same as doing <code>git diff 9d3a192..8751261 -R</code>, which reverses the diff output. Additionally, the -R argument may be applied to <code>git apply</code> instead of <code>git diff</code> to achieve the same effect.</li>
+</ul>
+
+<p>Now we can do another amend to put the commit back to where it was before we did the previous amend:</p>
+
+<pre><code>git commit -a --amend -CHEAD
+</code></pre>
+
+<p>And then, by reversing the order of the SHAs to <code>git diff</code>, get the changes we want to apply to the correct commit back:</p>
+
+<pre><code>git diff 9d3a192..8751261 | git apply -
+</code></pre>
+
+<p>And commit as necessary, this time using &ndash;fixup to indicate the correct commit (in this example, 1234567):</p>
+
+<pre><code>git commit -a --fixup 1234567
+</code></pre>
+
+<p>Then you can rebase at a later time (or now) to do the &lsquo;amend&rsquo; you had originally intended:</p>
+
+<pre><code>git rebase --i --autosquash 1234567~1
+</code></pre>
+
+<p>So don&rsquo;t fret when you do an accidental amend. It&rsquo;s just a couple commands away from being unwound and applied to the correct commit.</p>
+
+  </div>
+</div>
+
+
+<script>
+  var _gaq=[['_setAccount','UA-38009560-1'],['_trackPageview']];
+  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+
+</body>
+</html>
