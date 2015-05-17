@@ -1,4 +1,4 @@
-baseurl = "http://www.krishicks.com/"
+baseurl = "http://www.krishicks.com"
 languageCode = "en-us"
 title = "krishicks.com"
 theme = "hyde-x"
