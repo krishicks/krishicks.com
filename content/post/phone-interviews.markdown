@@ -7,6 +7,8 @@ categories:
   - interviews
 ---
 
+*See discussion about this post on [Hacker News](https://news.ycombinator.com/item?id=9111310).*
+
 Yesterday, I did a coding challenge-based phone interview. When it ended, I had a mini retrospective with myself, and thought about what went well, and what didn't go well.
 
 Mostly, it didn't go well.
