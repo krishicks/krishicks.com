@@ -70,25 +70,25 @@
 <div class="content container">
   <div class="post">
     <h1>rewinding git commit --amend</h1>
-    <p>It may come to pass that you will <code>git commit --amend</code> by mistake.</p>
+    <p>It may come to pass that you will run <code>git commit --amend</code> by mistake. When this happens, you&rsquo;ll want to unwind the operation you just did.</p>
 
-<p>When this happens, you&rsquo;ll want to rewind that operation you just did, and apply it to the correct commit. With simple changes you may find <a href="/blog/2012/05/16/git-reset-p/" title="git reset -p">git reset -p</a> handy. For times when the changes are far too large and intertwined to the commit, you will want to refer to <code>git reflog</code> for help.</p>
+<p>In some cases the changes are simple enough that you can use <a href="/blog/2012/05/16/git-reset-p/" title="git reset -p">git reset -p</a> to remove those lines from the commit. However, sometimes <code>git reset -p</code> isn&rsquo;t up to the task, as in the case when the changeset is very large. Luckily, git has a ticker tape of the changes you make to each branch, which is called the reflog.</p>
 
 <p>The reflog records when the tip of a branch is updated. The tip is updated any time you create a new commit, amend a commit, reset a commit, switch branches, etc. Basically, any time HEAD changes, you will get a reflog entry. The reflog therefore is a great tool for understanding how the repository came to be in a particular state.</p>
 
-<p><code>git reflog -2</code> will give you the last two operations that Git performed. In this case, it will look something like:</p>
+<p><code>git reflog -2</code> will give you the last two operations that Git performed. In the case of an amend, it will look something like this:</p>
 
-<pre><code>8751261 HEAD@{0}: commit (amend): Something something something commit message
-9d3a192 HEAD@{1}: reset: moving to HEAD~1
+<pre><code>C HEAD@{0}: commit (amend): Something something something commit message
+B HEAD@{1}: reset: moving to HEAD~1
 </code></pre>
 
-<p><code>git commit --amend</code> is kind of shorthand for (given changes have been made, and are either in the index or in the working directory):</p>
+<p><code>git commit --amend</code> is kind of shorthand for the following, given changes have been made, and are either in the index or in the working directory:</p>
 
-<pre><code>git stash
-git reset HEAD~1
-git stash pop
-git add .
-git commit
+<pre><code>$ git stash
+$ git reset HEAD~1
+$ git stash pop
+$ git add .
+$ git commit
 </code></pre>
 
 <p>Or, in English:</p>
@@ -97,41 +97,44 @@ git commit
 <li>Save the changes that you want to apply to the HEAD commit off in the stash</li>
 <li>Remove the HEAD commit and put its contents in the index</li>
 <li>Apply the stashed changes to the working directory, adding them to the changes from the commit that was reset</li>
-<li>Make a new commit.</li>
+<li>Make a new commit</li>
 </ul>
 
 <p>Thus, the last two operations in the reflog are <strong>reset</strong> and <strong>commit</strong>.</p>
 
-<p>So, what can we do with this? Well, 9d3a192 was HEAD before the amend (specifically, before the reset) happened. 8751261 was the commit that resulted at the end of the amend process. <code>git diff 8751261..9d3a192</code> will show you what changes were applied as part of the amend.</p>
+<p>So, what can we do with this? Well, B was HEAD before the amend happened. C is the amended commit. <code>git diff C..B</code> will show you what changes were applied as part of the amend:</p>
 
-<p>From here, you can use <code>git apply</code> to apply the difference from before the amend to after the amend to your working tree via <code>git diff</code>:</p>
+<pre><code>$ git diff C..B
+</code></pre>
 
-<pre><code>git diff 8751261..9d3a192 | git apply -
+<p>From here you can use <code>git apply</code> to apply the reverse of what you amended earlier to your working tree:</p>
+
+<pre><code>$ git diff C..B | git apply -
 </code></pre>
 
 <ul>
 <li>Note: The hyphen in <code>git apply -</code> causes <code>git apply</code> to take stdin as input.</li>
-<li>Extra Note: The arguments here are given in reverse order, with the later commit happening first to show the reverse of the amend. It&rsquo;s the same as doing <code>git diff 9d3a192..8751261 -R</code>, which reverses the diff output. Additionally, the -R argument may be applied to <code>git apply</code> instead of <code>git diff</code> to achieve the same effect.</li>
+<li>Extra Note: The arguments to <code>git diff</code> are given in reverse order, with the later commit happening first to show the reverse of the amend. It&rsquo;s the same as doing <code>git diff B..C -R</code>, which reverses the diff output. Additionally, the -R argument may be applied to <code>git apply</code> instead of <code>git diff</code> to achieve the same effect.</li>
 </ul>
 
 <p>Now we can do another amend to put the commit back to where it was before we did the previous amend:</p>
 
-<pre><code>git commit -a --amend -CHEAD
+<pre><code>$ git commit -a --amend -CHEAD
 </code></pre>
 
-<p>And then, by reversing the order of the SHAs to <code>git diff</code>, get the changes we want to apply to the correct commit back:</p>
+<p>And then, by reversing the order of the refs to <code>git diff</code>, get the changes we want to apply to the correct commit back:</p>
 
-<pre><code>git diff 9d3a192..8751261 | git apply -
+<pre><code>$ git diff B..C | git apply -
 </code></pre>
 
-<p>And commit as necessary, this time using &ndash;fixup to indicate the correct commit (in this example, 1234567):</p>
+<p>And commit as necessary, this time using &ndash;fixup to indicate the correct commit (in this example, A):</p>
 
-<pre><code>git commit -a --fixup 1234567
+<pre><code>$ git commit -a --fixup A
 </code></pre>
 
-<p>Then you can rebase at a later time (or now) to do the &lsquo;amend&rsquo; you had originally intended:</p>
+<p>Then you can rebase either now or at a later time to do the &lsquo;amend&rsquo; you had originally intended:</p>
 
-<pre><code>git rebase --i --autosquash 1234567~1
+<pre><code>$ git rebase --i --autosquash A~1
 </code></pre>
 
 <p>So don&rsquo;t fret when you do an accidental amend. It&rsquo;s just a couple commands away from being unwound and applied to the correct commit.</p>

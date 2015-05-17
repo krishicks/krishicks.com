@@ -638,25 +638,25 @@ $ git branch --contains topicB@{u} -r
       <pubDate>Mon, 25 Jun 2012 00:00:00 +0000</pubDate>
       
       <guid>http://www.krishicks.com/post/rewinding-git-commit-amend/</guid>
-      <description>&lt;p&gt;It may come to pass that you will &lt;code&gt;git commit --amend&lt;/code&gt; by mistake.&lt;/p&gt;
+      <description>&lt;p&gt;It may come to pass that you will run &lt;code&gt;git commit --amend&lt;/code&gt; by mistake. When this happens, you&amp;rsquo;ll want to unwind the operation you just did.&lt;/p&gt;
 
-&lt;p&gt;When this happens, you&amp;rsquo;ll want to rewind that operation you just did, and apply it to the correct commit. With simple changes you may find &lt;a href=&#34;http://www.krishicks.com/blog/2012/05/16/git-reset-p/&#34; title=&#34;git reset -p&#34;&gt;git reset -p&lt;/a&gt; handy. For times when the changes are far too large and intertwined to the commit, you will want to refer to &lt;code&gt;git reflog&lt;/code&gt; for help.&lt;/p&gt;
+&lt;p&gt;In some cases the changes are simple enough that you can use &lt;a href=&#34;http://www.krishicks.com/blog/2012/05/16/git-reset-p/&#34; title=&#34;git reset -p&#34;&gt;git reset -p&lt;/a&gt; to remove those lines from the commit. However, sometimes &lt;code&gt;git reset -p&lt;/code&gt; isn&amp;rsquo;t up to the task, as in the case when the changeset is very large. Luckily, git has a ticker tape of the changes you make to each branch, which is called the reflog.&lt;/p&gt;
 
 &lt;p&gt;The reflog records when the tip of a branch is updated. The tip is updated any time you create a new commit, amend a commit, reset a commit, switch branches, etc. Basically, any time HEAD changes, you will get a reflog entry. The reflog therefore is a great tool for understanding how the repository came to be in a particular state.&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;git reflog -2&lt;/code&gt; will give you the last two operations that Git performed. In this case, it will look something like:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git reflog -2&lt;/code&gt; will give you the last two operations that Git performed. In the case of an amend, it will look something like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;8751261 HEAD@{0}: commit (amend): Something something something commit message
-9d3a192 HEAD@{1}: reset: moving to HEAD~1
+&lt;pre&gt;&lt;code&gt;C HEAD@{0}: commit (amend): Something something something commit message
+B HEAD@{1}: reset: moving to HEAD~1
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;code&gt;git commit --amend&lt;/code&gt; is kind of shorthand for (given changes have been made, and are either in the index or in the working directory):&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git commit --amend&lt;/code&gt; is kind of shorthand for the following, given changes have been made, and are either in the index or in the working directory:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;git stash
-git reset HEAD~1
-git stash pop
-git add .
-git commit
+&lt;pre&gt;&lt;code&gt;$ git stash
+$ git reset HEAD~1
+$ git stash pop
+$ git add .
+$ git commit
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Or, in English:&lt;/p&gt;
@@ -665,41 +665,44 @@ git commit
 &lt;li&gt;Save the changes that you want to apply to the HEAD commit off in the stash&lt;/li&gt;
 &lt;li&gt;Remove the HEAD commit and put its contents in the index&lt;/li&gt;
 &lt;li&gt;Apply the stashed changes to the working directory, adding them to the changes from the commit that was reset&lt;/li&gt;
-&lt;li&gt;Make a new commit.&lt;/li&gt;
+&lt;li&gt;Make a new commit&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Thus, the last two operations in the reflog are &lt;strong&gt;reset&lt;/strong&gt; and &lt;strong&gt;commit&lt;/strong&gt;.&lt;/p&gt;
 
-&lt;p&gt;So, what can we do with this? Well, 9d3a192 was HEAD before the amend (specifically, before the reset) happened. 8751261 was the commit that resulted at the end of the amend process. &lt;code&gt;git diff 8751261..9d3a192&lt;/code&gt; will show you what changes were applied as part of the amend.&lt;/p&gt;
+&lt;p&gt;So, what can we do with this? Well, B was HEAD before the amend happened. C is the amended commit. &lt;code&gt;git diff C..B&lt;/code&gt; will show you what changes were applied as part of the amend:&lt;/p&gt;
 
-&lt;p&gt;From here, you can use &lt;code&gt;git apply&lt;/code&gt; to apply the difference from before the amend to after the amend to your working tree via &lt;code&gt;git diff&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ git diff C..B
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;pre&gt;&lt;code&gt;git diff 8751261..9d3a192 | git apply -
+&lt;p&gt;From here you can use &lt;code&gt;git apply&lt;/code&gt; to apply the reverse of what you amended earlier to your working tree:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git diff C..B | git apply -
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Note: The hyphen in &lt;code&gt;git apply -&lt;/code&gt; causes &lt;code&gt;git apply&lt;/code&gt; to take stdin as input.&lt;/li&gt;
-&lt;li&gt;Extra Note: The arguments here are given in reverse order, with the later commit happening first to show the reverse of the amend. It&amp;rsquo;s the same as doing &lt;code&gt;git diff 9d3a192..8751261 -R&lt;/code&gt;, which reverses the diff output. Additionally, the -R argument may be applied to &lt;code&gt;git apply&lt;/code&gt; instead of &lt;code&gt;git diff&lt;/code&gt; to achieve the same effect.&lt;/li&gt;
+&lt;li&gt;Extra Note: The arguments to &lt;code&gt;git diff&lt;/code&gt; are given in reverse order, with the later commit happening first to show the reverse of the amend. It&amp;rsquo;s the same as doing &lt;code&gt;git diff B..C -R&lt;/code&gt;, which reverses the diff output. Additionally, the -R argument may be applied to &lt;code&gt;git apply&lt;/code&gt; instead of &lt;code&gt;git diff&lt;/code&gt; to achieve the same effect.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Now we can do another amend to put the commit back to where it was before we did the previous amend:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;git commit -a --amend -CHEAD
+&lt;pre&gt;&lt;code&gt;$ git commit -a --amend -CHEAD
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;And then, by reversing the order of the SHAs to &lt;code&gt;git diff&lt;/code&gt;, get the changes we want to apply to the correct commit back:&lt;/p&gt;
+&lt;p&gt;And then, by reversing the order of the refs to &lt;code&gt;git diff&lt;/code&gt;, get the changes we want to apply to the correct commit back:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;git diff 9d3a192..8751261 | git apply -
+&lt;pre&gt;&lt;code&gt;$ git diff B..C | git apply -
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;And commit as necessary, this time using &amp;ndash;fixup to indicate the correct commit (in this example, 1234567):&lt;/p&gt;
+&lt;p&gt;And commit as necessary, this time using &amp;ndash;fixup to indicate the correct commit (in this example, A):&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;git commit -a --fixup 1234567
+&lt;pre&gt;&lt;code&gt;$ git commit -a --fixup A
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Then you can rebase at a later time (or now) to do the &amp;lsquo;amend&amp;rsquo; you had originally intended:&lt;/p&gt;
+&lt;p&gt;Then you can rebase either now or at a later time to do the &amp;lsquo;amend&amp;rsquo; you had originally intended:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;git rebase --i --autosquash 1234567~1
+&lt;pre&gt;&lt;code&gt;$ git rebase --i --autosquash A~1
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;So don&amp;rsquo;t fret when you do an accidental amend. It&amp;rsquo;s just a couple commands away from being unwound and applied to the correct commit.&lt;/p&gt;
