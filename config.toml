@@ -11,3 +11,8 @@ github = "https://www.github.com/krishicks"
 twitter = "https://www.twitter.com/krishicks"
 googleAnalytics = "UA-38009560-1"
 flickr = "http://www.flickr.com/krishicks"
+gravatarHash = "fce785f273a2a0cf8a3a921e4d01d048"
+
+[[menu.main]]
+url = "/about"
+name = "About"
