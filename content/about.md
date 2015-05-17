@@ -1,6 +1,8 @@
-Hi, I'm Kris.
+# Hi,
 
-I taught myself Ruby in 2007 to solve a data entry problem. I did a couple of presentations on the automation framework I wrote and ended up getting a job at [ThoughtWorks](http://www.thoughtworks.com), where I hoped to (and did) grow as a developer by learning from highly talented people like [@aghareza](https://www.twitter.com/aghareza), [@pitluga](https://www.twitter.com/pitluga), [@stevesalkin](https://www.twitter.com/stevesalkin), and [@duelinmarkers](https://www.twitter.com/duelinmarkers), to name a few.
+I'm Kris.
+
+I taught myself Ruby in 2007 to solve a data entry problem. I did a couple of presentations on the automation framework I wrote and ended up getting a job at [ThoughtWorks](http://www.thoughtworks.com), where I hoped to (and did) grow as a developer by learning from highly talented people.
 
 I then moved to NYC and joined [Pivotal Labs](http://www.pivotallabs.com), where I continued to grow and learn new technologies: I helped write an [iOS app](http://flywheel.com/san-francisco), had my first foray into Java at [Intent Media](http://intentmedia.com), and continued to build my knowledge of [Rails](http://www.rubyonrails.org).
 
@@ -9,3 +11,22 @@ I left Pivotal Labs for a startup, [DaisyBill](http://www.daisybill.com), where 
 I am presently working at Pivotal as a Solutions Architect for CloudFoundry out of San Francisco.
 
 My resume is available on [GitHub](https://github.com/krishicks/resume/blob/master/resume.md).
+
+### Thanks
+
+I wouldn't be the engineer I am today without the support from the following people (and many others):
+  [Adam Milligan](https://www.twitter.com/adammilligan),
+  [Ali Aghareza](https://www.twitter.com/aghareza),
+  [Alisa Lamacki](https://www.linkedin.com/pub/alisa-lamacki/b/2a8/aa5),
+  [Brian Guthrie](https://www.twitter.com/bguthrie),
+  [Grant Hutchins](https://www.twitter.com/nertzy),
+  [John Hume](https://www.twitter.com/duelinmarkers),
+  [Josh Cronemeyer](https://twitter.com/cuberick),
+  [Josh Knowles](https://www.twitter.com/joshknowles),
+  [Michael Schubert](https://www.twitter.com/schubertcx),
+  [Paul Gross](https://www.twitter.com/pgr0ss),
+  [Rob Mee](http://www.pivotallabs.com/team/executives/),
+  [Sam Coward](https://www.twitter.com/samcoward),
+  [Steve Salkin](https://www.twitter.com/stevesalkin),
+  and
+  [Tony Pitluga](https://www.twitter.com/pitluga).
