@@ -1073,5 +1073,25 @@ pick 58822ee Commit #3
 </description>
     </item>
     
+    <item>
+      <title></title>
+      <link>http://www.krishicks.com/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/about/</guid>
+      <description>&lt;p&gt;Hi, I&amp;rsquo;m Kris.&lt;/p&gt;
+
+&lt;p&gt;I taught myself Ruby in 2007 to solve a data entry problem. I did a couple of presentations on the automation framework I wrote and ended up getting a job at &lt;a href=&#34;http://www.thoughtworks.com&#34;&gt;ThoughtWorks&lt;/a&gt;, where I hoped to (and did) grow as a developer by learning from highly talented people like &lt;a href=&#34;https://www.twitter.com/aghareza&#34;&gt;@aghareza&lt;/a&gt;, &lt;a href=&#34;https://www.twitter.com/pitluga&#34;&gt;@pitluga&lt;/a&gt;, &lt;a href=&#34;https://www.twitter.com/stevesalkin&#34;&gt;@stevesalkin&lt;/a&gt;, and &lt;a href=&#34;https://www.twitter.com/duelinmarkers&#34;&gt;@duelinmarkers&lt;/a&gt;, to name a few.&lt;/p&gt;
+
+&lt;p&gt;I then moved to NYC and joined &lt;a href=&#34;http://www.pivotallabs.com&#34;&gt;Pivotal Labs&lt;/a&gt;, where I continued to grow and learn new technologies: I helped write an &lt;a href=&#34;http://flywheel.com/san-francisco&#34;&gt;iOS app&lt;/a&gt;, had my first foray into Java at &lt;a href=&#34;http://intentmedia.com&#34;&gt;Intent Media&lt;/a&gt;, and continued to build my knowledge of &lt;a href=&#34;http://www.rubyonrails.org&#34;&gt;Rails&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I left Pivotal Labs for a startup, &lt;a href=&#34;http://www.daisybill.com&#34;&gt;DaisyBill&lt;/a&gt;, where I ended up becoming the CTO and sole developer until I left to do contract work at &lt;a href=&#34;http://www.pivotal.io&#34;&gt;Pivotal&lt;/a&gt; in San Francisco, where I worked on two parts of &lt;a href=&#34;http://pivotal.io/platform-as-a-service/pivotal-cloud-foundry&#34;&gt;CloudFoundry&lt;/a&gt;, &lt;a href=&#34;http://www.bosh.io&#34;&gt;BOSH&lt;/a&gt; and &lt;a href=&#34;https://github.com/cloudfoundry-incubator/diego-design-notes&#34;&gt;Diego&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I am presently working at Pivotal as a Solutions Architect for CloudFoundry out of San Francisco.&lt;/p&gt;
+
+&lt;p&gt;My resume is available on &lt;a href=&#34;https://github.com/krishicks/resume/blob/master/resume.md&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>
