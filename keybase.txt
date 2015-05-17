@@ -5,68 +5,68 @@ https://keybase.io/krishicks
 I hereby claim:
 
   * I am an admin of http://krishicks.com
-  *   * I am krishicks (https://keybase.io/krishicks) on keybase.
-  *     * I have a public key with fingerprint D280 47EF 9B31 3E93 7A13 7137 9BB2 13BB C285 F904
-  *
-  *     To claim this, I am signing this object:
-  *
-  *     {
-  *         "body": {
-  *                 "key": {
-  *                             "fingerprint": "d28047ef9b313e937a1371379bb213bbc285f904",
-  *                                         "host": "keybase.io",
-  *                                                     "key_id": "9bb213bbc285f904",
-  *                                                                 "kid": "0101c1b19adee2e465b37df70c3b57bcba0f1f34067149aa4518d2eb329fe1409d380a",
-  *                                                                             "uid": "1ace31838f580538c76b1c9c6f308b00",
-  *                                                                                         "username": "krishicks"
-  *                                                                                                 },
-  *                                                                                                         "service": {
-  *                                                                                                                     "hostname": "krishicks.com",
-  *                                                                                                                                 "protocol": "http:"
-  *                                                                                                                                         },
-  *                                                                                                                                                 "type": "web_service_binding",
-  *                                                                                                                                                         "version": 1
-  *                                                                                                                                                             },
-  *                                                                                                                                                                 "ctime": 1422083418,
-  *                                                                                                                                                                     "expire_in": 157680000,
-  *                                                                                                                                                                         "prev": "a192d04c1a74934f9284e318d3c9f4afbc9a4e309d608e5e75902566bcf26d8f",
-  *                                                                                                                                                                             "seqno": 7,
-  *                                                                                                                                                                                 "tag": "signature"
-  *                                                                                                                                                                                 }
-  *
-  *                                                                                                                                                                                 with the aforementioned key, yielding the PGP signature:
-  *
-  *                                                                                                                                                                                 -----BEGIN PGP MESSAGE-----
-  *                                                                                                                                                                                 Version: GnuPG v1
-  *
-  *                                                                                                                                                                                 owFtUntQVFUYX3aJGXks0ooYw2hdtSbC5T733rM1ooKv1QGmKdQJxXvuPXe5PHaX
-  *                                                                                                                                                                                 3ctjtSUxKYEaC1NRpmyqodeEsroDxBgERKlMCKKABZXWDusMFJMOahTdy9Q/TWfO
-  *                                                                                                                                                                                 zJnv9/1+v/N933xvxBh0+rBGv6mju/p+eNjlENQ917Nx734MOkUvZt2PFaKFR5Id
-  *                                                                                                                                                                                 duR2uWWHglkxkeRwmkUSgBRBIUCxPEGx6gUQkgQFoUByjARwGkvB8p0eTaHaQN6D
-  *                                                                                                                                                                                 zLJTxdQgTxZV9H/4hQsJnMAJgYAE4EWESERbGEixosTiAgUZFgqQxyVComjcwhI0
-  *                                                                                                                                                                                 4HmaITiRRJAigYQIGgcixeG8ale6YEfwAqIIjuIkhsMZihNYCyQEIFgkCucgjmtE
-  *                                                                                                                                                                                 D3I7+GKk1eqWPfmyUOjBfCmYCpfJAtJmoLXyX4pZcBarapfbqTgFZ5GaylcUl1VT
-  *                                                                                                                                                                                 Kl6XRi1HMO8fkzwoO0R1kKqgDLk9stOBWQmVKSiy5krQJIlzFE1wKRiqcMlulCdr
-  *                                                                                                                                                                                 DIa1cLh6tG9QmWrJE4AUcVogeJYGFC0BkqO1/kRKABLNS1AAvAqoU7DgHGIQywCc
-  *                                                                                                                                                                                 ZCwWKEikReQkTGurxOHErKxaJm9XLT2y3cErpW5kwHyRNfqkcF2YXhfxkF5bBl3k
-  *                                                                                                                                                                                 osX/bsjVqtj5zLRdxrqONb75yJr0t3xTCc/H/JUcfDF1X/DxyTWw3pPQtC6zaMSV
-  */NNg+/2q9pGErhzZ21rbeC773VDbe9uWvyks35szV/OLP7Ni+uXvm+WVZya3nlo7
-  VLrpZPv6elP1rdzQiXWJ5RuiM/pv7m7Ob+lMVW4VZX/sLVCW1sYb4oN/PmMGb4/a
-  Bje8Pi+d1h+8e7gmBo0Mh45Z+6LtY33VA0O9K8HPs9ezlM/XZmXX7Ykog6aQ8fdV
-  y3ZEjE2NoMC+CdP7P7Yc+XJ8oP1Y25LIifSjbVccL5lzx4SuisCFR9JgRu1c70fX
-  fl3hCm6rTH9nR3/5qy3muZhA4pR9a+63ppI5Y9jRQwbZNrPzxIPdJVMfDo42HS9/
-  5UicNype+Wbm7PbxXcAfXzQf8cPXz5rGjH9ci224PX+nx9fzZNZ3XZttXx2YucSs
-  LtkU15XEt5qjYM/E4foPZGBLea21KHHg5Gxdd1/x6OSN0J2Ge3HB4PTFNLsu1WUn
-  h8znqwpKHqabD3WH/wbuPbo069PrSx6bTgqMp3acP1i9PnRx0Z6ZK7eZF4xfNN19
-  unV4+MCyQKyvsftUQcNp/YWbfdgnQXr1uJ0xRD/RH+03BxMjkf94stS7hbnRWX/Z
-  UFkX5mzOBHHbo+zeocX9lQ3+2XOTl8riziQ3Xs0guukHwad2rmA7ba7UnM1nP6up
-  /Bs=
-  =kicQ
-  -----END PGP MESSAGE-----
+  * I am krishicks (https://keybase.io/krishicks) on keybase.
+  * I have a public key with fingerprint D280 47EF 9B31 3E93 7A13 7137 9BB2 13BB C285 F904
 
-  And finally, I am proving ownership of this host by posting or
-  appending to this document.
+To claim this, I am signing this object:
 
-  View my publicly-auditable identity here: https://keybase.io/krishicks
+{
+    "body": {
+        "key": {
+            "fingerprint": "d28047ef9b313e937a1371379bb213bbc285f904",
+            "host": "keybase.io",
+            "key_id": "9bb213bbc285f904",
+            "kid": "0101c1b19adee2e465b37df70c3b57bcba0f1f34067149aa4518d2eb329fe1409d380a",
+            "uid": "1ace31838f580538c76b1c9c6f308b00",
+            "username": "krishicks"
+        },
+        "service": {
+            "hostname": "krishicks.com",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1422083418,
+    "expire_in": 157680000,
+    "prev": "a192d04c1a74934f9284e318d3c9f4afbc9a4e309d608e5e75902566bcf26d8f",
+    "seqno": 7,
+    "tag": "signature"
+}
 
-  ==================================================================
+with the aforementioned key, yielding the PGP signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v1
+
+owFtUntQVFUYX3aJGXks0ooYw2hdtSbC5T733rM1ooKv1QGmKdQJxXvuPXe5PHaX
+3ctjtSUxKYEaC1NRpmyqodeEsroDxBgERKlMCKKABZXWDusMFJMOahTdy9Q/TWfO
+zJnv9/1+v/N933xvxBh0+rBGv6mju/p+eNjlENQ917Nx734MOkUvZt2PFaKFR5Id
+duR2uWWHglkxkeRwmkUSgBRBIUCxPEGx6gUQkgQFoUByjARwGkvB8p0eTaHaQN6D
+zLJTxdQgTxZV9H/4hQsJnMAJgYAE4EWESERbGEixosTiAgUZFgqQxyVComjcwhI0
+4HmaITiRRJAigYQIGgcixeG8ale6YEfwAqIIjuIkhsMZihNYCyQEIFgkCucgjmtE
+D3I7+GKk1eqWPfmyUOjBfCmYCpfJAtJmoLXyX4pZcBarapfbqTgFZ5GaylcUl1VT
+Kl6XRi1HMO8fkzwoO0R1kKqgDLk9stOBWQmVKSiy5krQJIlzFE1wKRiqcMlulCdr
+DIa1cLh6tG9QmWrJE4AUcVogeJYGFC0BkqO1/kRKABLNS1AAvAqoU7DgHGIQywCc
+ZCwWKEikReQkTGurxOHErKxaJm9XLT2y3cErpW5kwHyRNfqkcF2YXhfxkF5bBl3k
+osX/bsjVqtj5zLRdxrqONb75yJr0t3xTCc/H/JUcfDF1X/DxyTWw3pPQtC6zaMSV
+/NNg+/2q9pGErhzZ21rbeC773VDbe9uWvyks35szV/OLP7Ni+uXvm+WVZya3nlo7
+VLrpZPv6elP1rdzQiXWJ5RuiM/pv7m7Ob+lMVW4VZX/sLVCW1sYb4oN/PmMGb4/a
+Bje8Pi+d1h+8e7gmBo0Mh45Z+6LtY33VA0O9K8HPs9ezlM/XZmXX7Ykog6aQ8fdV
+y3ZEjE2NoMC+CdP7P7Yc+XJ8oP1Y25LIifSjbVccL5lzx4SuisCFR9JgRu1c70fX
+fl3hCm6rTH9nR3/5qy3muZhA4pR9a+63ppI5Y9jRQwbZNrPzxIPdJVMfDo42HS9/
+5UicNype+Wbm7PbxXcAfXzQf8cPXz5rGjH9ci224PX+nx9fzZNZ3XZttXx2YucSs
+LtkU15XEt5qjYM/E4foPZGBLea21KHHg5Gxdd1/x6OSN0J2Ge3HB4PTFNLsu1WUn
+h8znqwpKHqabD3WH/wbuPbo069PrSx6bTgqMp3acP1i9PnRx0Z6ZK7eZF4xfNN19
+unV4+MCyQKyvsftUQcNp/YWbfdgnQXr1uJ0xRD/RH+03BxMjkf94stS7hbnRWX/Z
+UFkX5mzOBHHbo+zeocX9lQ3+2XOTl8riziQ3Xs0guukHwad2rmA7ba7UnM1nP6up
+/Bs=
+=kicQ
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/krishicks
+
+==================================================================
