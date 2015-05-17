@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Using git subtree with gh-pages &middot; Kris Hicks</title>
+
+  
+  <link rel="stylesheet" href="http://www.krishicks.com//css/poole.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/poole-overrides.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde-overrides.css">
+  <link rel="stylesheet" href="http://www.krishicks.com//css/hyde-x.css">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link href="/favicon.png" rel="icon">
+
+  
+  
+  
+  
+
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <h1>Kris Hicks</h1>
+      
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item"><a href="http://www.krishicks.com//">Blog</a></li>
+      
+    </ul>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+      <a href="https://www.github.com/krishicks"><i class="fa fa-github-square fa-3x"></i></a>
+      
+      
+      
+      
+      <a href="https://www.twitter.com/krishicks"><i class="fa fa-twitter-square fa-3x"></i></a>
+      </li>
+    </ul>
+
+    <p>Copyright &copy; 2015<br/>
+       Powered by <a href="http://gohugo.io">Hugo</a> and <a href="https://github.com/zyro/hyde-x">Hyde-X</a></p>
+  </div>
+</div>
+
+
+<div class="content container">
+  <div class="post">
+    <h1>Using git subtree with gh-pages</h1>
+    <p>I recently switched to using <a href="http://www.gohugo.io">Hugo</a> to generate this site and needed a strategy to publish it. Previously I was using <a href="http://www.octopress.org">Octopress</a> which has scripts for managing the gh-pages branch automatically. The documentation on gohugo.io shows a workflow that uses <code>git subtree</code>, a tool I knew about but had never actually used before. I found the <a href="http://gohugo.io/tutorials/github-pages-blog#configure-git-workflow:fcefb200141ace3e7bfd6542457b7a72">tutorial</a> on the gohugo.io page to be confusing. Here, I describe the approach I used instead.</p>
+
+<p>My goal is to have a clean <code>gh-pages</code> branch that contains the minimum content it needs to have a meaningful history, and a <code>master</code> branch that makes sense.</p>
+
+<p>The first thing to do is generate the site in <code>public/</code> by running <code>hugo</code> while on <code>master</code> and in the root directory of the repository:</p>
+
+<pre><code>$ git checkout master
+$ hugo
+</code></pre>
+
+<p>At this point, create an orphaned <code>gh-pages</code> branch:</p>
+
+<pre><code>$ git checkout --orphan gh-pages
+</code></pre>
+
+<p><em>Note: the <code>gh-pages</code> branch won&rsquo;t show up in <code>git branch</code> yet. Don&rsquo;t worry about that.</em></p>
+
+<p>If you check <code>git status</code> you&rsquo;ll see a bunch of staged files–the contents that were in <code>master</code>. Unstage these with <code>git reset</code>:</p>
+
+<pre><code>$ git reset .
+</code></pre>
+
+<p>Now everything that was staged will be untracked. Clean up those untracked files with <code>git clean</code>, &nbsp;<strong>excluding public</strong>:</p>
+
+<pre><code>$ git clean --force -d --exclude public
+</code></pre>
+
+<p>Now you should see <code>public/</code> as the only untracked directory.</p>
+
+<p>Of course, GitHub Pages wants the content that&rsquo;s currently in <code>public/</code> as the root of the <code>gh-pages</code> branch. Let&rsquo;s make that happen. Copy the contents of <code>public/</code> to the current directory with the tool of your choice, like <code>mv</code>:</p>
+
+<pre><code>$ mv public/* .
+</code></pre>
+
+<p>At this point you can safely get rid of <code>public/</code>, &nbsp;so run <code>git clean</code> again, this time only including <code>public</code>:</p>
+
+<pre><code>$ git clean --force -d public # or just rm -r public
+</code></pre>
+
+<p>Now you&rsquo;re in a position to add everything that was in <code>public/</code>, and is now in the current directory, to make the initial commit. I used &ldquo;Generate site&rdquo; as the message:</p>
+
+<pre><code>$ git add .
+$ git commit -m &quot;Generate site&quot;
+</code></pre>
+
+<p><em>Note: Only after making the above commit will the <code>gh-pages</code> branch appear in <code>git branch</code>.</em></p>
+
+<p>Now push the <code>gh-pages</code> branch to origin:</p>
+
+<pre><code>$ git push -u origin gh-pages:gh-pages
+</code></pre>
+
+<p>At this point your GitHub Pages site will be generated by GitHub, and will be live shortly.</p>
+
+<p>The following steps are what we&rsquo;ll do to make re-generating and updating the site an easy affair. First, check out <code>master</code>:</p>
+
+<pre><code>$ git checkout master
+</code></pre>
+
+<p>Now that the branch is on the remote, we&rsquo;ll add it as a subtree under <code>public/</code> on <code>master</code>. Be sure to replace the <code>&lt;placeholder&gt;</code> with your own repo:</p>
+
+<pre><code>$ git subtree add --prefix public &lt;repo_url&gt; gh-pages
+</code></pre>
+
+<p>If you <code>ls public</code> you&rsquo;ll see the content generated by hugo, and if you <code>git log -2</code> you&rsquo;ll see the commit you made on <code>gh-pages</code> in addition to the commit that added the subtree to <code>master</code>. Push <code>master</code> and you&rsquo;re all set:</p>
+
+<pre><code>$ git push origin master:master
+</code></pre>
+
+<p>Now each time you update something in <code>content/</code>:</p>
+
+<ul>
+<li>commit the changes to <code>content/</code> on <code>master</code></li>
+<li>re-generate the site with <code>hugo</code></li>
+<li>commit the changes to <code>public/</code></li>
+<li>push the changes to the subtree (which will update <code>gh-pages</code>)</li>
+<li>push the changes to <code>master</code></li>
+</ul>
+
+<p>As so:</p>
+
+<pre><code>$ git add content
+$ git commit -m &quot;Added insightful post on the social lives of kittens&quot;
+$ hugo
+$ git add public
+$ git commit -m &quot;Regenerate site&quot;
+$ git subtree push --prefix public &lt;repo_url&gt; gh-pages
+$ git push origin master:master
+</code></pre>
+
+<p>Now when you look at the history of <code>gh-pages</code>, &nbsp;all you&rsquo;ll see are the generate/regenerate commits:</p>
+
+<pre><code>$ git fetch gh-pages
+$ git log gh-pages
+102c92b 6 minutes ago Kris Hicks | Regenerate site
+af759b6 10 minutes ago Kris Hicks | Regenerate site
+69045e6 2 hours ago Kris Hicks | Generate site
+</code></pre>
+
+<p>Whereas on <code>master</code> you&rsquo;ll see the changes to the content, in addition to the changes on the subtree:</p>
+
+<pre><code>$ git log master
+1df64be 7 minutes ago Kris Hicks | Regenerate site
+d244956 8 minutes ago Kris Hicks | Update phone-interviews post with HN link
+66c4e29 11 minutes ago Kris Hicks | Regenerate site
+bea8982 11 minutes ago Kris Hicks | Update rerere post
+456c79e 14 minutes ago Kris Hicks | Add static/
+cfb98dc 18 minutes ago Kris Hicks | Add 'public/' from commit '69045e6db8a929e0476c7553917981e3c9545c4e'
+69045e6 2 hours ago Kris Hicks | Generate site
+daf97fc 3 hours ago Kris Hicks | Add keybase.txt
+483bfec 3 hours ago Kris Hicks | Add CNAME
+</code></pre>
+
+<p>This makes more sense to me than the approach listed on the gohugo.io tutorial, which leaves you with weird merge commits and messy history otherwise.</p>
+
+  </div>
+</div>
+
+
+<script>
+  var _gaq=[['_setAccount','UA-38009560-1'],['_trackPageview']];
+  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+
+</body>
+</html>
