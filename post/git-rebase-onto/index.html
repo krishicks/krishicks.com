@@ -78,7 +78,7 @@
 
 <p>First, let&rsquo;s look at the two-argument form, and build up to the three-argument form.</p>
 
-<h2 id="the-two-argument-form-of-git-rebase-onto:8df2a1e57b3db430122cfb6bfbfd0afa">The two-argument form of git rebase &ndash;onto</h2>
+<h2 id="the-two-argument-form-of-git-rebase-onto:300784076f766c8d506d5084e888decd">The two-argument form of git rebase &ndash;onto</h2>
 
 <p>Say there&rsquo;s a commit C made on master that made a change to a configuration parameter that, it turns out, wasn&rsquo;t actually necessary, so that commit needs to go. For the purposes of this demonstration, commits D and E don&rsquo;t rely upon the changes made in C. &#40;If D or E did rely on C, you&rsquo;d end up with a conflict to resolve, which you&rsquo;d be able to do at that point.&#41;</p>
 
@@ -153,9 +153,9 @@ save and close the editor
 
 <p>What that means is any commits you have on your branch will be removed from the branch, and the branch will resemble master at that point. These commits are still in Git until garbage collection happens, accessible via the reflog &#40;<code>git reflog</code>&#41;.</p>
 
-<h1 id="part-two:8df2a1e57b3db430122cfb6bfbfd0afa">Part Two:</h1>
+<h1 id="part-two:300784076f766c8d506d5084e888decd">Part Two:</h1>
 
-<h2 id="the-three-argument-form-of-git-rebase-onto:8df2a1e57b3db430122cfb6bfbfd0afa">The three-argument form of git rebase &ndash;onto</h2>
+<h2 id="the-three-argument-form-of-git-rebase-onto:300784076f766c8d506d5084e888decd">The three-argument form of git rebase &ndash;onto</h2>
 
 <p>Say there is a branch &lsquo;topicA&rsquo; that diverges from master at some point:</p>
 
