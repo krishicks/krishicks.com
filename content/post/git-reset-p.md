@@ -1,7 +1,6 @@
 ---
 title: "git reset -p"
 date: "2012-05-16"
-comments: true
 categories:
   - git
 ---

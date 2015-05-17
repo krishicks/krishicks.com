@@ -2,7 +2,6 @@
 layout: post
 title: "rerere"
 date: "2012-06-13"
-comments: true
 categories:
   - git
 ---

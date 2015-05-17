@@ -3,7 +3,6 @@ layout: post
 title: "git quick tips"
 date: "2012-07-03"
 slug: quick-tips
-comments: true
 categories:
   - git
 ---

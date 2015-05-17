@@ -1,6 +1,5 @@
 ---
 title: "git exec"
-tags: [ "git" ]
 date: "2012-04-06"
 categories:
   - git
