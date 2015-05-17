@@ -70,7 +70,7 @@
 
 <p>The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.</p>
 
-<h2 id="go-headless:8cee23ebb8cd06574fb87c1e730cde04">Go HEADless</h2>
+<h2 id="go-headless:afd8b67611add8867d2e29eb12d8ce6a">Go HEADless</h2>
 
 <p>In many (and perhaps all) cases HEAD is implied when no ref is given, such as the following equivalent statements:</p>
 
@@ -78,7 +78,7 @@
 $ git log origin/master..
 </code></pre>
 
-<h2 id="upstream-reference:8cee23ebb8cd06574fb87c1e730cde04">Upstream reference</h2>
+<h2 id="upstream-reference:afd8b67611add8867d2e29eb12d8ce6a">Upstream reference</h2>
 
 <p>Before you start referring to the upstream, you&rsquo;ll want to do a <code>git fetch</code> to update your refs/heads:</p>
 
@@ -97,7 +97,7 @@ $ git log origin/master..
 <pre><code>$ git log HEAD@{u}
 </code></pre>
 
-<h2 id="upstream-difference:8cee23ebb8cd06574fb87c1e730cde04">Upstream difference</h2>
+<h2 id="upstream-difference:afd8b67611add8867d2e29eb12d8ce6a">Upstream difference</h2>
 
 <p>Often, I&rsquo;ll want to see what commits are on upstream that I don&rsquo;t have. I usually will do this via:</p>
 
@@ -143,7 +143,7 @@ $ git log origin/master..
 
 <p>Commits beginning with &ldquo;&lt;&rdquo; are only on the left side of the triple-dot (in this case, the upstream), commits beginning with &ldquo;&gt;&rdquo; are only on the right side (in this case, the current branch). A..D are the commit messages.</p>
 
-<h2 id="is-it-merged:8cee23ebb8cd06574fb87c1e730cde04">Is it merged?</h2>
+<h2 id="is-it-merged:afd8b67611add8867d2e29eb12d8ce6a">Is it merged?</h2>
 
 <p>To find out if a particular branch has been merged into origin/master, you could dig through the log on master and search for it:</p>
 

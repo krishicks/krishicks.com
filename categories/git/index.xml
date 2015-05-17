@@ -358,7 +358,7 @@ nothing to commit (working directory clean)
 
 &lt;p&gt;The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.&lt;/p&gt;
 
-&lt;h2 id=&#34;go-headless:8cee23ebb8cd06574fb87c1e730cde04&#34;&gt;Go HEADless&lt;/h2&gt;
+&lt;h2 id=&#34;go-headless:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Go HEADless&lt;/h2&gt;
 
 &lt;p&gt;In many (and perhaps all) cases HEAD is implied when no ref is given, such as the following equivalent statements:&lt;/p&gt;
 
@@ -366,7 +366,7 @@ nothing to commit (working directory clean)
 $ git log origin/master..
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;upstream-reference:8cee23ebb8cd06574fb87c1e730cde04&#34;&gt;Upstream reference&lt;/h2&gt;
+&lt;h2 id=&#34;upstream-reference:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Upstream reference&lt;/h2&gt;
 
 &lt;p&gt;Before you start referring to the upstream, you&amp;rsquo;ll want to do a &lt;code&gt;git fetch&lt;/code&gt; to update your refs/heads:&lt;/p&gt;
 
@@ -385,7 +385,7 @@ $ git log origin/master..
 &lt;pre&gt;&lt;code&gt;$ git log HEAD@{u}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;upstream-difference:8cee23ebb8cd06574fb87c1e730cde04&#34;&gt;Upstream difference&lt;/h2&gt;
+&lt;h2 id=&#34;upstream-difference:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Upstream difference&lt;/h2&gt;
 
 &lt;p&gt;Often, I&amp;rsquo;ll want to see what commits are on upstream that I don&amp;rsquo;t have. I usually will do this via:&lt;/p&gt;
 
@@ -431,7 +431,7 @@ $ git log origin/master..
 
 &lt;p&gt;Commits beginning with &amp;ldquo;&amp;lt;&amp;rdquo; are only on the left side of the triple-dot (in this case, the upstream), commits beginning with &amp;ldquo;&amp;gt;&amp;rdquo; are only on the right side (in this case, the current branch). A..D are the commit messages.&lt;/p&gt;
 
-&lt;h2 id=&#34;is-it-merged:8cee23ebb8cd06574fb87c1e730cde04&#34;&gt;Is it merged?&lt;/h2&gt;
+&lt;h2 id=&#34;is-it-merged:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Is it merged?&lt;/h2&gt;
 
 &lt;p&gt;To find out if a particular branch has been merged into origin/master, you could dig through the log on master and search for it:&lt;/p&gt;
 
@@ -565,7 +565,7 @@ git commit
 
 &lt;p&gt;First, let&amp;rsquo;s look at the two-argument form, and build up to the three-argument form.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-two-argument-form-of-git-rebase-onto:8df2a1e57b3db430122cfb6bfbfd0afa&#34;&gt;The two-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
+&lt;h2 id=&#34;the-two-argument-form-of-git-rebase-onto:300784076f766c8d506d5084e888decd&#34;&gt;The two-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
 
 &lt;p&gt;Say there&amp;rsquo;s a commit C made on master that made a change to a configuration parameter that, it turns out, wasn&amp;rsquo;t actually necessary, so that commit needs to go. For the purposes of this demonstration, commits D and E don&amp;rsquo;t rely upon the changes made in C. &amp;#40;If D or E did rely on C, you&amp;rsquo;d end up with a conflict to resolve, which you&amp;rsquo;d be able to do at that point.&amp;#41;&lt;/p&gt;
 
@@ -640,9 +640,9 @@ save and close the editor
 
 &lt;p&gt;What that means is any commits you have on your branch will be removed from the branch, and the branch will resemble master at that point. These commits are still in Git until garbage collection happens, accessible via the reflog &amp;#40;&lt;code&gt;git reflog&lt;/code&gt;&amp;#41;.&lt;/p&gt;
 
-&lt;h1 id=&#34;part-two:8df2a1e57b3db430122cfb6bfbfd0afa&#34;&gt;Part Two:&lt;/h1&gt;
+&lt;h1 id=&#34;part-two:300784076f766c8d506d5084e888decd&#34;&gt;Part Two:&lt;/h1&gt;
 
-&lt;h2 id=&#34;the-three-argument-form-of-git-rebase-onto:8df2a1e57b3db430122cfb6bfbfd0afa&#34;&gt;The three-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
+&lt;h2 id=&#34;the-three-argument-form-of-git-rebase-onto:300784076f766c8d506d5084e888decd&#34;&gt;The three-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
 
 &lt;p&gt;Say there is a branch &amp;lsquo;topicA&amp;rsquo; that diverges from master at some point:&lt;/p&gt;
 
