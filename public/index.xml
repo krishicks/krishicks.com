@@ -180,13 +180,13 @@ daf97fc 3 hours ago Kris Hicks | Add keybase.txt
 
 &lt;p&gt;&lt;em&gt;The consulting I refer to in this post is specifically software consulting, though I believe it applies to other facets of consulting as well.&lt;/em&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;in-the-beginning:218baaf93838234a0c2204f02c91804d&#34;&gt;In the beginning&lt;/h3&gt;
+&lt;h3 id=&#34;in-the-beginning:d0e0ec411dac0f37b163e04611066dd6&#34;&gt;In the beginning&lt;/h3&gt;
 
 &lt;p&gt;Prior to consulting I worked at a company where I was the only developer. I wasn’t a developer when I joined, but over the course of about a year I taught myself to program in Ruby and that became my full-time job. I made some good software but never felt truly satisfied with the pace of my progress. I wanted to be better, faster. I wanted to learn from and work with other people.&lt;/p&gt;
 
 &lt;p&gt;That is where my consulting journey began.&lt;/p&gt;
 
-&lt;h3 id=&#34;thoughtworks:218baaf93838234a0c2204f02c91804d&#34;&gt;ThoughtWorks&lt;/h3&gt;
+&lt;h3 id=&#34;thoughtworks:d0e0ec411dac0f37b163e04611066dd6&#34;&gt;ThoughtWorks&lt;/h3&gt;
 
 &lt;p&gt;I joined ThoughtWorks in 2009 after having been to a few of the Chi.rb meetups they hosted.&lt;/p&gt;
 
@@ -204,7 +204,7 @@ daf97fc 3 hours ago Kris Hicks | Add keybase.txt
 
 &lt;p&gt;I worked on a few other projects at ThoughtWorks, all with a similar theme. My knowledge grew and I became a better developer, but I didn’t become a better consultant. I didn’t even know what it meant to be a consultant then, let alone a good one.&lt;/p&gt;
 
-&lt;h3 id=&#34;pivotal-labs:218baaf93838234a0c2204f02c91804d&#34;&gt;Pivotal Labs&lt;/h3&gt;
+&lt;h3 id=&#34;pivotal-labs:d0e0ec411dac0f37b163e04611066dd6&#34;&gt;Pivotal Labs&lt;/h3&gt;
 
 &lt;p&gt;I joined Pivotal Labs in 2011.&lt;/p&gt;
 
@@ -214,7 +214,7 @@ daf97fc 3 hours ago Kris Hicks | Add keybase.txt
 
 &lt;p&gt;It wasn’t until later, while still at Pivotal, that it was impressed upon me what it meant to be a consultant.&lt;/p&gt;
 
-&lt;h3 id=&#34;in-the-end:218baaf93838234a0c2204f02c91804d&#34;&gt;In the end&lt;/h3&gt;
+&lt;h3 id=&#34;in-the-end:d0e0ec411dac0f37b163e04611066dd6&#34;&gt;In the end&lt;/h3&gt;
 
 &lt;p&gt;One of the best developers I’ve worked with to date also happens to be one of the best consultants I’ve worked with to date.&lt;/p&gt;
 
@@ -228,7 +228,7 @@ daf97fc 3 hours ago Kris Hicks | Add keybase.txt
 
 &lt;p&gt;I had been merely a developer, not a consultant, for years. It’s probably the case that I imparted some knowledge onto the client developers I’ve worked with, but my primary motivation was writing good software at my pace, not being a good teacher. In that sense, I failed my clients.&lt;/p&gt;
 
-&lt;h3 id=&#34;parting-words:218baaf93838234a0c2204f02c91804d&#34;&gt;Parting words&lt;/h3&gt;
+&lt;h3 id=&#34;parting-words:d0e0ec411dac0f37b163e04611066dd6&#34;&gt;Parting words&lt;/h3&gt;
 
 &lt;p&gt;I hope you’ve gotten out of this an understanding of what I believe it means to be a proper consultant, such that you might make an informed decision to decide whether or not consulting is for you.&lt;/p&gt;
 
@@ -246,19 +246,19 @@ daf97fc 3 hours ago Kris Hicks | Add keybase.txt
       <guid>http://www.krishicks.com/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</guid>
       <description>
 
-&lt;h3 id=&#34;homebrew-package-manager:0f31d54ba011a9bd9db60c948081b220&#34;&gt;Homebrew (package manager)&lt;/h3&gt;
+&lt;h3 id=&#34;homebrew-package-manager:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Homebrew (package manager)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ ruby -e &amp;quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;More information on Homebrew can be found on the &lt;a href=&#34;http://mxcl.github.com/homebrew/&#34; title=&#34;Homebrew home page&#34;&gt;Homebrew home page&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;emacs-24-editor:0f31d54ba011a9bd9db60c948081b220&#34;&gt;Emacs 24 (editor)&lt;/h3&gt;
+&lt;h3 id=&#34;emacs-24-editor:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Emacs 24 (editor)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ brew install emacs --cocoa --use-git-head --HEAD # this takes a while
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;emacs-prelude-enhanced-emacs-24-configuration:0f31d54ba011a9bd9db60c948081b220&#34;&gt;Emacs Prelude (enhanced Emacs 24 configuration)&lt;/h3&gt;
+&lt;h3 id=&#34;emacs-prelude-enhanced-emacs-24-configuration:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Emacs Prelude (enhanced Emacs 24 configuration)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ git clone git://github.com/bbatsov/prelude.git /path/to/prelude
 $ ln -s /path/to/prelude ~/.emacs.d
@@ -266,7 +266,7 @@ $ ln -s /path/to/prelude ~/.emacs.d
 
 &lt;p&gt;More information on Prelude can be found on the &lt;a href=&#34;http://batsov.com/prelude/&#34; title=&#34;Prelude home page&#34;&gt;Prelude home page&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&#34;paredit-emacs-minor-mode-for-editing-parentheses:0f31d54ba011a9bd9db60c948081b220&#34;&gt;ParEdit (emacs minor mode for editing parentheses)&lt;/h3&gt;
+&lt;h3 id=&#34;paredit-emacs-minor-mode-for-editing-parentheses:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;ParEdit (emacs minor mode for editing parentheses)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ emacs
 M-x package-install [RET] paredit [RET]
@@ -279,7 +279,7 @@ M-x package-install [RET] paredit [RET]
 
 &lt;p&gt;See the EmacsWiki: &lt;a href=&#34;http://emacswiki.org/emacs/ParEdit&#34; title=&#34;ParEdit&#34;&gt;ParEdit&lt;/a&gt; and &lt;a href=&#34;http://emacswiki.org/emacs/PareditCheatsheet&#34; title=&#34;ParEdit Cheatsheet&#34;&gt;ParEdit Cheatsheet&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&#34;clojure:0f31d54ba011a9bd9db60c948081b220&#34;&gt;Clojure&lt;/h3&gt;
+&lt;h3 id=&#34;clojure:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Clojure&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ git clone https://github.com/clojure/clojure.git /path/to/clojure
 $ cd /path/to/clojure
@@ -289,7 +289,7 @@ $ mkdir ~/.clojure
 $ ln -s /path/to/clojure/clojure.jar ~/.clojure/clojure.jar
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;leiningen-clojure-automation-tool:0f31d54ba011a9bd9db60c948081b220&#34;&gt;Leiningen (Clojure automation tool)&lt;/h3&gt;
+&lt;h3 id=&#34;leiningen-clojure-automation-tool:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Leiningen (Clojure automation tool)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ wget -O /usr/local/bin/lein https://raw.github.com/technomancy/leiningen/preview/bin/lein
 $ chmod 755 /usr/local/bin/lein
@@ -533,7 +533,7 @@ nothing to commit (working directory clean)
 
 &lt;p&gt;The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.&lt;/p&gt;
 
-&lt;h2 id=&#34;go-headless:8cee23ebb8cd06574fb87c1e730cde04&#34;&gt;Go HEADless&lt;/h2&gt;
+&lt;h2 id=&#34;go-headless:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Go HEADless&lt;/h2&gt;
 
 &lt;p&gt;In many (and perhaps all) cases HEAD is implied when no ref is given, such as the following equivalent statements:&lt;/p&gt;
 
@@ -541,7 +541,7 @@ nothing to commit (working directory clean)
 $ git log origin/master..
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;upstream-reference:8cee23ebb8cd06574fb87c1e730cde04&#34;&gt;Upstream reference&lt;/h2&gt;
+&lt;h2 id=&#34;upstream-reference:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Upstream reference&lt;/h2&gt;
 
 &lt;p&gt;Before you start referring to the upstream, you&amp;rsquo;ll want to do a &lt;code&gt;git fetch&lt;/code&gt; to update your refs/heads:&lt;/p&gt;
 
@@ -560,7 +560,7 @@ $ git log origin/master..
 &lt;pre&gt;&lt;code&gt;$ git log HEAD@{u}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;upstream-difference:8cee23ebb8cd06574fb87c1e730cde04&#34;&gt;Upstream difference&lt;/h2&gt;
+&lt;h2 id=&#34;upstream-difference:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Upstream difference&lt;/h2&gt;
 
 &lt;p&gt;Often, I&amp;rsquo;ll want to see what commits are on upstream that I don&amp;rsquo;t have. I usually will do this via:&lt;/p&gt;
 
@@ -606,7 +606,7 @@ $ git log origin/master..
 
 &lt;p&gt;Commits beginning with &amp;ldquo;&amp;lt;&amp;rdquo; are only on the left side of the triple-dot (in this case, the upstream), commits beginning with &amp;ldquo;&amp;gt;&amp;rdquo; are only on the right side (in this case, the current branch). A..D are the commit messages.&lt;/p&gt;
 
-&lt;h2 id=&#34;is-it-merged:8cee23ebb8cd06574fb87c1e730cde04&#34;&gt;Is it merged?&lt;/h2&gt;
+&lt;h2 id=&#34;is-it-merged:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Is it merged?&lt;/h2&gt;
 
 &lt;p&gt;To find out if a particular branch has been merged into origin/master, you could dig through the log on master and search for it:&lt;/p&gt;
 
@@ -740,7 +740,7 @@ git commit
 
 &lt;p&gt;First, let&amp;rsquo;s look at the two-argument form, and build up to the three-argument form.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-two-argument-form-of-git-rebase-onto:8df2a1e57b3db430122cfb6bfbfd0afa&#34;&gt;The two-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
+&lt;h2 id=&#34;the-two-argument-form-of-git-rebase-onto:300784076f766c8d506d5084e888decd&#34;&gt;The two-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
 
 &lt;p&gt;Say there&amp;rsquo;s a commit C made on master that made a change to a configuration parameter that, it turns out, wasn&amp;rsquo;t actually necessary, so that commit needs to go. For the purposes of this demonstration, commits D and E don&amp;rsquo;t rely upon the changes made in C. &amp;#40;If D or E did rely on C, you&amp;rsquo;d end up with a conflict to resolve, which you&amp;rsquo;d be able to do at that point.&amp;#41;&lt;/p&gt;
 
@@ -815,9 +815,9 @@ save and close the editor
 
 &lt;p&gt;What that means is any commits you have on your branch will be removed from the branch, and the branch will resemble master at that point. These commits are still in Git until garbage collection happens, accessible via the reflog &amp;#40;&lt;code&gt;git reflog&lt;/code&gt;&amp;#41;.&lt;/p&gt;
 
-&lt;h1 id=&#34;part-two:8df2a1e57b3db430122cfb6bfbfd0afa&#34;&gt;Part Two:&lt;/h1&gt;
+&lt;h1 id=&#34;part-two:300784076f766c8d506d5084e888decd&#34;&gt;Part Two:&lt;/h1&gt;
 
-&lt;h2 id=&#34;the-three-argument-form-of-git-rebase-onto:8df2a1e57b3db430122cfb6bfbfd0afa&#34;&gt;The three-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
+&lt;h2 id=&#34;the-three-argument-form-of-git-rebase-onto:300784076f766c8d506d5084e888decd&#34;&gt;The three-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
 
 &lt;p&gt;Say there is a branch &amp;lsquo;topicA&amp;rsquo; that diverges from master at some point:&lt;/p&gt;
 
