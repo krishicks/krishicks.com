@@ -29,7 +29,7 @@ For one serving:
   <tr>
     <td>Calories</td>
     <td>500g</td>
-    <td>200g</td>
+    <td>600g</td>
   </tr>
   <tr>
     <td>Calories from Fat</td>
