@@ -4,8 +4,11 @@ title: "git quick tips"
 date: "2012-07-03"
 slug: quick-tips
 categories:
+  - development
+tags:
   - git
 ---
+
 The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.
 
 <!--more-->

@@ -2,6 +2,8 @@
 title: "git rebase --onto"
 date: "2012-05-28"
 categories:
+  - development
+tags:
   - git
 ---
 

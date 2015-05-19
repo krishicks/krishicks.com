@@ -2,8 +2,10 @@
 layout: post
 title: "KetoSoy"
 date: "2015-05-18"
+tags:
+  - ketosoy
 categories:
-  - food
+  - reviews
 ---
 
 I've been consuming [KetoSoy](http://www.ketosoy.com) for about a month now.

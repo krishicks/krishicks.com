@@ -3,6 +3,8 @@ layout: post
 title: "rewinding git pull"
 date: "2012-07-09"
 categories:
+  - development
+tags:
   - git
 ---
 If you're using a rebase strategy for the first time you may run `git pull` in a situation where Git practically tells you to do it, but you don't actually want to do it.

@@ -3,6 +3,8 @@ layout: post
 title: "Using git subtree with gh-pages"
 date: "2015-05-16"
 categories:
+  - development
+tags:
   - git
 ---
 

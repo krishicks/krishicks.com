@@ -2,7 +2,9 @@
 layout: post
 title: "rewinding git commit --amend"
 date: "2012-06-25"
-categories: 
+categories:
+  - development
+tags:
   - git
 ---
 

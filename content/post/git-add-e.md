@@ -3,6 +3,8 @@ title: "git add -e"
 date: "2012-05-21"
 comments: true
 categories:
+  - development
+tags:
   - git
 ---
 `git add -e` is like `git add -p`, except instead of adding things at the hunk level, you edit the entire patch at once.

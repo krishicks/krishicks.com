@@ -3,6 +3,8 @@ layout: post
 title: "rerere"
 date: "2012-06-13"
 categories:
+  - development
+tags:
   - git
 ---
 There have been times where I performed a rebase and had to resolve conflicts as part of the rebase, and then decided to abort the rebase for one reason or another.

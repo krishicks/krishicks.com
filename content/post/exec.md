@@ -2,6 +2,8 @@
 title: "git exec"
 date: "2012-04-06"
 categories:
+  - development
+tags:
   - git
 ---
 

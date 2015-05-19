@@ -2,8 +2,8 @@
 layout: post
 title: "On Consulting"
 date: "2013-03-17"
-categories: 
 ---
+
 After four years being a consultant I jumped ship and joined a startup.
 
 <!--more-->
