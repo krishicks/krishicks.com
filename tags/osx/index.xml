@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Osx on krishicks.com</title>
+    <link>http://www.krishicks.com/tags/osx/</link>
+    <description>Recent content in Osx on krishicks.com</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 02 Feb 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://www.krishicks.com/tags/osx/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>How to set up a Clojure dev environment on Snow Leopard</title>
+      <link>http://www.krishicks.com/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</link>
+      <pubDate>Sat, 02 Feb 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</guid>
+      <description>
+
+&lt;h3 id=&#34;homebrew-package-manager:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Homebrew (package manager)&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ruby -e &amp;quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;More information on Homebrew can be found on the &lt;a href=&#34;http://mxcl.github.com/homebrew/&#34; title=&#34;Homebrew home page&#34;&gt;Homebrew home page&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;emacs-24-editor:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Emacs 24 (editor)&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install emacs --cocoa --use-git-head --HEAD # this takes a while
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;emacs-prelude-enhanced-emacs-24-configuration:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Emacs Prelude (enhanced Emacs 24 configuration)&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone git://github.com/bbatsov/prelude.git /path/to/prelude
+$ ln -s /path/to/prelude ~/.emacs.d
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;More information on Prelude can be found on the &lt;a href=&#34;http://batsov.com/prelude/&#34; title=&#34;Prelude home page&#34;&gt;Prelude home page&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;paredit-emacs-minor-mode-for-editing-parentheses:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;ParEdit (emacs minor mode for editing parentheses)&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ emacs
+M-x package-install [RET] paredit [RET]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add to ~/.emacs.d/init.el:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(add-hook &#39;nrepl-mode-hook &#39;paredit-mode)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;See the EmacsWiki: &lt;a href=&#34;http://emacswiki.org/emacs/ParEdit&#34; title=&#34;ParEdit&#34;&gt;ParEdit&lt;/a&gt; and &lt;a href=&#34;http://emacswiki.org/emacs/PareditCheatsheet&#34; title=&#34;ParEdit Cheatsheet&#34;&gt;ParEdit Cheatsheet&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;clojure:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Clojure&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone https://github.com/clojure/clojure.git /path/to/clojure
+$ cd /path/to/clojure
+$ ./antsetup.sh
+$ ant
+$ mkdir ~/.clojure
+$ ln -s /path/to/clojure/clojure.jar ~/.clojure/clojure.jar
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;leiningen-clojure-automation-tool:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Leiningen (Clojure automation tool)&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;$ wget -O /usr/local/bin/lein https://raw.github.com/technomancy/leiningen/preview/bin/lein
+$ chmod 755 /usr/local/bin/lein
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;More information on Leiningen can be found on the &lt;a href=&#34;http://leiningen.org/&#34; title=&#34;Leiningen home page&#34;&gt;Leiningen home page&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Finally:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ emacs
+M-x nrepl-jack-in
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
