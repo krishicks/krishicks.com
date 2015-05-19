@@ -78,13 +78,13 @@ Prep:
 
 Blend:
 
-* Put the KetoSoy, protein powder, and chia seeds in a large container, like a [Blender Bottle](http://amzn.com/B00MVMCUK8) or a re-used, clean and empty KetoSoy oil bottle with the top cut off
-* Add 8 cups of water to the Vitamix container
-* Add 10 tablespoons of the oil included with KetoSoy to the Vitamix container
-* Blend the water and oil to emulsify them
-* With the Vitamix on its lowest setting, slowly add the protein powder until it's blended
-* Slowly add the chia seeds, increasing the speed of the Vitamix as necessary
-* Slowly add the KetoSoy, increasing the speed of the Vitamix as necessary
+1. Put the KetoSoy, protein powder, and chia seeds in a large container, like a [Blender Bottle](http://amzn.com/B00MVMCUK8) or a re-used, clean and empty KetoSoy oil bottle with the top cut off
+1. Add 8 cups of water to the Vitamix container
+1. Add 10 tablespoons of the oil included with KetoSoy to the Vitamix container
+1. Blend the water and oil to emulsify them
+1. With the Vitamix on its lowest setting, slowly add the protein powder until it's blended
+1. Slowly add the chia seeds, increasing the speed of the Vitamix as necessary
+1. Slowly add the KetoSoy, increasing the speed of the Vitamix as necessary
 
 This process, while not perfect, has yielded the most repeatable results for me so far. If I run into any issues blending I'll pour out the contents of the Vitamix into the [2-liter airtight pitcher](http://amzn.com/B00DCYNP2G) I plan to store the finished mixture in, then slowly pour it back into the Vitamix, starting at a low speed and increasing it until everything is properly blended.
 
