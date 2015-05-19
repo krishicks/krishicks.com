@@ -10,13 +10,13 @@ I've been consuming [KetoSoy](http://www.ketosoy.com) for about a month now.
 
 <!--more-->
 
-### What is KetoSoy?
+### What is it?
 
 > KetoSoy is a chocolate flavored meal replacement shake engineered to make the ketogenic diet easy.
 
 It is similar in idea to [Soylent](https://www.soylent.com), though with a very different ingredient profile.
 
-The main difference between the two is carbohydrates. Soylent is high in carbohydrates. KetoSoy is [high in fat](http://www.nytimes.com/2014/09/02/health/low-carb-vs-low-fat-diet.html) to keep you in [ketosis](https://en.wikipedia.org/wiki/Ketosis).
+The main difference between the two is carbohydrates. Soylent is high in carbohydrates. KetoSoy is [high in fat](http://www.nytimes.com/2014/09/02/health/low-carb-vs-low-fat-diet.html) and low in carbohydrates to keep you in [ketosis](https://en.wikipedia.org/wiki/Ketosis).
 
 For one serving:
 
@@ -58,16 +58,27 @@ For one serving:
 
 *The complete nutrition profile of each is available at their respective sites.*
 
+### Why?
+
+I saw KetoSoy mentioned on [Reddit](http://www.reddit.com/r/soylent/comments/2o02kx/as_promised_ketosoy_the_ketogenic_soylent_is_now/) while checking up on the state of Soylent. The ingredient profile of Soylent never appealed to me, but KetoSoy's looked right up my alley.
+
+I've been aiming for a high-fat, low-carb, Paleo-ish diet for about a year now. I don't cook at home; I eat out exclusively (or in, with [Munchery](https://munchery.com)). I wanted an alternative for the times that I didn't really want to go out, when Munchery's menu didn't look enticing, or when I wanted to limit my caloric intake.
+
+It's also much cheaper than going out: with the monthly subscription a 15-day supply comes out to $10 **per day** (without the subscription, $12.50). Adding the extra protein powder and chia seeds does increase this, but only slightly.
+
+### How?
+
 To prepare a day's worth (3 servings) of KetoSoy, I use these steps with a [Vitamix](http://amzn.com/B00LBFUKIA).
 
 Prep:
 
-* Measure out 210g of KetoSoy
-* Measure out 84g of flavorless [protein powder](http://amzn.com/B0015AQL1Q))
-* Measure out 3 tablespoons of [chia seeds](http://amzn.com/B00H889MGK)
+* 210g of KetoSoy
+* 84g of flavorless [protein powder](http://amzn.com/B0015AQL1Q))
+* 3 tablespoons of [chia seeds](http://amzn.com/B00H889MGK)
 
 Blend:
 
+* Put the KetoSoy, protein powder, and chia seeds in a large container, like a [Blender Bottle](http://amzn.com/B00MVMCUK8) or a re-used, clean and empty KetoSoy oil bottle with the top cut off
 * Add 8 cups of water to the Vitamix container
 * Add 10 tablespoons of the oil included with KetoSoy to the Vitamix container
 * Blend the water and oil to emulsify them
@@ -81,13 +92,6 @@ You may have noticed I do not add the optional liquid sweetener. I find the flav
 
 The texture and taste are both wonderful, especially with the added protein powder and chia seeds.
 
-### Why?
-
-I saw KetoSoy mentioned on [Reddit](http://www.reddit.com/r/soylent/comments/2o02kx/as_promised_ketosoy_the_ketogenic_soylent_is_now/) while checking up on the state of Soylent. The ingredient profile of Soylent never appealed to me, but KetoSoy's looked right up my alley.
-
-I've been aiming for a high-fat, low-carb, Paleo-ish diet for about a year now. I don't cook at home; I eat out exclusively (or in, with [Munchery](https://munchery.com)). I wanted an alternative for the times that I didn't really want to go out, when Munchery's menu didn't look enticing, or when I wanted to limit my caloric intake.
-
-It's also much cheaper than going out: with the monthly subscription a 15-day supply comes out to $10 **per day** (without the subscription, $12.50). Adding the extra protein powder and chia seeds does increase this, but only slightly.
 
 ### Effects
 
