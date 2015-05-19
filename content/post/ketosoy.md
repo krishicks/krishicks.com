@@ -75,7 +75,7 @@ To prepare a day's worth (3 servings) of KetoSoy, I use these steps with a [Vita
 Prep:
 
 * 210g of KetoSoy
-* 84g of flavorless [protein powder](http://amzn.com/B0015AQL1Q))
+* 84g of [flavorless protein powder](http://amzn.com/B0015AQL1Q)
 * 3 tablespoons of [chia seeds](http://amzn.com/B00H889MGK)
 
 Blend:
