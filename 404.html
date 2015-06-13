@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-  <title>git exec &middot; Kris Hicks</title>
+  <title>404 Page not found &middot; Kris Hicks</title>
 
   
   <link rel="stylesheet" href="http://www.krishicks.com/css/poole.css">
@@ -26,7 +26,7 @@
   
   
   
-  
+  <link href="http://www.krishicks.com/index.xml" rel="alternate" type="application/rss+xml" title="krishicks.com &middot; Kris Hicks" />
 
   <meta name="description" content="">
   <meta name="keywords" content="">
@@ -68,49 +68,11 @@
 
 <div class="content container">
   <div class="post">
-    <h1>git exec</h1>
-    <span class="post-date">Apr 6, 2012 &middot; 2 minute read
-    
-    <br/>
-    
-    <a class="label" href="http://www.krishicks.com/categories/development">development</a>
-    </span>
-    <p>(Update #1 below)</p>
-
-<p>Say you&rsquo;re going to do an interactive rebase where you&rsquo;re going to be squashing commits or reordering them. During this process you may want Git to execute a command after applying certain items of the todo list. An example of this would be when you want to run <code>rake</code> or similar to ensure a newly-squashed commit is still green.</p>
-
-<p>You can do this by adding a task to the todo list, <code>exec</code>, followed by the command you&rsquo;d like Git to run at that point in the rebase. If the command you specify should return a non-zero exit code, Git will pause the rebase and allow you to sort it out, in the same way that it pauses when a conflict arises while applying the todo list during any other rebase.</p>
-
-<p>Here&rsquo;s an example of the above situation, where two commits are going to be squashed, and I want Git to run <code>rake</code> after it does the squash.</p>
-
-<p>Pre-edits, this would look like:</p>
-
-<pre><code>pick dad8d12 Commit #1
-pick f613ac1 Commit #2
-pick 58822ee Commit #3
-</code></pre>
-
-<p>Post-edits, this would look like:</p>
-
-<pre><code>pick dad8d12 Commit #1
-f f613ac1 Commit #2
-x rake
-pick 58822ee Commit #3
-</code></pre>
-
-<p>What happens here is Git will fixup Commit #2 into Commit #1, creating a new commit, then run <code>rake</code>. If <code>rake</code> returns a zero exit code, Git applies Commit #3 and completes the rebase. If <code>rake</code> had returned a non-zero exit code, Git would have paused the rebase operation at that point, allowing any necessary changes to be made to the HEAD commit, which is the squashed #1/#2.</p>
-
-<p>I typically do this separate from doing an initial rebase, where I rebased and made a change to Commit #1 and had to resolve conflicts throughout the rest of the commits. This way I can keep my head straight while doing the rebase, then fix anything I missed as a second operation.</p>
-
-<p>Update #1: As of Git 1.7.12 you can pass <code>-x &lt;cmd&gt;</code> to <code>git rebase -i</code> to have Git run the exec command after every commit in the resulting history: <code>git rebase -i &lt;treeish&gt; -x &lt;cmd&gt;</code>.</p>
-
+    <h1>404 Not Found</h1>
+    <p>What you're looking for isn't here, sorry!</p>
+    <p><a href="http://www.krishicks.com">&larr; Click here to go back home</a></p>
   </div>
-  
 </div>
-
-
-
-
 
 
 <script>
