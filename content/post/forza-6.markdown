@@ -28,11 +28,13 @@ Here are some notes about Forza 6:
 * You can skip the "This is your.." voiceover when you buy a new car.
 * The same kinds of hits that used to shatter window glass no longer do.
 * You can once again tune your car just before starting a race.
+* Many cars in the game have what appears to be flat/matte paint
 * Pressing "A" while rewinding no longer plays a sound.
 
 ## Bugs
 
 * At the start of a race, the view changes to that of cockpit, then to the view you actually have set.
 * Colliding with the rear of the car in front of you rarely, if ever, produces a sound.
+* Your place (upper left) re-renders itself with a sliding animation at random, even when place doesn't change.
 
 This list will be updated as I continue playing.
