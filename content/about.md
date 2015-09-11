@@ -8,7 +8,7 @@ I then moved to NYC and joined [Pivotal Labs](http://www.pivotallabs.com), where
 
 I left Pivotal Labs for a startup, [DaisyBill](http://www.daisybill.com), where I ended up becoming the CTO and sole developer until I left to do contract work at [Pivotal](http://www.pivotal.io) in San Francisco, where I worked on two parts of [CloudFoundry](http://pivotal.io/platform-as-a-service/pivotal-cloud-foundry), [BOSH](http://www.bosh.io) and [Diego](https://github.com/cloudfoundry-incubator/diego-design-notes).
 
-I am presently working at Pivotal as a Solutions Architect for CloudFoundry out of San Francisco.
+I am presently working at <a href='http://pivotal.io'>Pivotal</a> in San Francisco as a Principal Software Engineer.
 
 My resume is available on [GitHub](https://github.com/krishicks/resume/blob/master/resume.md).
 
