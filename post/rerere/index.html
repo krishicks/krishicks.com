@@ -44,7 +44,7 @@
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item"><a href="http://www.krishicks.com/">Blog</a></li>
       
-      <li class="sidebar-nav-item"><a href="/about/">About</a></li>
+      <li class="sidebar-nav-item"><a href="/about">About</a></li>
       
     </ul>
 
@@ -60,7 +60,7 @@
       </li>
     </ul>
 
-    <p>Copyright &copy; 2015<br/>
+    <p>Copyright &copy; 2016<br/>
   </div>
 </div>
 
@@ -74,14 +74,15 @@
 
 <p>This is where <code>rerere</code> comes in.</p>
 
+<p></p>
+
 <p>&ldquo;rerere&rdquo; stands for <strong>re</strong>use <strong>re</strong>corded <strong>re</strong>solution.</p>
 
 <p>What <code>rerere</code> does is save the resolution of a conflict so that it can be re-applied later if it sees the same conflict again. When Git sees the conflict which it already has a resolution recorded for, it will apply the resolution automatically for you, and give you the opportunity to accept the resolution as applied, or change it.</p>
 
 <p>Turning it on can be done two ways: set it as a configuration parameter using <code>git config rerere.enabled true</code>, or use it only when you think you might need it with <code>git rerere</code> both before and after the resolution of a conflict.</p>
 
-<p><em>A more verbose explanation of <code>rerere</code> exists in Scott Chacon&rsquo;s <strong>Pro Git</strong></em>.</p>
-
+<p>*A more verbose explanation of <code>rerere</code> exists in Scott Chacon&rsquo;s <strong>Pro Git</strong>*.</p>
   </div>
 </div>
 

@@ -44,7 +44,7 @@
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item"><a href="http://www.krishicks.com/">Blog</a></li>
       
-      <li class="sidebar-nav-item"><a href="/about/">About</a></li>
+      <li class="sidebar-nav-item"><a href="/about">About</a></li>
       
     </ul>
 
@@ -60,7 +60,7 @@
       </li>
     </ul>
 
-    <p>Copyright &copy; 2015<br/>
+    <p>Copyright &copy; 2016<br/>
   </div>
 </div>
 
@@ -69,6 +69,8 @@
   <div class="post">
     <h1>rewinding git commit --amend</h1>
     <p>It may come to pass that you will run <code>git commit --amend</code> by mistake. When this happens, you&rsquo;ll want to unwind the operation you just did.</p>
+
+<p></p>
 
 <p>In some cases the changes are simple enough that you can use <a href="/blog/2012/05/16/git-reset-p/" title="git reset -p">git reset -p</a> to remove those lines from the commit. However, sometimes <code>git reset -p</code> isn&rsquo;t up to the task, as in the case when the changeset is very large. Luckily, git has a ticker tape of the changes you make to each branch, which is called the reflog.</p>
 
@@ -136,7 +138,6 @@ $ git commit
 </code></pre>
 
 <p>So don&rsquo;t fret when you do an accidental amend. It&rsquo;s just a couple commands away from being unwound and applied to the correct commit.</p>
-
   </div>
 </div>
 

@@ -44,7 +44,7 @@
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item"><a href="http://www.krishicks.com/">Blog</a></li>
       
-      <li class="sidebar-nav-item"><a href="/about/">About</a></li>
+      <li class="sidebar-nav-item"><a href="/about">About</a></li>
       
     </ul>
 
@@ -60,7 +60,7 @@
       </li>
     </ul>
 
-    <p>Copyright &copy; 2015<br/>
+    <p>Copyright &copy; 2016<br/>
   </div>
 </div>
 
@@ -68,21 +68,21 @@
 <div class="content container">
   <div class="post">
     <h1>How to set up a Clojure dev environment on Snow Leopard</h1>
-    
-
-<h3 id="homebrew-package-manager:705502c3dd033640148ad4a6c0cdaabc">Homebrew (package manager)</h3>
+    <h3 id="homebrew-package-manager">Homebrew (package manager)</h3>
 
 <pre><code>$ ruby -e &quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&quot;
 </code></pre>
 
 <p>More information on Homebrew can be found on the <a href="http://mxcl.github.com/homebrew/" title="Homebrew home page">Homebrew home page</a></p>
 
-<h3 id="emacs-24-editor:705502c3dd033640148ad4a6c0cdaabc">Emacs 24 (editor)</h3>
+<p></p>
+
+<h3 id="emacs-24-editor">Emacs 24 (editor)</h3>
 
 <pre><code>$ brew install emacs --cocoa --use-git-head --HEAD # this takes a while
 </code></pre>
 
-<h3 id="emacs-prelude-enhanced-emacs-24-configuration:705502c3dd033640148ad4a6c0cdaabc">Emacs Prelude (enhanced Emacs 24 configuration)</h3>
+<h3 id="emacs-prelude-enhanced-emacs-24-configuration">Emacs Prelude (enhanced Emacs 24 configuration)</h3>
 
 <pre><code>$ git clone git://github.com/bbatsov/prelude.git /path/to/prelude
 $ ln -s /path/to/prelude ~/.emacs.d
@@ -90,7 +90,7 @@ $ ln -s /path/to/prelude ~/.emacs.d
 
 <p>More information on Prelude can be found on the <a href="http://batsov.com/prelude/" title="Prelude home page">Prelude home page</a>.</p>
 
-<h3 id="paredit-emacs-minor-mode-for-editing-parentheses:705502c3dd033640148ad4a6c0cdaabc">ParEdit (emacs minor mode for editing parentheses)</h3>
+<h3 id="paredit-emacs-minor-mode-for-editing-parentheses">ParEdit (emacs minor mode for editing parentheses)</h3>
 
 <pre><code>$ emacs
 M-x package-install [RET] paredit [RET]
@@ -103,7 +103,7 @@ M-x package-install [RET] paredit [RET]
 
 <p>See the EmacsWiki: <a href="http://emacswiki.org/emacs/ParEdit" title="ParEdit">ParEdit</a> and <a href="http://emacswiki.org/emacs/PareditCheatsheet" title="ParEdit Cheatsheet">ParEdit Cheatsheet</a>.</p>
 
-<h3 id="clojure:705502c3dd033640148ad4a6c0cdaabc">Clojure</h3>
+<h3 id="clojure">Clojure</h3>
 
 <pre><code>$ git clone https://github.com/clojure/clojure.git /path/to/clojure
 $ cd /path/to/clojure
@@ -113,7 +113,7 @@ $ mkdir ~/.clojure
 $ ln -s /path/to/clojure/clojure.jar ~/.clojure/clojure.jar
 </code></pre>
 
-<h3 id="leiningen-clojure-automation-tool:705502c3dd033640148ad4a6c0cdaabc">Leiningen (Clojure automation tool)</h3>
+<h3 id="leiningen-clojure-automation-tool">Leiningen (Clojure automation tool)</h3>
 
 <pre><code>$ wget -O /usr/local/bin/lein https://raw.github.com/technomancy/leiningen/preview/bin/lein
 $ chmod 755 /usr/local/bin/lein
@@ -128,7 +128,6 @@ $ chmod 755 /usr/local/bin/lein
 <pre><code>$ emacs
 M-x nrepl-jack-in
 </code></pre>
-
   </div>
 </div>
 

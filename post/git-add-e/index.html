@@ -44,7 +44,7 @@
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item"><a href="http://www.krishicks.com/">Blog</a></li>
       
-      <li class="sidebar-nav-item"><a href="/about/">About</a></li>
+      <li class="sidebar-nav-item"><a href="/about">About</a></li>
       
     </ul>
 
@@ -60,7 +60,7 @@
       </li>
     </ul>
 
-    <p>Copyright &copy; 2015<br/>
+    <p>Copyright &copy; 2016<br/>
   </div>
 </div>
 
@@ -75,6 +75,8 @@
     <a class="label" href="http://www.krishicks.com/categories/development">development</a>
     </span>
     <p><code>git add -e</code> is like <code>git add -p</code>, except instead of adding things at the hunk level, you edit the entire patch at once.</p>
+
+<p></p>
 
 <p>Or, in other words, whereas <code>git add -p</code> will show you each hunk for every file and ask what you want to do for each of them, <code>git add -e</code> will show you the entire patch and allow you to edit it at will. I used this trick to recently split apart one massive commit into 28 smaller, digestible ones.</p>
 
@@ -130,7 +132,6 @@ fatal: Could not apply '.git/ADD_EDIT.patch'
 <p>In some cases Git will attempt to apply the patch and give you the option of retrying the add, re-opening the editor with the modified .git/ADD_EDIT.patch if you choose to retry. If you don&rsquo;t choose to retry, Git will delete .git/ADD_EDIT.patch.</p>
 
 <p>In addition to editing the patch wholesale via <code>git add -e</code>, you can also choose <em>during <code>git add -p</code></em> to edit a particular hunk manually by choosing &lsquo;e&rsquo; to edit it instead of simply adding it via &lsquo;a&rsquo;. You can also add a file glob to the end of <code>add -e</code> as you would any other command to limit the size of the patch you&rsquo;re about to edit.</p>
-
   </div>
   
 </div>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Development on krishicks.com</title>
-    <link>http://www.krishicks.com/categories/development/</link>
-    <description>Recent content in Development on krishicks.com</description>
+    <title>krishicks.com</title>
+    <link>http://www.krishicks.com/categories/development/index.xml</link>
+    <description>Recent content on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 16 May 2015 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://www.krishicks.com/categories/development/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
@@ -16,6 +15,8 @@
       
       <guid>http://www.krishicks.com/post/subtree-gh-pages/</guid>
       <description>&lt;p&gt;I recently switched to using &lt;a href=&#34;http://www.gohugo.io&#34;&gt;Hugo&lt;/a&gt; to generate this site and needed a strategy to publish it. Previously I was using &lt;a href=&#34;http://www.octopress.org&#34;&gt;Octopress&lt;/a&gt; which has scripts for managing the gh-pages branch automatically. The documentation on gohugo.io shows a workflow that uses &lt;code&gt;git subtree&lt;/code&gt;, a tool I knew about but had never actually used before. I found the &lt;a href=&#34;http://gohugo.io/tutorials/github-pages-blog#configure-git-workflow:fcefb200141ace3e7bfd6542457b7a72&#34;&gt;tutorial&lt;/a&gt; on the gohugo.io page to be confusing. Here, I describe the approach I used instead.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;My goal is to have a clean &lt;code&gt;gh-pages&lt;/code&gt; branch that contains the minimum content it needs to have a meaningful history, and a &lt;code&gt;master&lt;/code&gt; branch that makes sense.&lt;/p&gt;
 
@@ -128,8 +129,7 @@ daf97fc 3 hours ago Kris Hicks | Add keybase.txt
 483bfec 3 hours ago Kris Hicks | Add CNAME
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;This makes more sense to me than the approach listed on the gohugo.io tutorial, which leaves you with weird merge commits and messy history otherwise.&lt;/p&gt;
-</description>
+&lt;p&gt;This makes more sense to me than the approach listed on the gohugo.io tutorial, which leaves you with weird merge commits and messy history otherwise.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -138,21 +138,21 @@ daf97fc 3 hours ago Kris Hicks | Add keybase.txt
       <pubDate>Sat, 02 Feb 2013 00:00:00 +0000</pubDate>
       
       <guid>http://www.krishicks.com/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</guid>
-      <description>
-
-&lt;h3 id=&#34;homebrew-package-manager:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Homebrew (package manager)&lt;/h3&gt;
+      <description>&lt;h3 id=&#34;homebrew-package-manager&#34;&gt;Homebrew (package manager)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ ruby -e &amp;quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;More information on Homebrew can be found on the &lt;a href=&#34;http://mxcl.github.com/homebrew/&#34; title=&#34;Homebrew home page&#34;&gt;Homebrew home page&lt;/a&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;emacs-24-editor:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Emacs 24 (editor)&lt;/h3&gt;
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;emacs-24-editor&#34;&gt;Emacs 24 (editor)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ brew install emacs --cocoa --use-git-head --HEAD # this takes a while
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;emacs-prelude-enhanced-emacs-24-configuration:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Emacs Prelude (enhanced Emacs 24 configuration)&lt;/h3&gt;
+&lt;h3 id=&#34;emacs-prelude-enhanced-emacs-24-configuration&#34;&gt;Emacs Prelude (enhanced Emacs 24 configuration)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ git clone git://github.com/bbatsov/prelude.git /path/to/prelude
 $ ln -s /path/to/prelude ~/.emacs.d
@@ -160,7 +160,7 @@ $ ln -s /path/to/prelude ~/.emacs.d
 
 &lt;p&gt;More information on Prelude can be found on the &lt;a href=&#34;http://batsov.com/prelude/&#34; title=&#34;Prelude home page&#34;&gt;Prelude home page&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&#34;paredit-emacs-minor-mode-for-editing-parentheses:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;ParEdit (emacs minor mode for editing parentheses)&lt;/h3&gt;
+&lt;h3 id=&#34;paredit-emacs-minor-mode-for-editing-parentheses&#34;&gt;ParEdit (emacs minor mode for editing parentheses)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ emacs
 M-x package-install [RET] paredit [RET]
@@ -173,7 +173,7 @@ M-x package-install [RET] paredit [RET]
 
 &lt;p&gt;See the EmacsWiki: &lt;a href=&#34;http://emacswiki.org/emacs/ParEdit&#34; title=&#34;ParEdit&#34;&gt;ParEdit&lt;/a&gt; and &lt;a href=&#34;http://emacswiki.org/emacs/PareditCheatsheet&#34; title=&#34;ParEdit Cheatsheet&#34;&gt;ParEdit Cheatsheet&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&#34;clojure:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Clojure&lt;/h3&gt;
+&lt;h3 id=&#34;clojure&#34;&gt;Clojure&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ git clone https://github.com/clojure/clojure.git /path/to/clojure
 $ cd /path/to/clojure
@@ -183,7 +183,7 @@ $ mkdir ~/.clojure
 $ ln -s /path/to/clojure/clojure.jar ~/.clojure/clojure.jar
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;leiningen-clojure-automation-tool:705502c3dd033640148ad4a6c0cdaabc&#34;&gt;Leiningen (Clojure automation tool)&lt;/h3&gt;
+&lt;h3 id=&#34;leiningen-clojure-automation-tool&#34;&gt;Leiningen (Clojure automation tool)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ wget -O /usr/local/bin/lein https://raw.github.com/technomancy/leiningen/preview/bin/lein
 $ chmod 755 /usr/local/bin/lein
@@ -197,8 +197,7 @@ $ chmod 755 /usr/local/bin/lein
 
 &lt;pre&gt;&lt;code&gt;$ emacs
 M-x nrepl-jack-in
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+&lt;/code&gt;&lt;/pre&gt;</description>
     </item>
     
     <item>
@@ -208,6 +207,8 @@ M-x nrepl-jack-in
       
       <guid>http://www.krishicks.com/post/rewinding-git-pull/</guid>
       <description>&lt;p&gt;If you&amp;rsquo;re using a rebase strategy for the first time you may run &lt;code&gt;git pull&lt;/code&gt; in a situation where Git practically tells you to do it, but you don&amp;rsquo;t actually want to do it.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;The situation is described below, and the method to unwind it follows. I&amp;rsquo;ve added pictures of the branches between hashes to make it clear what the state of the world is at any given point prior to or after running a particular command, which I hope makes it easier to follow.&lt;/p&gt;
 
@@ -413,8 +414,7 @@ nothing to commit (working directory clean)
 
 &lt;p&gt;If the result from &lt;code&gt;git log @{u}&lt;/code&gt; is empty or you don&amp;rsquo;t get &amp;ldquo;# Your branch is ahead of &amp;lsquo;origin/master&amp;rsquo; by  commit(s)&amp;rdquo; message after &lt;code&gt;git status&lt;/code&gt;, you&amp;rsquo;re OK to &lt;code&gt;git pull&lt;/code&gt;. In no other case do you need to, or should you, &lt;code&gt;git pull&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;I generally recommend always working on a topic branch and keeping master clean to avoid accidentally running &lt;code&gt;git push -f&lt;/code&gt; on master, and to enforce the idea that after you fetch, you&amp;rsquo;re rebasing on top of origin/master directly instead of doing &lt;code&gt;git pull --rebase&lt;/code&gt; while on master, which hides the fact that you&amp;rsquo;re rebasing on top of origin/master.&lt;/p&gt;
-</description>
+&lt;p&gt;I generally recommend always working on a topic branch and keeping master clean to avoid accidentally running &lt;code&gt;git push -f&lt;/code&gt; on master, and to enforce the idea that after you fetch, you&amp;rsquo;re rebasing on top of origin/master directly instead of doing &lt;code&gt;git pull --rebase&lt;/code&gt; while on master, which hides the fact that you&amp;rsquo;re rebasing on top of origin/master.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -423,11 +423,11 @@ nothing to commit (working directory clean)
       <pubDate>Tue, 03 Jul 2012 00:00:00 +0000</pubDate>
       
       <guid>http://www.krishicks.com/post/quick-tips/</guid>
-      <description>
+      <description>&lt;p&gt;The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.&lt;/p&gt;
 
-&lt;p&gt;The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;go-headless:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Go HEADless&lt;/h2&gt;
+&lt;h2 id=&#34;go-headless&#34;&gt;Go HEADless&lt;/h2&gt;
 
 &lt;p&gt;In many (and perhaps all) cases HEAD is implied when no ref is given, such as the following equivalent statements:&lt;/p&gt;
 
@@ -435,7 +435,7 @@ nothing to commit (working directory clean)
 $ git log origin/master..
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;upstream-reference:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Upstream reference&lt;/h2&gt;
+&lt;h2 id=&#34;upstream-reference&#34;&gt;Upstream reference&lt;/h2&gt;
 
 &lt;p&gt;Before you start referring to the upstream, you&amp;rsquo;ll want to do a &lt;code&gt;git fetch&lt;/code&gt; to update your refs/heads:&lt;/p&gt;
 
@@ -454,7 +454,7 @@ $ git log origin/master..
 &lt;pre&gt;&lt;code&gt;$ git log HEAD@{u}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;upstream-difference:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Upstream difference&lt;/h2&gt;
+&lt;h2 id=&#34;upstream-difference&#34;&gt;Upstream difference&lt;/h2&gt;
 
 &lt;p&gt;Often, I&amp;rsquo;ll want to see what commits are on upstream that I don&amp;rsquo;t have. I usually will do this via:&lt;/p&gt;
 
@@ -500,7 +500,7 @@ $ git log origin/master..
 
 &lt;p&gt;Commits beginning with &amp;ldquo;&amp;lt;&amp;rdquo; are only on the left side of the triple-dot (in this case, the upstream), commits beginning with &amp;ldquo;&amp;gt;&amp;rdquo; are only on the right side (in this case, the current branch). A..D are the commit messages.&lt;/p&gt;
 
-&lt;h2 id=&#34;is-it-merged:afd8b67611add8867d2e29eb12d8ce6a&#34;&gt;Is it merged?&lt;/h2&gt;
+&lt;h2 id=&#34;is-it-merged&#34;&gt;Is it merged?&lt;/h2&gt;
 
 &lt;p&gt;To find out if a particular branch has been merged into origin/master, you could dig through the log on master and search for it:&lt;/p&gt;
 
@@ -522,8 +522,7 @@ $ git branch --contains topicB@{u} -r
 
 &lt;p&gt;This gives you a list of all the remote branches that can reach (as an ancestor) the ref given. origin/master will be right at the top if the branch has been merged into it.&lt;/p&gt;
 
-&lt;p&gt;Many thanks to &lt;a href=&#34;http://newartisans.com/2008/04/git-from-the-bottom-up/&#34; title=&#34;John Wiegley&#34;&gt;John Wiegley&lt;/a&gt;, &lt;a href=&#34;http://www.git-scm.com/book&#34; title=&#34;Scott Chacon&#34;&gt;Scott Chacon&lt;/a&gt; and &lt;a href=&#34;http://serverfault.com/a/384862&#34; title=&#34;Mark Longair&#34;&gt;Mark Longair&lt;/a&gt; for the sources of the tips.&lt;/p&gt;
-</description>
+&lt;p&gt;Many thanks to &lt;a href=&#34;http://newartisans.com/2008/04/git-from-the-bottom-up/&#34; title=&#34;John Wiegley&#34;&gt;John Wiegley&lt;/a&gt;, &lt;a href=&#34;http://www.git-scm.com/book&#34; title=&#34;Scott Chacon&#34;&gt;Scott Chacon&lt;/a&gt; and &lt;a href=&#34;http://serverfault.com/a/384862&#34; title=&#34;Mark Longair&#34;&gt;Mark Longair&lt;/a&gt; for the sources of the tips.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -533,6 +532,8 @@ $ git branch --contains topicB@{u} -r
       
       <guid>http://www.krishicks.com/post/rewinding-git-commit-amend/</guid>
       <description>&lt;p&gt;It may come to pass that you will run &lt;code&gt;git commit --amend&lt;/code&gt; by mistake. When this happens, you&amp;rsquo;ll want to unwind the operation you just did.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;In some cases the changes are simple enough that you can use &lt;a href=&#34;http://www.krishicks.com/blog/2012/05/16/git-reset-p/&#34; title=&#34;git reset -p&#34;&gt;git reset -p&lt;/a&gt; to remove those lines from the commit. However, sometimes &lt;code&gt;git reset -p&lt;/code&gt; isn&amp;rsquo;t up to the task, as in the case when the changeset is very large. Luckily, git has a ticker tape of the changes you make to each branch, which is called the reflog.&lt;/p&gt;
 
@@ -599,8 +600,7 @@ $ git commit
 &lt;pre&gt;&lt;code&gt;$ git rebase --i --autosquash A~1
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;So don&amp;rsquo;t fret when you do an accidental amend. It&amp;rsquo;s just a couple commands away from being unwound and applied to the correct commit.&lt;/p&gt;
-</description>
+&lt;p&gt;So don&amp;rsquo;t fret when you do an accidental amend. It&amp;rsquo;s just a couple commands away from being unwound and applied to the correct commit.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -615,14 +615,15 @@ $ git commit
 
 &lt;p&gt;This is where &lt;code&gt;rerere&lt;/code&gt; comes in.&lt;/p&gt;
 
+&lt;p&gt;&lt;/p&gt;
+
 &lt;p&gt;&amp;ldquo;rerere&amp;rdquo; stands for &lt;strong&gt;re&lt;/strong&gt;use &lt;strong&gt;re&lt;/strong&gt;corded &lt;strong&gt;re&lt;/strong&gt;solution.&lt;/p&gt;
 
 &lt;p&gt;What &lt;code&gt;rerere&lt;/code&gt; does is save the resolution of a conflict so that it can be re-applied later if it sees the same conflict again. When Git sees the conflict which it already has a resolution recorded for, it will apply the resolution automatically for you, and give you the opportunity to accept the resolution as applied, or change it.&lt;/p&gt;
 
 &lt;p&gt;Turning it on can be done two ways: set it as a configuration parameter using &lt;code&gt;git config rerere.enabled true&lt;/code&gt;, or use it only when you think you might need it with &lt;code&gt;git rerere&lt;/code&gt; both before and after the resolution of a conflict.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;A more verbose explanation of &lt;code&gt;rerere&lt;/code&gt; exists in Scott Chacon&amp;rsquo;s &lt;strong&gt;Pro Git&lt;/strong&gt;&lt;/em&gt;.&lt;/p&gt;
-</description>
+&lt;p&gt;*A more verbose explanation of &lt;code&gt;rerere&lt;/code&gt; exists in Scott Chacon&amp;rsquo;s &lt;strong&gt;Pro Git&lt;/strong&gt;*.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -631,13 +632,13 @@ $ git commit
       <pubDate>Mon, 28 May 2012 00:00:00 +0000</pubDate>
       
       <guid>http://www.krishicks.com/post/git-rebase-onto/</guid>
-      <description>
+      <description>&lt;p&gt;Have you ever dug into the &lt;code&gt;git rebase&lt;/code&gt; documentation and noticed there&amp;rsquo;s a three-argument form of it?&lt;/p&gt;
 
-&lt;p&gt;Have you ever dug into the &lt;code&gt;git rebase&lt;/code&gt; documentation and noticed there&amp;rsquo;s a three-argument form of it?&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;First, let&amp;rsquo;s look at the two-argument form, and build up to the three-argument form.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-two-argument-form-of-git-rebase-onto:300784076f766c8d506d5084e888decd&#34;&gt;The two-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
+&lt;h2 id=&#34;the-two-argument-form-of-git-rebase-onto&#34;&gt;The two-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
 
 &lt;p&gt;Say there&amp;rsquo;s a commit C made on master that made a change to a configuration parameter that, it turns out, wasn&amp;rsquo;t actually necessary, so that commit needs to go. For the purposes of this demonstration, commits D and E don&amp;rsquo;t rely upon the changes made in C. &amp;#40;If D or E did rely on C, you&amp;rsquo;d end up with a conflict to resolve, which you&amp;rsquo;d be able to do at that point.&amp;#41;&lt;/p&gt;
 
@@ -712,9 +713,9 @@ save and close the editor
 
 &lt;p&gt;What that means is any commits you have on your branch will be removed from the branch, and the branch will resemble master at that point. These commits are still in Git until garbage collection happens, accessible via the reflog &amp;#40;&lt;code&gt;git reflog&lt;/code&gt;&amp;#41;.&lt;/p&gt;
 
-&lt;h1 id=&#34;part-two:300784076f766c8d506d5084e888decd&#34;&gt;Part Two:&lt;/h1&gt;
+&lt;h1 id=&#34;part-two&#34;&gt;Part Two:&lt;/h1&gt;
 
-&lt;h2 id=&#34;the-three-argument-form-of-git-rebase-onto:300784076f766c8d506d5084e888decd&#34;&gt;The three-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
+&lt;h2 id=&#34;the-three-argument-form-of-git-rebase-onto&#34;&gt;The three-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
 
 &lt;p&gt;Say there is a branch &amp;lsquo;topicA&amp;rsquo; that diverges from master at some point:&lt;/p&gt;
 
@@ -765,8 +766,7 @@ save and close the editor
 &lt;pre&gt;&lt;code&gt;git rebase --onto topicC topicA topicB
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Where topicC is the newbase, topicA is the oldbase, and topicB is the reference for what HEAD of topicC will become.&lt;/p&gt;
-</description>
+&lt;p&gt;Where topicC is the newbase, topicA is the oldbase, and topicB is the reference for what HEAD of topicC will become.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -776,6 +776,8 @@ save and close the editor
       
       <guid>http://www.krishicks.com/post/git-add-e/</guid>
       <description>&lt;p&gt;&lt;code&gt;git add -e&lt;/code&gt; is like &lt;code&gt;git add -p&lt;/code&gt;, except instead of adding things at the hunk level, you edit the entire patch at once.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;Or, in other words, whereas &lt;code&gt;git add -p&lt;/code&gt; will show you each hunk for every file and ask what you want to do for each of them, &lt;code&gt;git add -e&lt;/code&gt; will show you the entire patch and allow you to edit it at will. I used this trick to recently split apart one massive commit into 28 smaller, digestible ones.&lt;/p&gt;
 
@@ -830,8 +832,7 @@ fatal: Could not apply &#39;.git/ADD_EDIT.patch&#39;
 
 &lt;p&gt;In some cases Git will attempt to apply the patch and give you the option of retrying the add, re-opening the editor with the modified .git/ADD_EDIT.patch if you choose to retry. If you don&amp;rsquo;t choose to retry, Git will delete .git/ADD_EDIT.patch.&lt;/p&gt;
 
-&lt;p&gt;In addition to editing the patch wholesale via &lt;code&gt;git add -e&lt;/code&gt;, you can also choose &lt;em&gt;during &lt;code&gt;git add -p&lt;/code&gt;&lt;/em&gt; to edit a particular hunk manually by choosing &amp;lsquo;e&amp;rsquo; to edit it instead of simply adding it via &amp;lsquo;a&amp;rsquo;. You can also add a file glob to the end of &lt;code&gt;add -e&lt;/code&gt; as you would any other command to limit the size of the patch you&amp;rsquo;re about to edit.&lt;/p&gt;
-</description>
+&lt;p&gt;In addition to editing the patch wholesale via &lt;code&gt;git add -e&lt;/code&gt;, you can also choose &lt;em&gt;during &lt;code&gt;git add -p&lt;/code&gt;&lt;/em&gt; to edit a particular hunk manually by choosing &amp;lsquo;e&amp;rsquo; to edit it instead of simply adding it via &amp;lsquo;a&amp;rsquo;. You can also add a file glob to the end of &lt;code&gt;add -e&lt;/code&gt; as you would any other command to limit the size of the patch you&amp;rsquo;re about to edit.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -841,6 +842,8 @@ fatal: Could not apply &#39;.git/ADD_EDIT.patch&#39;
       
       <guid>http://www.krishicks.com/post/git-reset-p/</guid>
       <description>&lt;p&gt;I&amp;rsquo;ve been using &lt;code&gt;git reset -p&lt;/code&gt; a lot recently and I think it makes sense to clarify what it is that it does because when I first started using it I found it a little confusing.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;I sometimes realize that an earlier commit contains some change that I don&amp;rsquo;t want, so I want to remove it from the commit. This also works when not rebasing, so for simplicity I&amp;rsquo;ll use an example where the commit to be modified is already HEAD. Previously I would have done:&lt;/p&gt;
 
@@ -929,8 +932,7 @@ baz
 
 &lt;p&gt;&lt;code&gt;reset -p&lt;/code&gt; allows you to more easily get a grip on the changes you&amp;rsquo;ve made and the ones you&amp;rsquo;re about to make. It also makes much better use of Git, in that you can do even more interesting operations when in the resulting state, which I won&amp;rsquo;t go into now as to avoid information overload.&lt;/p&gt;
 
-&lt;p&gt;And there you have it.&lt;/p&gt;
-</description>
+&lt;p&gt;And there you have it.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -942,6 +944,8 @@ baz
       <description>&lt;p&gt;(Update #1 below)&lt;/p&gt;
 
 &lt;p&gt;Say you&amp;rsquo;re going to do an interactive rebase where you&amp;rsquo;re going to be squashing commits or reordering them. During this process you may want Git to execute a command after applying certain items of the todo list. An example of this would be when you want to run &lt;code&gt;rake&lt;/code&gt; or similar to ensure a newly-squashed commit is still green.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;You can do this by adding a task to the todo list, &lt;code&gt;exec&lt;/code&gt;, followed by the command you&amp;rsquo;d like Git to run at that point in the rebase. If the command you specify should return a non-zero exit code, Git will pause the rebase and allow you to sort it out, in the same way that it pauses when a conflict arises while applying the todo list during any other rebase.&lt;/p&gt;
 
@@ -966,8 +970,7 @@ pick 58822ee Commit #3
 
 &lt;p&gt;I typically do this separate from doing an initial rebase, where I rebased and made a change to Commit #1 and had to resolve conflicts throughout the rest of the commits. This way I can keep my head straight while doing the rebase, then fix anything I missed as a second operation.&lt;/p&gt;
 
-&lt;p&gt;Update #1: As of Git 1.7.12 you can pass &lt;code&gt;-x &amp;lt;cmd&amp;gt;&lt;/code&gt; to &lt;code&gt;git rebase -i&lt;/code&gt; to have Git run the exec command after every commit in the resulting history: &lt;code&gt;git rebase -i &amp;lt;treeish&amp;gt; -x &amp;lt;cmd&amp;gt;&lt;/code&gt;.&lt;/p&gt;
-</description>
+&lt;p&gt;Update #1: As of Git 1.7.12 you can pass &lt;code&gt;-x &amp;lt;cmd&amp;gt;&lt;/code&gt; to &lt;code&gt;git rebase -i&lt;/code&gt; to have Git run the exec command after every commit in the resulting history: &lt;code&gt;git rebase -i &amp;lt;treeish&amp;gt; -x &amp;lt;cmd&amp;gt;&lt;/code&gt;.&lt;/p&gt;</description>
     </item>
     
   </channel>

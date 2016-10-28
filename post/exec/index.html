@@ -44,7 +44,7 @@
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item"><a href="http://www.krishicks.com/">Blog</a></li>
       
-      <li class="sidebar-nav-item"><a href="/about/">About</a></li>
+      <li class="sidebar-nav-item"><a href="/about">About</a></li>
       
     </ul>
 
@@ -60,7 +60,7 @@
       </li>
     </ul>
 
-    <p>Copyright &copy; 2015<br/>
+    <p>Copyright &copy; 2016<br/>
   </div>
 </div>
 
@@ -77,6 +77,8 @@
     <p>(Update #1 below)</p>
 
 <p>Say you&rsquo;re going to do an interactive rebase where you&rsquo;re going to be squashing commits or reordering them. During this process you may want Git to execute a command after applying certain items of the todo list. An example of this would be when you want to run <code>rake</code> or similar to ensure a newly-squashed commit is still green.</p>
+
+<p></p>
 
 <p>You can do this by adding a task to the todo list, <code>exec</code>, followed by the command you&rsquo;d like Git to run at that point in the rebase. If the command you specify should return a non-zero exit code, Git will pause the rebase and allow you to sort it out, in the same way that it pauses when a conflict arises while applying the todo list during any other rebase.</p>
 
@@ -102,7 +104,6 @@ pick 58822ee Commit #3
 <p>I typically do this separate from doing an initial rebase, where I rebased and made a change to Commit #1 and had to resolve conflicts throughout the rest of the commits. This way I can keep my head straight while doing the rebase, then fix anything I missed as a second operation.</p>
 
 <p>Update #1: As of Git 1.7.12 you can pass <code>-x &lt;cmd&gt;</code> to <code>git rebase -i</code> to have Git run the exec command after every commit in the resulting history: <code>git rebase -i &lt;treeish&gt; -x &lt;cmd&gt;</code>.</p>
-
   </div>
   
 </div>
