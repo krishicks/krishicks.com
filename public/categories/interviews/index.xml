@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Interviews on krishicks.com</title>
-    <link>http://www.krishicks.com/categories/interviews/</link>
-    <description>Recent content in Interviews on krishicks.com</description>
+    <title>krishicks.com</title>
+    <link>http://www.krishicks.com/categories/interviews/index.xml</link>
+    <description>Recent content on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 23 May 2014 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://www.krishicks.com/categories/interviews/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
@@ -20,6 +19,8 @@
 &lt;p&gt;Yesterday, I did a coding challenge-based phone interview. When it ended, I had a mini retrospective with myself, and thought about what went well, and what didn&amp;rsquo;t go well.&lt;/p&gt;
 
 &lt;p&gt;Mostly, it didn&amp;rsquo;t go well.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
 
 &lt;p&gt;I dislike coding challenges, and interviews that are based around them. As soon as the coding challenge begins, my heartrate jumps and my stress levels rise. It&amp;rsquo;s like being put on stage.&lt;/p&gt;
 
@@ -39,8 +40,7 @@
 
 &lt;p&gt;When I was interviewing for my replacement at DaisyBill, I opted for a similar approach. I took an actual production feature I developed, copied a subset of the tests I wrote for the feature, and left a shell of the implementation for the interviewee to use as a starting point. This made for a repeatable, real-world-based, effective interview.&lt;/p&gt;
 
-&lt;p&gt;For more reading on effective interview processes, I recommend reading about &lt;a href=&#34;http://ejohn.org/blog/project-based-interviews&#34;&gt;Project-Based Interviews&lt;/a&gt; and &lt;a href=&#34;https://github.com/blog/1269-the-github-hiring-experience&#34;&gt;The GitHub Hiring Experience&lt;/a&gt;.&lt;/p&gt;
-</description>
+&lt;p&gt;For more reading on effective interview processes, I recommend reading about &lt;a href=&#34;http://ejohn.org/blog/project-based-interviews&#34;&gt;Project-Based Interviews&lt;/a&gt; and &lt;a href=&#34;https://github.com/blog/1269-the-github-hiring-experience&#34;&gt;The GitHub Hiring Experience&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -44,7 +44,7 @@
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item"><a href="http://www.krishicks.com/">Blog</a></li>
       
-      <li class="sidebar-nav-item"><a href="/about/">About</a></li>
+      <li class="sidebar-nav-item"><a href="/about">About</a></li>
       
     </ul>
 
@@ -60,7 +60,7 @@
       </li>
     </ul>
 
-    <p>Copyright &copy; 2015<br/>
+    <p>Copyright &copy; 2016<br/>
   </div>
 </div>
 
@@ -69,6 +69,8 @@
   <div class="post">
     <h1>rewinding git pull</h1>
     <p>If you&rsquo;re using a rebase strategy for the first time you may run <code>git pull</code> in a situation where Git practically tells you to do it, but you don&rsquo;t actually want to do it.</p>
+
+<p></p>
 
 <p>The situation is described below, and the method to unwind it follows. I&rsquo;ve added pictures of the branches between hashes to make it clear what the state of the world is at any given point prior to or after running a particular command, which I hope makes it easier to follow.</p>
 
@@ -275,7 +277,6 @@ nothing to commit (working directory clean)
 <p>If the result from <code>git log @{u}</code> is empty or you don&rsquo;t get &ldquo;# Your branch is ahead of &lsquo;origin/master&rsquo; by  commit(s)&rdquo; message after <code>git status</code>, you&rsquo;re OK to <code>git pull</code>. In no other case do you need to, or should you, <code>git pull</code>.</p>
 
 <p>I generally recommend always working on a topic branch and keeping master clean to avoid accidentally running <code>git push -f</code> on master, and to enforce the idea that after you fetch, you&rsquo;re rebasing on top of origin/master directly instead of doing <code>git pull --rebase</code> while on master, which hides the fact that you&rsquo;re rebasing on top of origin/master.</p>
-
   </div>
 </div>
 

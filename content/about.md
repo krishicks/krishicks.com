@@ -10,7 +10,7 @@ I left Pivotal Labs for a startup, [DaisyBill](http://www.daisybill.com), where 
 
 I am presently working at <a href='http://pivotal.io'>Pivotal</a> in San Francisco as a Principal Software Engineer.
 
-My resume is available on [GitHub](https://github.com/krishicks/resume/blob/master/resume.md).
+My resume is available on [GitHub](https://github.com/krishicks/resume).
 
 ### Thanks
 
