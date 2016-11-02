@@ -9,6 +9,155 @@
     <atom:link href="http://www.krishicks.com/categories/development/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Using gRPC with Mutual TLS in Golang</title>
+      <link>http://www.krishicks.com/post/grpc-mutual-tls-golang/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/grpc-mutual-tls-golang/</guid>
+      <description>&lt;p&gt;So, you want to use &lt;a href=&#34;http://www.grpc.io&#34;&gt;gRPC&lt;/a&gt;. Cool! And you want to use
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Mutual_authentication&#34;&gt;mutual TLS&lt;/a&gt;, too. But
+maybe, like me, you couldn&amp;rsquo;t easily figure out how to accomplish this, given
+the documentation and examples out there. Here&amp;rsquo;s how I did it.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;This example code uses a CA, certs, and private keys which were generated using
+&lt;a href=&#34;https://github.com/square/certstrap&#34;&gt;certstrap&lt;/a&gt;. Skip down
+&lt;a href=&#34;#creating-test-ca-certs-private-keys&#34;&gt;below&lt;/a&gt; to see how to get and use
+certstrap.&lt;/p&gt;
+
+&lt;h3 id=&#34;server-configuration&#34;&gt;Server Configuration&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;certificate, err := tls.LoadX509KeyPair(
+  &amp;quot;out/example.com.crt&amp;quot;,
+  &amp;quot;out/example.com.key&amp;quot;,
+)
+
+certPool := x509.NewCertPool()
+bs, err := ioutil.ReadFile(&amp;quot;out/My_Root_CA.crt&amp;quot;)
+if err != nil {
+  log.Fatalf(&amp;quot;failed to read client ca cert: %s&amp;quot;, err.Error())
+}
+
+ok := certPool.AppendCertsFromPEM(bs)
+if !ok {
+  log.Fatalf(&amp;quot;failed to append client certs: %s&amp;quot;, err.Error())
+}
+
+lis, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1&amp;quot;)
+if err != nil {
+  log.Fatalf(&amp;quot;failed to listen: %s&amp;quot;, err.Error())
+}
+
+tlsConfig := &amp;amp;tls.Config{
+  ClientAuth:   tls.RequireAndVerifyClientCert,
+  Certificates: []tls.Certificate{certificate},
+  ClientCAs:    certPool,
+}
+
+serverOption := grpc.Creds(credentials.NewTLS(tlsConfig))
+server := grpc.NewServer(serverOption)
+
+// register your server
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;client-configuration&#34;&gt;Client Configuration&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;certificate, err := tls.LoadX509KeyPair(
+  &amp;quot;out/127.0.0.1.crt&amp;quot;,
+  &amp;quot;out/127.0.0.1.key&amp;quot;,
+)
+
+certPool := x509.NewCertPool()
+bs, err := ioutil.ReadFile(&amp;quot;out/My_Root_CA.crt&amp;quot;)
+if err != nil {
+  log.Fatalf(&amp;quot;failed to read ca cert: %s&amp;quot;, err.Error())
+}
+
+ok := certPool.AppendCertsFromPEM(bs)
+if !ok {
+  log.Fatalf(&amp;quot;failed to append certs: %s&amp;quot;, err.Error())
+}
+
+transportCreds := credentials.NewTLS(&amp;amp;tls.Config{
+  ServerName:   &amp;quot;example.com&amp;quot;,
+  Certificates: []tls.Certificate{certificate},
+  RootCAs:      certPool,
+})
+
+dialOption := grpc.WithTransportCredentials(transportCreds)
+conn, err := grpc.Dial(&amp;quot;example.com&amp;quot;, dialOption)
+if err != nil {
+    log.Fatalf(&amp;quot;failed to dial server: %s&amp;quot;, err.Error())
+}
+defer conn.Close()
+
+// make your client
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If your client certificate already has the CA concatenated to it, you can use
+x509.ParseCertificate, as in the following gist:
+&lt;a href=&#34;https://gist.github.com/artyom/6897140&#34;&gt;https://gist.github.com/artyom/6897140&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;creating-test-ca-certs-private-keys&#34;&gt;Creating test CA, certs, private keys&lt;/h3&gt;
+
+&lt;p&gt;For testing, or for deploying an application which only you will access, it
+makes sense to generate a self-signed CA and self-signed certs.&lt;/p&gt;
+
+&lt;p&gt;Creating a self-signed CA, self-signed certs, and keys suitable for use in Go
+is hard. Use &lt;a href=&#34;https://github.com/square/certstrap&#34;&gt;certstrap&lt;/a&gt; to make it
+easier.&lt;/p&gt;
+
+&lt;h4 id=&#34;get-certstrap&#34;&gt;Get certstrap&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone git@github.com:square/certstrap
+$ cd certstrap
+$ ./build
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The following commands assume you run them within the directory you cloned
+certstrap to.&lt;/p&gt;
+
+&lt;h4 id=&#34;create-a-ca-server-cert-and-private-key&#34;&gt;Create a CA, server cert, and private key&lt;/h4&gt;
+
+&lt;p&gt;&lt;em&gt;Note: &lt;code&gt;certstrap&lt;/code&gt; will prompt you for a password. For testing, you may leave
+it blank.&lt;/em&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ bin/certstrap init --common-name &amp;quot;My Root CA&amp;quot;
+Created out/My_Root_CA.key
+Created out/My_Root_CA.crt
+Created out/My_Root_CA.crl
+
+$ bin/certstrap request-cert --domain mydomain.com
+Created out/mydomain.com.key
+Created out/mydomain.com.csr
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you&amp;rsquo;re generating a cert for an IP, use the &amp;ndash;ip flag, e.g. &lt;code&gt;--ip
+127.0.0.1&lt;/code&gt;. Golang will complain about &amp;ldquo;No IP SANs&amp;rdquo; otherwise.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ bin/certstrap sign --CA &amp;quot;My Root CA&amp;quot; mydomain.com # or the IP
+Created out/mydomain.com.crt from out/mydomain.com.csr signed by out/My_Root_CA.key
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;At this point you can choose to create a second CA for the client, or just use
+the same CA to sign another csr. We&amp;rsquo;ll use the same one for this example.&lt;/p&gt;
+
+&lt;h4 id=&#34;create-client-cert-and-private-key&#34;&gt;Create client cert and private key&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;$ bin/certstrap request-cert --ip 127.0.0.1
+Created out/127.0.0.1.key
+Created out/127.0.0.1.csr
+
+$ bin/certstrap sign --CA &amp;quot;My Root CA&amp;quot; 127.0.0.1
+Created out/127.0.0.1.crt from out/127.0.0.1.csr signed by out/My_Root_CA.key
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now you&amp;rsquo;re ready to rock and roll. Head back to &lt;a href=&#34;#server-configuration&#34;&gt;server
+configuration&lt;/a&gt; if you need to.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Using git subtree with gh-pages</title>
       <link>http://www.krishicks.com/post/subtree-gh-pages/</link>
       <pubDate>Sat, 16 May 2015 00:00:00 +0000</pubDate>

@@ -6,8 +6,157 @@
     <description>Recent content on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Sep 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 01 Nov 2016 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://www.krishicks.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Using gRPC with Mutual TLS in Golang</title>
+      <link>http://www.krishicks.com/post/grpc-mutual-tls-golang/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/grpc-mutual-tls-golang/</guid>
+      <description>&lt;p&gt;So, you want to use &lt;a href=&#34;http://www.grpc.io&#34;&gt;gRPC&lt;/a&gt;. Cool! And you want to use
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Mutual_authentication&#34;&gt;mutual TLS&lt;/a&gt;, too. But
+maybe, like me, you couldn&amp;rsquo;t easily figure out how to accomplish this, given
+the documentation and examples out there. Here&amp;rsquo;s how I did it.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;This example code uses a CA, certs, and private keys which were generated using
+&lt;a href=&#34;https://github.com/square/certstrap&#34;&gt;certstrap&lt;/a&gt;. Skip down
+&lt;a href=&#34;#creating-test-ca-certs-private-keys&#34;&gt;below&lt;/a&gt; to see how to get and use
+certstrap.&lt;/p&gt;
+
+&lt;h3 id=&#34;server-configuration&#34;&gt;Server Configuration&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;certificate, err := tls.LoadX509KeyPair(
+  &amp;quot;out/example.com.crt&amp;quot;,
+  &amp;quot;out/example.com.key&amp;quot;,
+)
+
+certPool := x509.NewCertPool()
+bs, err := ioutil.ReadFile(&amp;quot;out/My_Root_CA.crt&amp;quot;)
+if err != nil {
+  log.Fatalf(&amp;quot;failed to read client ca cert: %s&amp;quot;, err.Error())
+}
+
+ok := certPool.AppendCertsFromPEM(bs)
+if !ok {
+  log.Fatalf(&amp;quot;failed to append client certs: %s&amp;quot;, err.Error())
+}
+
+lis, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1&amp;quot;)
+if err != nil {
+  log.Fatalf(&amp;quot;failed to listen: %s&amp;quot;, err.Error())
+}
+
+tlsConfig := &amp;amp;tls.Config{
+  ClientAuth:   tls.RequireAndVerifyClientCert,
+  Certificates: []tls.Certificate{certificate},
+  ClientCAs:    certPool,
+}
+
+serverOption := grpc.Creds(credentials.NewTLS(tlsConfig))
+server := grpc.NewServer(serverOption)
+
+// register your server
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;client-configuration&#34;&gt;Client Configuration&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;certificate, err := tls.LoadX509KeyPair(
+  &amp;quot;out/127.0.0.1.crt&amp;quot;,
+  &amp;quot;out/127.0.0.1.key&amp;quot;,
+)
+
+certPool := x509.NewCertPool()
+bs, err := ioutil.ReadFile(&amp;quot;out/My_Root_CA.crt&amp;quot;)
+if err != nil {
+  log.Fatalf(&amp;quot;failed to read ca cert: %s&amp;quot;, err.Error())
+}
+
+ok := certPool.AppendCertsFromPEM(bs)
+if !ok {
+  log.Fatalf(&amp;quot;failed to append certs: %s&amp;quot;, err.Error())
+}
+
+transportCreds := credentials.NewTLS(&amp;amp;tls.Config{
+  ServerName:   &amp;quot;example.com&amp;quot;,
+  Certificates: []tls.Certificate{certificate},
+  RootCAs:      certPool,
+})
+
+dialOption := grpc.WithTransportCredentials(transportCreds)
+conn, err := grpc.Dial(&amp;quot;example.com&amp;quot;, dialOption)
+if err != nil {
+    log.Fatalf(&amp;quot;failed to dial server: %s&amp;quot;, err.Error())
+}
+defer conn.Close()
+
+// make your client
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If your client certificate already has the CA concatenated to it, you can use
+x509.ParseCertificate, as in the following gist:
+&lt;a href=&#34;https://gist.github.com/artyom/6897140&#34;&gt;https://gist.github.com/artyom/6897140&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;creating-test-ca-certs-private-keys&#34;&gt;Creating test CA, certs, private keys&lt;/h3&gt;
+
+&lt;p&gt;For testing, or for deploying an application which only you will access, it
+makes sense to generate a self-signed CA and self-signed certs.&lt;/p&gt;
+
+&lt;p&gt;Creating a self-signed CA, self-signed certs, and keys suitable for use in Go
+is hard. Use &lt;a href=&#34;https://github.com/square/certstrap&#34;&gt;certstrap&lt;/a&gt; to make it
+easier.&lt;/p&gt;
+
+&lt;h4 id=&#34;get-certstrap&#34;&gt;Get certstrap&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone git@github.com:square/certstrap
+$ cd certstrap
+$ ./build
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The following commands assume you run them within the directory you cloned
+certstrap to.&lt;/p&gt;
+
+&lt;h4 id=&#34;create-a-ca-server-cert-and-private-key&#34;&gt;Create a CA, server cert, and private key&lt;/h4&gt;
+
+&lt;p&gt;&lt;em&gt;Note: &lt;code&gt;certstrap&lt;/code&gt; will prompt you for a password. For testing, you may leave
+it blank.&lt;/em&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ bin/certstrap init --common-name &amp;quot;My Root CA&amp;quot;
+Created out/My_Root_CA.key
+Created out/My_Root_CA.crt
+Created out/My_Root_CA.crl
+
+$ bin/certstrap request-cert --domain mydomain.com
+Created out/mydomain.com.key
+Created out/mydomain.com.csr
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you&amp;rsquo;re generating a cert for an IP, use the &amp;ndash;ip flag, e.g. &lt;code&gt;--ip
+127.0.0.1&lt;/code&gt;. Golang will complain about &amp;ldquo;No IP SANs&amp;rdquo; otherwise.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ bin/certstrap sign --CA &amp;quot;My Root CA&amp;quot; mydomain.com # or the IP
+Created out/mydomain.com.crt from out/mydomain.com.csr signed by out/My_Root_CA.key
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;At this point you can choose to create a second CA for the client, or just use
+the same CA to sign another csr. We&amp;rsquo;ll use the same one for this example.&lt;/p&gt;
+
+&lt;h4 id=&#34;create-client-cert-and-private-key&#34;&gt;Create client cert and private key&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;$ bin/certstrap request-cert --ip 127.0.0.1
+Created out/127.0.0.1.key
+Created out/127.0.0.1.csr
+
+$ bin/certstrap sign --CA &amp;quot;My Root CA&amp;quot; 127.0.0.1
+Created out/127.0.0.1.crt from out/127.0.0.1.csr signed by out/My_Root_CA.key
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now you&amp;rsquo;re ready to rock and roll. Head back to &lt;a href=&#34;#server-configuration&#34;&gt;server
+configuration&lt;/a&gt; if you need to.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Notes on Forza 6</title>
@@ -1240,49 +1389,6 @@ pick 58822ee Commit #3
 &lt;p&gt;I typically do this separate from doing an initial rebase, where I rebased and made a change to Commit #1 and had to resolve conflicts throughout the rest of the commits. This way I can keep my head straight while doing the rebase, then fix anything I missed as a second operation.&lt;/p&gt;
 
 &lt;p&gt;Update #1: As of Git 1.7.12 you can pass &lt;code&gt;-x &amp;lt;cmd&amp;gt;&lt;/code&gt; to &lt;code&gt;git rebase -i&lt;/code&gt; to have Git run the exec command after every commit in the resulting history: &lt;code&gt;git rebase -i &amp;lt;treeish&amp;gt; -x &amp;lt;cmd&amp;gt;&lt;/code&gt;.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>http://www.krishicks.com/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.krishicks.com/about/</guid>
-      <description>
-
-&lt;h1 id=&#34;hi&#34;&gt;Hi,&lt;/h1&gt;
-
-&lt;p&gt;I&amp;rsquo;m Kris.&lt;/p&gt;
-
-&lt;p&gt;I taught myself Ruby in 2007 to solve a data entry problem. I did a couple of presentations on the automation framework I wrote and ended up getting a job at &lt;a href=&#34;http://www.thoughtworks.com&#34;&gt;ThoughtWorks&lt;/a&gt;, where I hoped to (and did) grow as a developer by learning from highly talented people.&lt;/p&gt;
-
-&lt;p&gt;I then moved to NYC and joined &lt;a href=&#34;http://www.pivotallabs.com&#34;&gt;Pivotal Labs&lt;/a&gt;, where I continued to grow and learn new technologies: I helped write an &lt;a href=&#34;http://flywheel.com/san-francisco&#34;&gt;iOS app&lt;/a&gt;, had my first foray into Java at &lt;a href=&#34;http://intentmedia.com&#34;&gt;Intent Media&lt;/a&gt;, and continued to build my knowledge of &lt;a href=&#34;http://www.rubyonrails.org&#34;&gt;Rails&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;I left Pivotal Labs for a startup, &lt;a href=&#34;http://www.daisybill.com&#34;&gt;DaisyBill&lt;/a&gt;, where I ended up becoming the CTO and sole developer until I left to do contract work at &lt;a href=&#34;http://www.pivotal.io&#34;&gt;Pivotal&lt;/a&gt; in San Francisco, where I worked on two parts of &lt;a href=&#34;http://pivotal.io/platform-as-a-service/pivotal-cloud-foundry&#34;&gt;CloudFoundry&lt;/a&gt;, &lt;a href=&#34;http://www.bosh.io&#34;&gt;BOSH&lt;/a&gt; and &lt;a href=&#34;https://github.com/cloudfoundry-incubator/diego-design-notes&#34;&gt;Diego&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;I am presently working at &lt;a href=&#39;http://pivotal.io&#39;&gt;Pivotal&lt;/a&gt; in San Francisco as a Principal Software Engineer.&lt;/p&gt;
-
-&lt;p&gt;My resume is available on &lt;a href=&#34;https://github.com/krishicks/resume&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&#34;thanks&#34;&gt;Thanks&lt;/h3&gt;
-
-&lt;p&gt;I wouldn&amp;rsquo;t be the engineer I am today without the support from the following people (and many others):
-  &lt;a href=&#34;https://www.twitter.com/adammilligan&#34;&gt;Adam Milligan&lt;/a&gt;,
-  &lt;a href=&#34;https://www.twitter.com/aghareza&#34;&gt;Ali Aghareza&lt;/a&gt;,
-  &lt;a href=&#34;https://www.linkedin.com/pub/alisa-lamacki/b/2a8/aa5&#34;&gt;Alisa Lamacki&lt;/a&gt;,
-  &lt;a href=&#34;https://www.twitter.com/bguthrie&#34;&gt;Brian Guthrie&lt;/a&gt;,
-  &lt;a href=&#34;https://www.twitter.com/nertzy&#34;&gt;Grant Hutchins&lt;/a&gt;,
-  &lt;a href=&#34;https://www.twitter.com/duelinmarkers&#34;&gt;John Hume&lt;/a&gt;,
-  &lt;a href=&#34;https://twitter.com/cuberick&#34;&gt;Josh Cronemeyer&lt;/a&gt;,
-  &lt;a href=&#34;https://www.twitter.com/joshknowles&#34;&gt;Josh Knowles&lt;/a&gt;,
-  &lt;a href=&#34;https://www.twitter.com/schubertcx&#34;&gt;Michael Schubert&lt;/a&gt;,
-  &lt;a href=&#34;https://www.twitter.com/pgr0ss&#34;&gt;Paul Gross&lt;/a&gt;,
-  &lt;a href=&#34;http://www.pivotallabs.com/team/executives/&#34;&gt;Rob Mee&lt;/a&gt;,
-  &lt;a href=&#34;https://www.twitter.com/samcoward&#34;&gt;Sam Coward&lt;/a&gt;,
-  &lt;a href=&#34;https://www.twitter.com/stevesalkin&#34;&gt;Steve Salkin&lt;/a&gt;,
-  and
-  &lt;a href=&#34;https://www.twitter.com/pitluga&#34;&gt;Tony Pitluga&lt;/a&gt;.&lt;/p&gt;
-</description>
     </item>
     
   </channel>
