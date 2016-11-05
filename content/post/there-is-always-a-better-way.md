@@ -35,4 +35,6 @@ I taught myself enough Ruby to write a full replacement of the macro software, w
 
 After a year and a half at the title insurance company, I left to become a real programmer. I wasn't learning fast enough at that point. Joining ThoughtWorks was a better way to learn.
 
-I've used this idea, that there is always a better way, to become a better software developer. I continually push myself to write better code, to look at code that I've written in the past and re-write it as appropriate when I learn new things that expose deficiencies in previous code I've written. I am always learning, always looking for better ways. I take a pragmatic approach, however. There is a point at which there may be a better way, but the current implementation is *good enough*. Part of becoming a better developer is being able to recognize that.
+Perhaps this idea, that there is always a better way, is also useful to you. I used it for figuring out how to do data entry better, and now I use it when becoming better at writing software. 
+
+The only caveat that I would add is that while there often is a better way, there is a point of diminishing returns. Being able to recognize when what you've got is *good enough* is important.
