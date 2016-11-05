@@ -17,3 +17,7 @@ tagline = "Software Engineer"
 [[menu.main]]
 url = "/about"
 name = "About"
+
+[[menu.main]]
+url = "https://github.com/krishicks/resume"
+name = "Resume"
