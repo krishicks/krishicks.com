@@ -6,8 +6,47 @@
     <description>Recent content on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Nov 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 05 Nov 2016 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://www.krishicks.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>There is Always a Better Way</title>
+      <link>http://www.krishicks.com/post/there-is-always-a-better-way/</link>
+      <pubDate>Sat, 05 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/there-is-always-a-better-way/</guid>
+      <description>&lt;p&gt;I got into software development because of a single idea: there is always a better way.&lt;/p&gt;
+
+&lt;p&gt;I was working at a title insurance company in the US during the housing boom of 2007. I was hired as a temp to do data entry for the calculation of fees associated with purchasing &lt;a href=&#34;https://en.wikipedia.org/wiki/Title_insurance&#34;&gt;title insurance&lt;/a&gt;. It was a straightforward job, with one incredible hindrance: everyone was using adding machines, which is a fancy desktop calculator that prints out a receipt as you enter calculations.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;I found the usage of the adding machines remarkable because we were all sitting in front of computers with Microsoft Excel installed on them.&lt;/p&gt;
+
+&lt;p&gt;I knew of Excel but had no use for it before I joined the company, so I went along with using the adding machine at first. After seeing how unreliable and slow they were, I decided to teach myself enough Excel to have it do the title insurance fee calculations for me.&lt;/p&gt;
+
+&lt;p&gt;Excel was a &lt;em&gt;better way&lt;/em&gt; to do these calculations: more reliable, repeatable, and less error-prone. Create a cell or cells with formulas once, and just change the house purchase price to see the new result. No intermediate calculations required, and certainly none done by hand. No double-checking of receipt paper. Just copy and paste the result from Excel into the appropriate textfield in the browser.&lt;/p&gt;
+
+&lt;p&gt;After doing this for a while my supervisor took note: my error rate was greatly reduced, and I was able to do more work as well. He wondered if I would be interested in working on implementing some &amp;ldquo;macro&amp;rdquo; software they&amp;rsquo;d bought, which was meant to be able to do what I&amp;rsquo;d done in Excel, automating the calculating of the fees, but to go a step further and put result into the browser, as well.&lt;/p&gt;
+
+&lt;p&gt;It had a simple scripting language that allowed you to drive the mouse pointer, having it click around the desktop, or within a specific application. After learning the very basic scripting language and trying to repeat what I&amp;rsquo;d done in Excel, I found it not to be powerful enough to reliably enter the values directly into the browser. The scripting language and its ability to do calculations was too poor. I went back to using Excel.&lt;/p&gt;
+
+&lt;p&gt;The idea of automating the entire workflow was very attractive, and stuck with me. Copying and pasting things from Excel into Internet Explorer had its drawbacks, and was also not fast enough. My experience with the macro software showed me there was a better way.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;d been having conversations with a friend of mine for months, maybe years at that point, about getting into software development. The problem was I didn&amp;rsquo;t know where to start. I had bought a variety of software books on topics such as HTML/CSS, Java, and C, but couldn&amp;rsquo;t translate what they were teaching into something I could use. The issue then was that I didn&amp;rsquo;t have a problem to solve, or didn&amp;rsquo;t have the ability to identify problems that could be solved with software.&lt;/p&gt;
+
+&lt;p&gt;At my title insurance data entry job I now had a problem that I saw could be solved with software: calculate the fees and enter them into the browser as quickly and reliably as possible, with the least amount of intervention from me.&lt;/p&gt;
+
+&lt;p&gt;I began looking into learning VBA, with the idea that I could learn enough of it to get the calculations from Excel into IE6, which appeared to be possible. In searching for things related to &amp;ldquo;automating the web browser&amp;rdquo;, I came across a Ruby testing library called &lt;a href=&#34;https://watir.github.io&#34;&gt;WATIR&lt;/a&gt;. WATIR allows you to write  Ruby to drive a web browser. Once I discovered WATIR, I had both a problem to solve and the means to do it.&lt;/p&gt;
+
+&lt;p&gt;The rest, as they say, is history.&lt;/p&gt;
+
+&lt;p&gt;I taught myself enough Ruby to write a full replacement of the macro software, which I then used to completely automate my job. What used to take 13-15 minutes to do unreliably now took 10-12 seconds, reliably. The only thing that made it that slow and variable was the webpage load times.&lt;/p&gt;
+
+&lt;p&gt;After a year and a half at the title insurance company, I left to become a real programmer. I wasn&amp;rsquo;t learning fast enough at that point. Joining ThoughtWorks was a better way to learn.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used this idea, that there is always a better way, to become a better software developer. I continually push myself to write better code, to look at code that I&amp;rsquo;ve written in the past and re-write it as appropriate when I learn new things that expose deficiencies in previous code I&amp;rsquo;ve written. I am always learning, always looking for better ways. I take a pragmatic approach, however. There is a point at which there may be a better way, but the current implementation is &lt;em&gt;good enough&lt;/em&gt;. Part of becoming a better developer is being able to recognize that.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Using gRPC with Mutual TLS in Golang</title>
@@ -1351,44 +1390,6 @@ baz
 &lt;p&gt;&lt;code&gt;reset -p&lt;/code&gt; allows you to more easily get a grip on the changes you&amp;rsquo;ve made and the ones you&amp;rsquo;re about to make. It also makes much better use of Git, in that you can do even more interesting operations when in the resulting state, which I won&amp;rsquo;t go into now as to avoid information overload.&lt;/p&gt;
 
 &lt;p&gt;And there you have it.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>git exec</title>
-      <link>http://www.krishicks.com/post/exec/</link>
-      <pubDate>Fri, 06 Apr 2012 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.krishicks.com/post/exec/</guid>
-      <description>&lt;p&gt;(Update #1 below)&lt;/p&gt;
-
-&lt;p&gt;Say you&amp;rsquo;re going to do an interactive rebase where you&amp;rsquo;re going to be squashing commits or reordering them. During this process you may want Git to execute a command after applying certain items of the todo list. An example of this would be when you want to run &lt;code&gt;rake&lt;/code&gt; or similar to ensure a newly-squashed commit is still green.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;You can do this by adding a task to the todo list, &lt;code&gt;exec&lt;/code&gt;, followed by the command you&amp;rsquo;d like Git to run at that point in the rebase. If the command you specify should return a non-zero exit code, Git will pause the rebase and allow you to sort it out, in the same way that it pauses when a conflict arises while applying the todo list during any other rebase.&lt;/p&gt;
-
-&lt;p&gt;Here&amp;rsquo;s an example of the above situation, where two commits are going to be squashed, and I want Git to run &lt;code&gt;rake&lt;/code&gt; after it does the squash.&lt;/p&gt;
-
-&lt;p&gt;Pre-edits, this would look like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;pick dad8d12 Commit #1
-pick f613ac1 Commit #2
-pick 58822ee Commit #3
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Post-edits, this would look like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;pick dad8d12 Commit #1
-f f613ac1 Commit #2
-x rake
-pick 58822ee Commit #3
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;What happens here is Git will fixup Commit #2 into Commit #1, creating a new commit, then run &lt;code&gt;rake&lt;/code&gt;. If &lt;code&gt;rake&lt;/code&gt; returns a zero exit code, Git applies Commit #3 and completes the rebase. If &lt;code&gt;rake&lt;/code&gt; had returned a non-zero exit code, Git would have paused the rebase operation at that point, allowing any necessary changes to be made to the HEAD commit, which is the squashed #1/#2.&lt;/p&gt;
-
-&lt;p&gt;I typically do this separate from doing an initial rebase, where I rebased and made a change to Commit #1 and had to resolve conflicts throughout the rest of the commits. This way I can keep my head straight while doing the rebase, then fix anything I missed as a second operation.&lt;/p&gt;
-
-&lt;p&gt;Update #1: As of Git 1.7.12 you can pass &lt;code&gt;-x &amp;lt;cmd&amp;gt;&lt;/code&gt; to &lt;code&gt;git rebase -i&lt;/code&gt; to have Git run the exec command after every commit in the resulting history: &lt;code&gt;git rebase -i &amp;lt;treeish&amp;gt; -x &amp;lt;cmd&amp;gt;&lt;/code&gt;.&lt;/p&gt;</description>
     </item>
     
   </channel>
