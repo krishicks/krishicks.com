@@ -6,8 +6,41 @@
     <description>Recent content on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 05 Nov 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 18 Nov 2016 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://www.krishicks.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Notifications and Work</title>
+      <link>http://www.krishicks.com/post/notifications/</link>
+      <pubDate>Fri, 18 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/notifications/</guid>
+      <description>&lt;p&gt;Call me old-fashioned.&lt;/p&gt;
+
+&lt;p&gt;Before I started writing software I worked a variety of jobs. I bagged groceries, received calls at an answering service, stocked shelves at an electronics retailer, did data entry at a tool coating company, and took phone orders for office supplies, to name a few.&lt;/p&gt;
+
+&lt;p&gt;Each of these jobs had two things in common: if you were late it was notable, and when you were at work, you &lt;em&gt;worked&lt;/em&gt;. Being habitually late and taking personal calls at all hours of the day was looked down upon, and could lead to termination. If you wanted to take a call, you&amp;rsquo;d likely have to wait to do it on your break.&lt;/p&gt;
+
+&lt;p&gt;The jobs I held prior to writing software helped build my work ethic: I strive to always be early, and I come to work to &lt;em&gt;work&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;I have noticed in the past few years that this work ethic is not shared by many of my peers.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;Since not long after I began writing software full-time, I have done it in the form of &lt;a href=&#34;https://en.wikipedia.org/wiki/Pair_programming&#34;&gt;pair programming&lt;/a&gt;. Many people deride pair programming as purely a way to keep them off of Facebook and Reddit; a form of policing. While pairing does tend towards allowing for fewer distractions, that is only a side-effect, and it is not guaranteed.&lt;/p&gt;
+
+&lt;p&gt;I began pair programming because I wanted to become a better developer, and pairing with people who were more experienced than me would enable that. The fact that it allowed for fewer distractions was a benefit to me. As our society becomes more and more connected, and with the prevalence of smartphones and smartwatches, distractions have become more commonplace while pairing than in the past. The reason? Notifications.&lt;/p&gt;
+
+&lt;p&gt;While it is unlikely to find someone using Facebook on their computer while pairing, it is quite likely to find them receiving notifications from Facebook on their phone or watch, and even responding to them.&lt;/p&gt;
+
+&lt;p&gt;Receiving and responding to notifications is non-work, something that should wait for a break. When I pair with someone who receives and responds to notifications all day, my desire to pair with them is greatly reduced: in allowing notifications while pairing they have shown me that they feel their notifications are more important than the work we are doing together.&lt;/p&gt;
+
+&lt;p&gt;Pairing well requires a lot of conversation for both members of the pair to maintain a similar level of understanding. I have found myself talking about a problem or proposing a solution while my pair receives a notification, and then responds to it. While they respond to the notification I am effectively talking to myself, and then have to repeat myself when they finish. Sometimes people try to hide the fact that they are responding to a notification, which just makes it worse. Their attention is still elsewhere, but it is less obvious to me, which means I spend more time talking to myself.&lt;/p&gt;
+
+&lt;p&gt;I am not sure what to do about this sad state of affairs other than to continue bringing it up when I notice the person I am pairing with feels their notifications are more important than work.&lt;/p&gt;
+
+&lt;p&gt;I would prefer a workplace where &lt;em&gt;everyone&lt;/em&gt; has the same respect for the work that I do, where muting your phone&amp;rsquo;s notifications was the norm. That continues to be my dream.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>There is Always a Better Way</title>
@@ -1292,106 +1325,6 @@ fatal: Could not apply &#39;.git/ADD_EDIT.patch&#39;
 &lt;p&gt;In some cases Git will attempt to apply the patch and give you the option of retrying the add, re-opening the editor with the modified .git/ADD_EDIT.patch if you choose to retry. If you don&amp;rsquo;t choose to retry, Git will delete .git/ADD_EDIT.patch.&lt;/p&gt;
 
 &lt;p&gt;In addition to editing the patch wholesale via &lt;code&gt;git add -e&lt;/code&gt;, you can also choose &lt;em&gt;during &lt;code&gt;git add -p&lt;/code&gt;&lt;/em&gt; to edit a particular hunk manually by choosing &amp;lsquo;e&amp;rsquo; to edit it instead of simply adding it via &amp;lsquo;a&amp;rsquo;. You can also add a file glob to the end of &lt;code&gt;add -e&lt;/code&gt; as you would any other command to limit the size of the patch you&amp;rsquo;re about to edit.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>git reset -p</title>
-      <link>http://www.krishicks.com/post/git-reset-p/</link>
-      <pubDate>Wed, 16 May 2012 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.krishicks.com/post/git-reset-p/</guid>
-      <description>&lt;p&gt;I&amp;rsquo;ve been using &lt;code&gt;git reset -p&lt;/code&gt; a lot recently and I think it makes sense to clarify what it is that it does because when I first started using it I found it a little confusing.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;I sometimes realize that an earlier commit contains some change that I don&amp;rsquo;t want, so I want to remove it from the commit. This also works when not rebasing, so for simplicity I&amp;rsquo;ll use an example where the commit to be modified is already HEAD. Previously I would have done:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git reset HEAD~1
-git add -p
-git commit -C &amp;lt;treeish&amp;gt;
-git checkout .
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Or, in English:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;take off the HEAD commit, adding it to the working directory&lt;/li&gt;
-&lt;li&gt;add back the parts you want to keep&lt;/li&gt;
-&lt;li&gt;make a new commit using the message from what used to be the HEAD commit&lt;/li&gt;
-&lt;li&gt;throw away the changes you didn&amp;rsquo;t want&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;With git reset -p this process is a little different. Here&amp;rsquo;s what it looks like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git reset -p HEAD~1
-git commit --amend -C HEAD
-git checkout .
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Again, in English:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;apply to the index the negations of certain parts of the HEAD commit&lt;/li&gt;
-&lt;li&gt;amend the HEAD commit with the negations&lt;/li&gt;
-&lt;li&gt;throw away the changes you don&amp;rsquo;t want&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;How does this work?&lt;/p&gt;
-
-&lt;p&gt;In the second example you added &lt;code&gt;-p&lt;/code&gt; to the &lt;code&gt;reset&lt;/code&gt; command. This will reset only parts of the original commit, leaving it intact otherwise. That&amp;rsquo;s worth stating a different way: When you &lt;code&gt;reset -p&lt;/code&gt;, &lt;strong&gt;the original commit remains unchanged&lt;/strong&gt;. The only changes are made to your working directory and index.&lt;/p&gt;
-
-&lt;p&gt;The trick is to know what you&amp;rsquo;re doing when you&amp;rsquo;re saying &amp;ldquo;y&amp;rdquo; to a hunk git presents to you for resetting. Say you added a line to the commit originally:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;foo
-+ bar
-baz
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;But you want to get rid of it. When you git reset -p, git will ask you:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;foo
-- bar
-baz
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Apply this hunk to index [y,n,q,a,d,/,e,?]?&lt;/p&gt;
-
-&lt;p&gt;If you say &amp;lsquo;y&amp;rsquo;, Git will apply that hunk to the index. What you also get, however, is the original hunk (that added &amp;ldquo;bar&amp;rdquo;) in your working directory.&lt;/p&gt;
-
-&lt;p&gt;To summarize, your working directory will have:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;foo
-+ bar
-baz
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;While the index has:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;foo
-- bar
-baz
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;While the commit (unchanged, remember) has:
-    foo
-    + bar
-    baz&lt;/p&gt;
-
-&lt;p&gt;You now have a chance to tell git what you want to do, without having done anything to the original commit yet. In the example above, you wanted to get rid of the addition of the &amp;ldquo;bar&amp;rdquo; line. To do that, you want to take what&amp;rsquo;s in the index (the negation of the addition of &amp;ldquo;bar&amp;rdquo;) and apply it to the commit, making it go away:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git commit --amend -C HEAD
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then you still have in your working directory the adding of &amp;ldquo;bar&amp;rdquo;, which in this case you just want to get rid of, so:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git checkout .
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I like using &lt;code&gt;reset -p&lt;/code&gt; because it makes it really easy to make small changes to a commit, removing something I added or putting back something I deleted.&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;reset -p&lt;/code&gt; allows you to more easily get a grip on the changes you&amp;rsquo;ve made and the ones you&amp;rsquo;re about to make. It also makes much better use of Git, in that you can do even more interesting operations when in the resulting state, which I won&amp;rsquo;t go into now as to avoid information overload.&lt;/p&gt;
-
-&lt;p&gt;And there you have it.&lt;/p&gt;</description>
     </item>
     
   </channel>
