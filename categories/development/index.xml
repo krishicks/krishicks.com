@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>krishicks.com</title>
+    <title>Development on krishicks.com</title>
     <link>http://www.krishicks.com/categories/development/index.xml</link>
-    <description>Recent content on krishicks.com</description>
+    <description>Recent content in Development on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <atom:link href="http://www.krishicks.com/categories/development/index.xml" rel="self" type="application/rss+xml" />
@@ -77,17 +77,17 @@ certstrap.&lt;/p&gt;
 certPool := x509.NewCertPool()
 bs, err := ioutil.ReadFile(&amp;quot;out/My_Root_CA.crt&amp;quot;)
 if err != nil {
-  log.Fatalf(&amp;quot;failed to read client ca cert: %s&amp;quot;, err.Error())
+  log.Fatalf(&amp;quot;failed to read client ca cert: %s&amp;quot;, err)
 }
 
 ok := certPool.AppendCertsFromPEM(bs)
 if !ok {
-  log.Fatalf(&amp;quot;failed to append client certs: %s&amp;quot;, err.Error())
+  log.Fatal(&amp;quot;failed to append client certs&amp;quot;)
 }
 
 lis, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1&amp;quot;)
 if err != nil {
-  log.Fatalf(&amp;quot;failed to listen: %s&amp;quot;, err.Error())
+  log.Fatalf(&amp;quot;failed to listen: %s&amp;quot;, err)
 }
 
 tlsConfig := &amp;amp;tls.Config{
@@ -112,12 +112,12 @@ server := grpc.NewServer(serverOption)
 certPool := x509.NewCertPool()
 bs, err := ioutil.ReadFile(&amp;quot;out/My_Root_CA.crt&amp;quot;)
 if err != nil {
-  log.Fatalf(&amp;quot;failed to read ca cert: %s&amp;quot;, err.Error())
+  log.Fatalf(&amp;quot;failed to read ca cert: %s&amp;quot;, err)
 }
 
 ok := certPool.AppendCertsFromPEM(bs)
 if !ok {
-  log.Fatalf(&amp;quot;failed to append certs: %s&amp;quot;, err.Error())
+  log.Fatal(&amp;quot;failed to append certs&amp;quot;)
 }
 
 transportCreds := credentials.NewTLS(&amp;amp;tls.Config{
@@ -129,7 +129,7 @@ transportCreds := credentials.NewTLS(&amp;amp;tls.Config{
 dialOption := grpc.WithTransportCredentials(transportCreds)
 conn, err := grpc.Dial(&amp;quot;example.com&amp;quot;, dialOption)
 if err != nil {
-    log.Fatalf(&amp;quot;failed to dial server: %s&amp;quot;, err.Error())
+    log.Fatalf(&amp;quot;failed to dial server: %s&amp;quot;, err)
 }
 defer conn.Close()
 
