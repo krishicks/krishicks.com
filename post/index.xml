@@ -6,8 +6,148 @@
     <description>Recent content in Posts on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 18 Nov 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 07 Jan 2017 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://www.krishicks.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Thoughts on Pipeline Design with Concourse</title>
+      <link>http://www.krishicks.com/post/pipeline-design-with-concourse/</link>
+      <pubDate>Sat, 07 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/pipeline-design-with-concourse/</guid>
+      <description>&lt;p&gt;I recently made a CI/CD pipeline in &lt;a href=&#34;https://concourse.ci&#34;&gt;Concourse&lt;/a&gt; for deploying &lt;a href=&#34;https://github.com/pivotalservices/goulash/&#34;&gt;Goulash&lt;/a&gt;. The pipeline definition can be found &lt;a href=&#34;https://github.com/pivotalservices/goulash/blob/master/ci/pipeline.yml&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Figuring out how to split up the work your pipeline needs to do in jobs and tasks in Concourse is not always obvious. The way you define jobs and tasks will determine how repeatable steps in your pipeline are, how fast jobs run, and how easily you can debug tasks.&lt;/p&gt;
+
+&lt;p&gt;In this post I will describe how I came to the job and task definitions in the pipeline for Goulash.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;p&gt;First, what does the pipeline do?&lt;/p&gt;
+
+&lt;p&gt;On every push of code to the master branch, the pipeline automatically:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Installs the vendored dependencies for the code&lt;/li&gt;
+&lt;li&gt;Runs unit tests&lt;/li&gt;
+&lt;li&gt;Builds a release candidate binary&lt;/li&gt;
+&lt;li&gt;Bumps the release candidate version (1.0.1-rc.1 -&amp;gt; 1.0.1-rc.2)&lt;/li&gt;
+&lt;li&gt;Builds a tarball with the binary in it&lt;/li&gt;
+&lt;li&gt;Uploads the tarball to a release candidate Google Cloud Storage bucket&lt;/li&gt;
+&lt;li&gt;Deploys the binary in the tarball to a staging environment in Cloud Foundry&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When manually triggered, the pipeline:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Downloads the latest release candidate tarball&lt;/li&gt;
+&lt;li&gt;Unpacks the tarball&lt;/li&gt;
+&lt;li&gt;Finalizes the release candidate version (1.0.1-rc.2 -&amp;gt; 1.0.1)&lt;/li&gt;
+&lt;li&gt;Uploads the release candidate tarball to a final release GCS bucket&lt;/li&gt;
+&lt;li&gt;Creates a GitHub release with the final release tarball&lt;/li&gt;
+&lt;li&gt;Deploys the binary in the tarball to the production environment in Cloud Foundry&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Attributes which were important to me in developing this pipeline:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;I wanted the same exact bits to be used for running tests and building the binary.&lt;/li&gt;
+&lt;li&gt;I wanted the same exact binary to be deployed to both the staging and production environment.&lt;/li&gt;
+&lt;li&gt;I wanted to be able to redeploy the binary to staging or production on demand without having to re-run other parts of the pipeline.&lt;/li&gt;
+&lt;li&gt;I wanted it to be as fast as possible.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Additionally, from a pipeline maintenance standpoint:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;I wanted to be able to &lt;a href=&#34;http://concourse.ci/fly-execute.html&#34;&gt;execute&lt;/a&gt; tasks on the fly when necessary (for debugging, usually).&lt;/li&gt;
+&lt;li&gt;I wanted tasks to be generic where possible, so they could be shared by different jobs.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Below, I&amp;rsquo;ll expand a bit on some of these.&lt;/p&gt;
+
+&lt;h2 id=&#34;defining-jobs&#34;&gt;Defining jobs&lt;/h2&gt;
+
+&lt;p&gt;For this pipeline I diverged from how I&amp;rsquo;ve done things in the past with respect to running unit tests and building release artifacts.&lt;/p&gt;
+
+&lt;p&gt;In the past I would have made a job for running unit tests which does just that, with the thinking that the job should be focussed on doing one thing only. It shouldn&amp;rsquo;t also build the binary, upload it somewhere, etc.&lt;/p&gt;
+
+&lt;p&gt;With this pipeline I built the jobs thinking more holistically about what each job represents.&lt;/p&gt;
+
+&lt;p&gt;There is a job, &lt;code&gt;create-rc&lt;/code&gt;, which creates a release candidate. What does it mean to create a release candidate? It means:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;run the tests&lt;/li&gt;
+&lt;li&gt;create a binary&lt;/li&gt;
+&lt;li&gt;create a tarball with the binary in it&lt;/li&gt;
+&lt;li&gt;put the tarball somewhere&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This approach makes the pipeline more understandable from a higher level, as the tasks which are required to create a release candidate are contained within a single job. It also allows me to easily share exact bits between tasks. Sharing bits between jobs means putting them in a resource, which I feel is a bit heavy-handed. I don&amp;rsquo;t want to have to create additional resources &lt;em&gt;purely&lt;/em&gt; to share bits between jobs.&lt;/p&gt;
+
+&lt;h2 id=&#34;sharing-bits-between-tasks&#34;&gt;Sharing bits between tasks&lt;/h2&gt;
+
+&lt;p&gt;Concourse runs each task in a container. One job may have many tasks. Each task may define &lt;a href=&#34;http://concourse.ci/running-tasks.html#outputs&#34;&gt;outputs&lt;/a&gt; which downstream tasks in the same job may use.&lt;/p&gt;
+
+&lt;p&gt;My tasks that run unit tests and build the binary are independent, but share the same bits. To ensure the same bits are used, I defined three tasks:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;install-dependencies&lt;/li&gt;
+&lt;li&gt;unit&lt;/li&gt;
+&lt;li&gt;build&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The &lt;code&gt;install-dependencies&lt;/code&gt; &lt;a href=&#34;https://github.com/pivotalservices/goulash/blob/master/ci/install-dependencies.yml&#34;&gt;task&lt;/a&gt; defines an &lt;a href=&#34;http://concourse.ci/running-tasks.html#outputs&#34;&gt;output&lt;/a&gt;, &lt;code&gt;goulash-with-dependencies&lt;/code&gt;, that both &lt;code&gt;unit&lt;/code&gt; and &lt;code&gt;build&lt;/code&gt; get as copy-on-write volumes. This ensures they operate on the same bits, and cannot change the bits in such a way as to affect the other task.&lt;/p&gt;
+
+&lt;h2 id=&#34;making-it-fast&#34;&gt;Making it fast&lt;/h2&gt;
+
+&lt;p&gt;The reason &lt;code&gt;unit&lt;/code&gt; and &lt;code&gt;build&lt;/code&gt; are split into two tasks is for two reasons:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Running unit tests is not dependent on building the binary, nor is building the binary dependent on running unit tests&lt;/li&gt;
+&lt;li&gt;They can be run in &lt;a href=&#34;http://concourse.ci/aggregate-step.html&#34;&gt;aggregate&lt;/a&gt;, which makes the job faster&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Whenever I define a job I look at what tasks can be run in aggregate to make the job faster. Generally, the initial &lt;code&gt;get&lt;/code&gt; steps in a job can be run concurrently; they just set up resources for downstream tasks. There may be other tasks, like &lt;code&gt;unit&lt;/code&gt; and &lt;code&gt;build&lt;/code&gt; above, that also make sense to run concurrently.&lt;/p&gt;
+
+&lt;h2 id=&#34;making-tasks-generic-where-possible&#34;&gt;Making tasks generic where possible&lt;/h2&gt;
+
+&lt;p&gt;Wherever possible, I make generic tasks so I can re-use them.&lt;/p&gt;
+
+&lt;p&gt;My pipeline has a task, &lt;code&gt;unpack-release&lt;/code&gt;, which is shared by both &lt;code&gt;deploy-staging&lt;/code&gt; and &lt;code&gt;deploy-production&lt;/code&gt;. The task is simple: it takes a release tarball (which is specific to this pipeline) as an input and gives the unpacked result as an output named &lt;code&gt;unpacked-release&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In Concourse, when you &lt;code&gt;get&lt;/code&gt; a resource, the name of the resource is what is used as the directory the resource&amp;rsquo;s volume is mounted to in the task container. The following &lt;code&gt;get&lt;/code&gt; will result in a volume mounted as &lt;code&gt;goulash-rc&lt;/code&gt; in downstream task containers:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    - get: goulash-rc
+      ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can override this by using the &lt;a href=&#34;http://concourse.ci/get-step.html#resource&#34;&gt;resource&lt;/a&gt; attribute on the &lt;code&gt;get&lt;/code&gt; step. When you do this, the value passed to &lt;code&gt;get:&lt;/code&gt; is what is used as the directory to mount the resource specified by &lt;code&gt;resource:&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    - get: release
+      resource: goulash-rc
+      ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The generic task wants an input called &amp;ldquo;release&amp;rdquo;; it doesn&amp;rsquo;t need to know that the release is actually &amp;ldquo;goulash-rc&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;A later task in the same job knows about the outputs from &lt;code&gt;unpack-release&lt;/code&gt;, and uses that path:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  - put: goulash-staging
+    params:
+      manifest: goulash/manifests/staging.yml
+      path: unpacked-release
+      ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Additionally, to avoid duplicating the definition of the generic task in the pipeline YAML, the definition has been split into its &lt;a href=&#34;https://github.com/pivotalservices/goulash/blob/master/ci/unpack-release.yml&#34;&gt;own file&lt;/a&gt; by using the &lt;a href=&#34;http://concourse.ci/task-step.html#file&#34;&gt;file&lt;/a&gt; attribute on the task step.&lt;/p&gt;
+
+&lt;h2 id=&#34;running-tasks-on-the-fly&#34;&gt;Running tasks on the fly&lt;/h2&gt;
+
+&lt;p&gt;To &lt;a href=&#34;http://concourse.ci/fly-execute.html&#34;&gt;execute&lt;/a&gt; a task on the fly, you need to separate its definition from the declaration in the pipeline YAML.&lt;/p&gt;
+
+&lt;p&gt;You do this by specifying the &lt;a href=&#34;http://concourse.ci/task-step.html#file&#34;&gt;file&lt;/a&gt; attribute in the task declaration in the pipeline that points to a &lt;a href=&#34;http://concourse.ci/running-tasks.html#configuring-tasks&#34;&gt;task YAML&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Notifications and Work</title>
@@ -1259,72 +1399,6 @@ save and close the editor
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Where topicC is the newbase, topicA is the oldbase, and topicB is the reference for what HEAD of topicC will become.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>git add -e</title>
-      <link>http://www.krishicks.com/post/git-add-e/</link>
-      <pubDate>Mon, 21 May 2012 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.krishicks.com/post/git-add-e/</guid>
-      <description>&lt;p&gt;&lt;code&gt;git add -e&lt;/code&gt; is like &lt;code&gt;git add -p&lt;/code&gt;, except instead of adding things at the hunk level, you edit the entire patch at once.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;Or, in other words, whereas &lt;code&gt;git add -p&lt;/code&gt; will show you each hunk for every file and ask what you want to do for each of them, &lt;code&gt;git add -e&lt;/code&gt; will show you the entire patch and allow you to edit it at will. I used this trick to recently split apart one massive commit into 28 smaller, digestible ones.&lt;/p&gt;
-
-&lt;p&gt;Say you&amp;rsquo;ve replaced a line containing &amp;ldquo;baz&amp;rdquo; with one containing &amp;ldquo;bar&amp;rdquo;. When you &lt;code&gt;git add -e&lt;/code&gt;, you&amp;rsquo;ll be presented with a diff like so:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;foo
-- baz
-+ bar
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;From here you can decide, actually, you don&amp;rsquo;t want to delete baz, you just want to add bar. And you want to add it above baz.&lt;/p&gt;
-
-&lt;p&gt;From this spot you can just change the minus to a space, making that line context for the diff. Then you can move the line that adds bar above baz, with this result:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;foo
-+ bar
-baz
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;After saving and closing the editor you&amp;rsquo;ll be able to look at the result of your work in the index with &lt;code&gt;git diff --cached&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;foo
-+ bar
-baz
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And the line you made into context remains in your working directory, which you can see with &lt;code&gt;git diff&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;foo
-bar
--baz
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;But what if you end up modifying the diff in a way that makes it a patch that doesn&amp;rsquo;t apply? Git&amp;rsquo;s got you covered there.&lt;/p&gt;
-
-&lt;p&gt;Let&amp;rsquo;s say that when you moved bar above baz, after removing the minus from baz, you added an extra line on accident, making the patch invalid:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;foo
-
-+ bar
-baz
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;When you save and close the editor Git will tell you of the problem:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;error: patch failed: &amp;amp;lt;some_filename&amp;amp;gt;:1
-error: file.txt: patch does not apply
-fatal: Could not apply &#39;.git/ADD_EDIT.patch&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;In which case you&amp;rsquo;ll be able to attempt the &lt;code&gt;add -e&lt;/code&gt; again, as Git will not have made any changes to the working directory or index at this point.&lt;/p&gt;
-
-&lt;p&gt;In some cases Git will attempt to apply the patch and give you the option of retrying the add, re-opening the editor with the modified .git/ADD_EDIT.patch if you choose to retry. If you don&amp;rsquo;t choose to retry, Git will delete .git/ADD_EDIT.patch.&lt;/p&gt;
-
-&lt;p&gt;In addition to editing the patch wholesale via &lt;code&gt;git add -e&lt;/code&gt;, you can also choose &lt;em&gt;during &lt;code&gt;git add -p&lt;/code&gt;&lt;/em&gt; to edit a particular hunk manually by choosing &amp;lsquo;e&amp;rsquo; to edit it instead of simply adding it via &amp;lsquo;a&amp;rsquo;. You can also add a file glob to the end of &lt;code&gt;add -e&lt;/code&gt; as you would any other command to limit the size of the patch you&amp;rsquo;re about to edit.&lt;/p&gt;</description>
     </item>
     
   </channel>
