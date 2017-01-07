@@ -16,8 +16,8 @@ My resume is available on [GitHub](https://github.com/krishicks/resume).
 
 I wouldn't be the engineer I am today without the support from the following people (and many others):
   [Adam Milligan](https://www.twitter.com/adammilligan),
-  [Ali Aghareza](https://www.twitter.com/aghareza),
-  [Alisa Lamacki](https://www.linkedin.com/pub/alisa-lamacki/b/2a8/aa5),
+  Ali Aghareza,
+  Alisa Lamacki,
   [Brian Guthrie](https://www.twitter.com/bguthrie),
   [Grant Hutchins](https://www.twitter.com/nertzy),
   [John Hume](https://www.twitter.com/duelinmarkers),
@@ -25,7 +25,7 @@ I wouldn't be the engineer I am today without the support from the following peo
   [Josh Knowles](https://www.twitter.com/joshknowles),
   [Michael Schubert](https://www.twitter.com/schubertcx),
   [Paul Gross](https://www.twitter.com/pgr0ss),
-  [Rob Mee](http://www.pivotallabs.com/team/executives/),
+  [Rob Mee](https://pivotal.io/team/mee),
   [Sam Coward](https://www.twitter.com/samcoward),
   [Steve Salkin](https://www.twitter.com/stevesalkin),
   and
