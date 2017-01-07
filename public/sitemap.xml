@@ -2,11 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://www.krishicks.com/</loc>
-    <lastmod>2016-11-18T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://www.krishicks.com/post/notifications/</loc>
     <lastmod>2016-11-18T00:00:00+00:00</lastmod>
   </url>
@@ -93,6 +88,76 @@
   
   <url>
     <loc>http://www.krishicks.com/about/</loc>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/tags/clojure/</loc>
+    <lastmod>2013-02-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/categories/development/</loc>
+    <lastmod>2016-11-05T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/tags/git/</loc>
+    <lastmod>2015-05-16T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/categories/golang/</loc>
+    <lastmod>2016-11-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/categories/interviews/</loc>
+    <lastmod>2014-05-23T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/tags/ketosoy/</loc>
+    <lastmod>2015-05-18T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/tags/osx/</loc>
+    <lastmod>2013-02-02T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/post/</loc>
+    <lastmod>2016-11-18T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/categories/reviews/</loc>
+    <lastmod>2015-05-18T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.krishicks.com/</loc>
+    <lastmod>2016-11-18T00:00:00+00:00</lastmod>
+    <priority>0</priority>
   </url>
   
 </urlset>

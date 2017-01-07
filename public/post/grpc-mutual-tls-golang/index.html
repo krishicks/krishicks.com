@@ -62,7 +62,7 @@
       </li>
     </ul>
 
-    <p>Copyright &copy; 2016<br/>
+    <p>Copyright &copy; 2017<br/>
   </div>
 </div>
 
@@ -98,17 +98,17 @@ certstrap.</p>
 certPool := x509.NewCertPool()
 bs, err := ioutil.ReadFile(&quot;out/My_Root_CA.crt&quot;)
 if err != nil {
-  log.Fatalf(&quot;failed to read client ca cert: %s&quot;, err.Error())
+  log.Fatalf(&quot;failed to read client ca cert: %s&quot;, err)
 }
 
 ok := certPool.AppendCertsFromPEM(bs)
 if !ok {
-  log.Fatalf(&quot;failed to append client certs: %s&quot;, err.Error())
+  log.Fatal(&quot;failed to append client certs&quot;)
 }
 
 lis, err := net.Listen(&quot;tcp&quot;, &quot;127.0.0.1&quot;)
 if err != nil {
-  log.Fatalf(&quot;failed to listen: %s&quot;, err.Error())
+  log.Fatalf(&quot;failed to listen: %s&quot;, err)
 }
 
 tlsConfig := &amp;tls.Config{
@@ -133,12 +133,12 @@ server := grpc.NewServer(serverOption)
 certPool := x509.NewCertPool()
 bs, err := ioutil.ReadFile(&quot;out/My_Root_CA.crt&quot;)
 if err != nil {
-  log.Fatalf(&quot;failed to read ca cert: %s&quot;, err.Error())
+  log.Fatalf(&quot;failed to read ca cert: %s&quot;, err)
 }
 
 ok := certPool.AppendCertsFromPEM(bs)
 if !ok {
-  log.Fatalf(&quot;failed to append certs: %s&quot;, err.Error())
+  log.Fatal(&quot;failed to append certs&quot;)
 }
 
 transportCreds := credentials.NewTLS(&amp;tls.Config{
@@ -150,7 +150,7 @@ transportCreds := credentials.NewTLS(&amp;tls.Config{
 dialOption := grpc.WithTransportCredentials(transportCreds)
 conn, err := grpc.Dial(&quot;example.com&quot;, dialOption)
 if err != nil {
-    log.Fatalf(&quot;failed to dial server: %s&quot;, err.Error())
+    log.Fatalf(&quot;failed to dial server: %s&quot;, err)
 }
 defer conn.Close()
 
