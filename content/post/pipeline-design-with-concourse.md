@@ -37,7 +37,7 @@ When manually triggered, the pipeline:
 Attributes which were important to me in developing this pipeline:
 
 * I wanted the same exact bits to be used for running tests and building the binary.
-* I wanted the same exact binary to be deployed to both the staging and production environment.
+* I wanted the same exact binary to be deployed to both the staging and production environment. *(N.B. The binary is exactly the same in this case because it has no internal versioning)*
 * I wanted to be able to redeploy the binary to staging or production on demand without having to re-run other parts of the pipeline.
 * I wanted it to be as fast as possible.
 
@@ -119,6 +119,8 @@ A later task in the same job knows about the outputs from `unpack-release`, and 
       path: unpacked-release
       ...
  ```
+
+*N.B. You can also use [input_mapping](https://concourse.ci/task-step.html#input_mapping) to achieve a similar result. `input_mapping` differs in that in renames the resources for only a specific task rather than for all downstream tasks.*
  
 Additionally, to avoid duplicating the definition of the generic task in the pipeline YAML, the definition has been split into its [own file](https://github.com/pivotalservices/goulash/blob/master/ci/unpack-release.yml) by using the [file](http://concourse.ci/task-step.html#file) attribute on the task step.
 
