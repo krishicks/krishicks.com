@@ -72,7 +72,9 @@
     <h1>Thoughts on Pipeline Design with Concourse</h1>
     <span class="post-date">Jan 7, 2017 &middot; 5 minute read
     </span>
-    <p>I recently made a CI/CD pipeline in <a href="https://concourse.ci">Concourse</a> for deploying <a href="https://github.com/pivotalservices/goulash/">Goulash</a>. The pipeline definition can be found <a href="https://github.com/pivotalservices/goulash/blob/master/ci/pipeline.yml">here</a>.</p>
+    <p><img src="/goulash-pipeline.png" alt="Goulash Pipeline" title="Goulash Pipeline in Concourse" /></p>
+
+<p>I recently made a CI/CD pipeline in <a href="https://concourse.ci">Concourse</a> for deploying <a href="https://github.com/pivotalservices/goulash/">Goulash</a>. The pipeline definition can be found <a href="https://github.com/pivotalservices/goulash/blob/master/ci/pipeline.yml">here</a>.</p>
 
 <p>Figuring out how to split up the work your pipeline needs to do in jobs and tasks in Concourse is not always obvious. The way you define jobs and tasks will determine how repeatable steps in your pipeline are, how fast jobs run, and how easily you can debug tasks.</p>
 
