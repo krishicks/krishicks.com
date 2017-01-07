@@ -54,7 +54,7 @@
 
 &lt;ul&gt;
 &lt;li&gt;I wanted the same exact bits to be used for running tests and building the binary.&lt;/li&gt;
-&lt;li&gt;I wanted the same exact binary to be deployed to both the staging and production environment.&lt;/li&gt;
+&lt;li&gt;I wanted the same exact binary to be deployed to both the staging and production environment. &lt;em&gt;(N.B. The binary is exactly the same in this case because it has no internal versioning)&lt;/em&gt;&lt;/li&gt;
 &lt;li&gt;I wanted to be able to redeploy the binary to staging or production on demand without having to re-run other parts of the pipeline.&lt;/li&gt;
 &lt;li&gt;I wanted it to be as fast as possible.&lt;/li&gt;
 &lt;/ul&gt;
@@ -141,6 +141,8 @@
       path: unpacked-release
       ...
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;em&gt;N.B. You can also use &lt;a href=&#34;https://concourse.ci/task-step.html#input_mapping&#34;&gt;input_mapping&lt;/a&gt; to achieve a similar result. &lt;code&gt;input_mapping&lt;/code&gt; differs in that in renames the resources for only a specific task rather than for all downstream tasks.&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;Additionally, to avoid duplicating the definition of the generic task in the pipeline YAML, the definition has been split into its &lt;a href=&#34;https://github.com/pivotalservices/goulash/blob/master/ci/unpack-release.yml&#34;&gt;own file&lt;/a&gt; by using the &lt;a href=&#34;http://concourse.ci/task-step.html#file&#34;&gt;file&lt;/a&gt; attribute on the task step.&lt;/p&gt;
 

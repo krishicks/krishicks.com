@@ -111,7 +111,7 @@
 
 <ul>
 <li>I wanted the same exact bits to be used for running tests and building the binary.</li>
-<li>I wanted the same exact binary to be deployed to both the staging and production environment.</li>
+<li>I wanted the same exact binary to be deployed to both the staging and production environment. <em>(N.B. The binary is exactly the same in this case because it has no internal versioning)</em></li>
 <li>I wanted to be able to redeploy the binary to staging or production on demand without having to re-run other parts of the pipeline.</li>
 <li>I wanted it to be as fast as possible.</li>
 </ul>
@@ -198,6 +198,8 @@
       path: unpacked-release
       ...
 </code></pre>
+
+<p><em>N.B. You can also use <a href="https://concourse.ci/task-step.html#input_mapping">input_mapping</a> to achieve a similar result. <code>input_mapping</code> differs in that in renames the resources for only a specific task rather than for all downstream tasks.</em></p>
 
 <p>Additionally, to avoid duplicating the definition of the generic task in the pipeline YAML, the definition has been split into its <a href="https://github.com/pivotalservices/goulash/blob/master/ci/unpack-release.yml">own file</a> by using the <a href="http://concourse.ci/task-step.html#file">file</a> attribute on the task step.</p>
 
