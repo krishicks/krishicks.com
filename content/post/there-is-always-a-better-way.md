@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "There is Always a Better Way"
 date: "2016-11-05"
 categories:

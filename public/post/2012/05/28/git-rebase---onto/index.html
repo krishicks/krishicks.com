@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>git rebase --onto | krishicks.com</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/categories">Categories</a></li>
+      
+      <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">git rebase --onto</span></h1>
+
+<h2 class="date">2012/05/28</h2>
+</div>
+
+<main>
+<p>Have you ever dug into the <code>git rebase</code> documentation and noticed there&rsquo;s a three-argument form of it?</p>
+
+<p></p>
+
+<p>First, let&rsquo;s look at the two-argument form, and build up to the three-argument form.</p>
+
+<h2 id="the-two-argument-form-of-git-rebase-onto">The two-argument form of git rebase &ndash;onto</h2>
+
+<p>Say there&rsquo;s a commit C made on master that made a change to a configuration parameter that, it turns out, wasn&rsquo;t actually necessary, so that commit needs to go. For the purposes of this demonstration, commits D and E don&rsquo;t rely upon the changes made in C. &#40;If D or E did rely on C, you&rsquo;d end up with a conflict to resolve, which you&rsquo;d be able to do at that point.&#41;</p>
+
+<pre><code>A--B--C--D--E master
+</code></pre>
+
+<p>One way to get rid of the offending commit would be to do an interactive rebase, deleting the line that has commit C on it:</p>
+
+<pre><code>git rebase -i C~1
+delete the line containing commit C
+save and close the editor
+</code></pre>
+
+<p>A quicker way is to use the two-argument <code>git rebase --onto</code>, as going interactive just to delete a commit &#40;or commits&#41; is a little overkill, and considerably slower to do.</p>
+
+<p><code>git rebase --onto</code> takes a new base commit &#40;which the manpage for git-rebase calls newbase&#41; and an old base commit &#40;oldbase&#41; to use for the rebase operation.</p>
+
+<p>So, what we want to do is tell Git to make commit B the newbase of commit D, making C go away. This looks like:</p>
+
+<pre><code>git rebase --onto B C
+</code></pre>
+
+<p>But usually I like to talk about the commits I care about rather than the ones I don&rsquo;t &#40;in this case, I care about B and D, but not C&#41;, so instead of the previous command I use a backreference from D:</p>
+
+<pre><code>git rebase --onto B D~1
+</code></pre>
+
+<p>This means that everything in the range from B &#40;non-inclusive&#41; to D~1 &#40;inclusive&#41; <em>will be removed</em>.</p>
+
+<p><code>git rebase --onto</code> allows you to, in a non-interactive way, change the base of a commit, or <em>rebase</em> it. If you think about the commits as each having a <strong>base</strong>, or <strong>parent</strong> commit, you can see how you might be able to change the base of any commit to be another commit. In doing so, you remove everything that used to be in between the oldbase and the newbase.</p>
+
+<p>It&rsquo;s also good to know that it works exactly the same way as if you were to have done an interactive rebase and deleted the commit. Should a conflict arise while performing the rebase, Git will still pause and allow you to resolve the conflict before continuing.</p>
+
+<p>I&rsquo;ve also used the two-argument form when fixing a mistake: I had a branch from master, topicA, with some commits that I wanted to change via interactive rebase:</p>
+
+<pre><code>A--B master
+    \
+     C--D--E topicA
+</code></pre>
+
+<p>But when I rebased, I went back too far, and rewrote a commit that I had gotten from master:</p>
+
+<pre><code>A--B' master
+    \
+     C'--D'--E' topicA
+</code></pre>
+
+<p>&#40;Note that there was no change to the master branch here, just to topicA.&#41;</p>
+
+<p>What did I do to fix this situation? Well, I can&rsquo;t fix this via interactive rebase. I can, however, fix it via <code>git rebase --onto</code>:</p>
+
+<pre><code>git rebase --onto master C'~1
+</code></pre>
+
+<p>Or, in other words: Replace the oldbase C&rsquo;~1 with the newbase, master &#40;which is HEAD of master, or B&#41;.</p>
+
+<p>It&rsquo;s a handy undo mechanism.</p>
+
+<p>If you forget to give the two-argument form of &ndash;onto its second argument, such as:</p>
+
+<pre><code>git rebase --onto master
+</code></pre>
+
+<p>..it will be the same as doing:</p>
+
+<pre><code>git reset --hard master
+</code></pre>
+
+<p><strong>You probably don&rsquo;t want this.</strong></p>
+
+<p>Why is this? The second argument &#40;the oldbase&#41; is required if you want a range of commits to be applied on top of master. Without it, you haven&rsquo;t supplied a range of commits to be applied on top of master, so HEAD of the branch gets reset to the HEAD of master.</p>
+
+<p>What that means is any commits you have on your branch will be removed from the branch, and the branch will resemble master at that point. These commits are still in Git until garbage collection happens, accessible via the reflog &#40;<code>git reflog</code>&#41;.</p>
+
+<h1 id="part-two">Part Two:</h1>
+
+<h2 id="the-three-argument-form-of-git-rebase-onto">The three-argument form of git rebase &ndash;onto</h2>
+
+<p>Say there is a branch &lsquo;topicA&rsquo; that diverges from master at some point:</p>
+
+<pre><code>A--B--C--D--E master
+    \
+     F--G--H topicA
+</code></pre>
+
+<p>Let&rsquo;s also say that someone else has branched from topicA to create topicB, and added more commits:</p>
+
+<pre><code>A--B--C--D--E master
+    \
+     F--G--H topicA
+            \
+             I--J--K--L--M topicB
+</code></pre>
+
+<p>This is an example of a real-world case I came across, where topicA had only a couple very large commits that were hard to digest and could have been split into many smaller commits. topicB was created as a continuation of the work done on topicA.</p>
+
+<p>I checked out my own local copy of topicA, and through much interactive rebasing and prodigious use of <code>git add -e</code>, I was able to split topicA into smaller commits, making topicC:</p>
+
+<pre><code>A--B--C--D--E master
+   |         \
+   |          F--G--H topicA
+   |                 \
+   |                  I--J--K--L--M topicB
+   |
+   N--O--P--Q--R--S--T--U--V--W topicC
+</code></pre>
+
+<p>I talked with the person that made topicA and we agreed that my branch topicC should take the place of topicA. But what to do about the work that was done on topicB?</p>
+
+<p>The operation that we wanted to do is: make topicC the new base of topicB, cutting it at the point topicB diverged from topicA, which looks like:</p>
+
+<pre><code>A--B--C--D--E master
+   |         \
+   |          F--G--H topicA
+   |                 \
+   |                  I--J--K--L--M topicB
+   |
+   N--O--P--Q--R--S--T--U--V--W--I'--J'--K'--L'--M' topicC
+</code></pre>
+
+<p>The five commits from topicB &#40;I through M&#41;, get played on top of topicC, starting from where topicB diverged from topicA, to create I&rsquo;, J&rsquo;, K&rsquo;, L&rsquo;, and M&rsquo;.</p>
+
+<p>The command to do this is:</p>
+
+<pre><code>git rebase --onto topicC topicA topicB
+</code></pre>
+
+<p>Where topicC is the newbase, topicA is the oldbase, and topicB is the reference for what HEAD of topicC will become.</p>
+</main>
+
+  <footer>
+  
+  
+  <hr/>
+  &copy; <a href="https://keybase.io/krishicks">Kris Hicks</a> 2017 | <a href="https://www.github.com/krishicks">github</a> | <a href="https://www.twitter.com/krishicks">twitter</a> | <a href="http://www.flickr.com/krishicks">flickr</a>
+  
+  </footer>
+  </body>
+</html>
+

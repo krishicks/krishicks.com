@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "KetoSoy"
 date: "2015-05-18"
 tags:

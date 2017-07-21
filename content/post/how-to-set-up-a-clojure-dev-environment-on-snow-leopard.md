@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "How to set up a Clojure dev environment on Snow Leopard"
 date: "2013-02-02"
 tags:

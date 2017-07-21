@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>rerere | krishicks.com</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/categories">Categories</a></li>
+      
+      <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">rerere</span></h1>
+
+<h2 class="date">2012/06/13</h2>
+</div>
+
+<main>
+<p>There have been times where I performed a rebase and had to resolve conflicts as part of the rebase, and then decided to abort the rebase for one reason or another.</p>
+
+<p>Without <code>rerere</code> the next time I went to perform the rebase I&rsquo;d end up having to resolve at least some of the same conflicts I had previously, which is annoying.</p>
+
+<p>This is where <code>rerere</code> comes in.</p>
+
+<p></p>
+
+<p>&ldquo;rerere&rdquo; stands for <strong>re</strong>use <strong>re</strong>corded <strong>re</strong>solution.</p>
+
+<p>What <code>rerere</code> does is save the resolution of a conflict so that it can be re-applied later if it sees the same conflict again. When Git sees the conflict which it already has a resolution recorded for, it will apply the resolution automatically for you, and give you the opportunity to accept the resolution as applied, or change it.</p>
+
+<p>Turning it on can be done two ways: set it as a configuration parameter using <code>git config rerere.enabled true</code>, or use it only when you think you might need it with <code>git rerere</code> both before and after the resolution of a conflict.</p>
+
+<p>*A more verbose explanation of <code>rerere</code> exists in Scott Chacon&rsquo;s <strong>Pro Git</strong>*.</p>
+</main>
+
+  <footer>
+  
+  
+  <hr/>
+  &copy; <a href="https://keybase.io/krishicks">Kris Hicks</a> 2017 | <a href="https://www.github.com/krishicks">github</a> | <a href="https://www.twitter.com/krishicks">twitter</a> | <a href="http://www.flickr.com/krishicks">flickr</a>
+  
+  </footer>
+  </body>
+</html>
+

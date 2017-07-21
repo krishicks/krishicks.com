@@ -1,23 +1,31 @@
 baseurl = "http://www.krishicks.com"
 languageCode = "en-us"
 title = "krishicks.com"
-theme = "hyde-x"
-
-[author]
-  name = "Kris Hicks"
+theme = "hugo-xmin"
 
 [params]
-github = "https://www.github.com/krishicks"
-twitter = "https://www.twitter.com/krishicks"
-googleAnalytics = "UA-38009560-1"
-flickr = "http://www.flickr.com/krishicks"
-gravatarHash = "fce785f273a2a0cf8a3a921e4d01d048"
-tagline = "Software Engineer"
+  footer = "&copy; [Kris Hicks](https://keybase.io/krishicks) 2017 | [github](https://www.github.com/krishicks) | [twitter](https://www.twitter.com/krishicks) | [flickr](http://www.flickr.com/krishicks)"
+
+[permalinks]
+  post = "/post/:year/:month/:day/:slug/"
+  note = "/note/:year/:month/:day/:slug/"
 
 [[menu.main]]
-url = "/about"
-name = "About"
+  url = "/"
+  name = "Home"
+  weight = 1
 
 [[menu.main]]
-url = "https://github.com/krishicks/resume"
-name = "Resume"
+  url = "/about"
+  name = "About"
+  weight = 2
+
+[[menu.main]]
+  url = "/categories"
+  name = "Categories"
+  weight = 3
+
+[[menu.main]]
+  url = "/tags"
+  name = "Tags"
+  weight = 4

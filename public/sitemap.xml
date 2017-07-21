@@ -1,93 +1,94 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://www.krishicks.com/post/pipeline-design-with-concourse/</loc>
+    <loc>http://www.krishicks.com/post/2017/01/07/thoughts-on-pipeline-design-with-concourse/</loc>
     <lastmod>2017-01-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/notifications/</loc>
+    <loc>http://www.krishicks.com/post/2016/11/18/notifications-and-work/</loc>
     <lastmod>2016-11-18T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/there-is-always-a-better-way/</loc>
+    <loc>http://www.krishicks.com/post/2016/11/05/there-is-always-a-better-way/</loc>
     <lastmod>2016-11-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/grpc-mutual-tls-golang/</loc>
+    <loc>http://www.krishicks.com/post/2016/11/01/using-grpc-with-mutual-tls-in-golang/</loc>
     <lastmod>2016-11-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/forza-6/</loc>
+    <loc>http://www.krishicks.com/post/2015/09/10/notes-on-forza-6/</loc>
     <lastmod>2015-09-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/ketosoy/</loc>
+    <loc>http://www.krishicks.com/post/2015/05/18/ketosoy/</loc>
     <lastmod>2015-05-18T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/subtree-gh-pages/</loc>
+    <loc>http://www.krishicks.com/post/2015/05/16/using-git-subtree-with-gh-pages/</loc>
     <lastmod>2015-05-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/phone-interviews/</loc>
+    <loc>http://www.krishicks.com/post/2014/05/23/phone-interviews-are-useless/</loc>
     <lastmod>2014-05-23T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/on-consulting/</loc>
+    <loc>http://www.krishicks.com/post/2013/03/17/on-consulting/</loc>
     <lastmod>2013-03-17T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</loc>
+    <loc>http://www.krishicks.com/post/2013/02/02/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</loc>
     <lastmod>2013-02-02T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/rewinding-git-pull/</loc>
+    <loc>http://www.krishicks.com/post/2012/07/09/rewinding-git-pull/</loc>
     <lastmod>2012-07-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/quick-tips/</loc>
+    <loc>http://www.krishicks.com/post/2012/07/03/quick-tips/</loc>
     <lastmod>2012-07-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/rewinding-git-commit-amend/</loc>
+    <loc>http://www.krishicks.com/post/2012/06/25/rewinding-git-commit---amend/</loc>
     <lastmod>2012-06-25T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/rerere/</loc>
+    <loc>http://www.krishicks.com/post/2012/06/13/rerere/</loc>
     <lastmod>2012-06-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/git-rebase-onto/</loc>
+    <loc>http://www.krishicks.com/post/2012/05/28/git-rebase---onto/</loc>
     <lastmod>2012-05-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/git-add-e/</loc>
+    <loc>http://www.krishicks.com/post/2012/05/21/git-add--e/</loc>
     <lastmod>2012-05-21T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/git-reset-p/</loc>
+    <loc>http://www.krishicks.com/post/2012/05/16/git-reset--p/</loc>
     <lastmod>2012-05-16T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.krishicks.com/post/exec/</loc>
+    <loc>http://www.krishicks.com/post/2012/04/06/git-exec/</loc>
     <lastmod>2012-04-06T00:00:00+00:00</lastmod>
   </url>
   
@@ -156,6 +157,7 @@
   
   <url>
     <loc>http://www.krishicks.com/tags/</loc>
+    <lastmod>2013-02-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

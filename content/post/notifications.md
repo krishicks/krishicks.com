@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "Notifications and Work"
 date: "2016-11-18"
 ---

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How to set up a Clojure dev environment on Snow Leopard | krishicks.com</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/categories">Categories</a></li>
+      
+      <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">How to set up a Clojure dev environment on Snow Leopard</span></h1>
+
+<h2 class="date">2013/02/02</h2>
+</div>
+
+<main>
+<h3 id="homebrew-package-manager">Homebrew (package manager)</h3>
+
+<pre><code>$ ruby -e &quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&quot;
+</code></pre>
+
+<p>More information on Homebrew can be found on the <a href="http://mxcl.github.com/homebrew/" title="Homebrew home page">Homebrew home page</a></p>
+
+<p></p>
+
+<h3 id="emacs-24-editor">Emacs 24 (editor)</h3>
+
+<pre><code>$ brew install emacs --cocoa --use-git-head --HEAD # this takes a while
+</code></pre>
+
+<h3 id="emacs-prelude-enhanced-emacs-24-configuration">Emacs Prelude (enhanced Emacs 24 configuration)</h3>
+
+<pre><code>$ git clone git://github.com/bbatsov/prelude.git /path/to/prelude
+$ ln -s /path/to/prelude ~/.emacs.d
+</code></pre>
+
+<p>More information on Prelude can be found on the <a href="http://batsov.com/prelude/" title="Prelude home page">Prelude home page</a>.</p>
+
+<h3 id="paredit-emacs-minor-mode-for-editing-parentheses">ParEdit (emacs minor mode for editing parentheses)</h3>
+
+<pre><code>$ emacs
+M-x package-install [RET] paredit [RET]
+</code></pre>
+
+<p>Add to ~/.emacs.d/init.el:</p>
+
+<pre><code>(add-hook 'nrepl-mode-hook 'paredit-mode)
+</code></pre>
+
+<p>See the EmacsWiki: <a href="http://emacswiki.org/emacs/ParEdit" title="ParEdit">ParEdit</a> and <a href="http://emacswiki.org/emacs/PareditCheatsheet" title="ParEdit Cheatsheet">ParEdit Cheatsheet</a>.</p>
+
+<h3 id="clojure">Clojure</h3>
+
+<pre><code>$ git clone https://github.com/clojure/clojure.git /path/to/clojure
+$ cd /path/to/clojure
+$ ./antsetup.sh
+$ ant
+$ mkdir ~/.clojure
+$ ln -s /path/to/clojure/clojure.jar ~/.clojure/clojure.jar
+</code></pre>
+
+<h3 id="leiningen-clojure-automation-tool">Leiningen (Clojure automation tool)</h3>
+
+<pre><code>$ wget -O /usr/local/bin/lein https://raw.github.com/technomancy/leiningen/preview/bin/lein
+$ chmod 755 /usr/local/bin/lein
+</code></pre>
+
+<p>More information on Leiningen can be found on the <a href="http://leiningen.org/" title="Leiningen home page">Leiningen home page</a>.</p>
+
+<hr />
+
+<p>Finally:</p>
+
+<pre><code>$ emacs
+M-x nrepl-jack-in
+</code></pre>
+</main>
+
+  <footer>
+  
+  
+  <hr/>
+  &copy; <a href="https://keybase.io/krishicks">Kris Hicks</a> 2017 | <a href="https://www.github.com/krishicks">github</a> | <a href="https://www.twitter.com/krishicks">twitter</a> | <a href="http://www.flickr.com/krishicks">flickr</a>
+  
+  </footer>
+  </body>
+</html>
+

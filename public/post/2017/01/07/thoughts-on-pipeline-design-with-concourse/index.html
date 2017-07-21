@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thoughts on Pipeline Design with Concourse | krishicks.com</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/categories">Categories</a></li>
+      
+      <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Thoughts on Pipeline Design with Concourse</span></h1>
+
+<h2 class="date">2017/01/07</h2>
+</div>
+
+<main>
+<p><img src="/goulash-pipeline.png" alt="Goulash Pipeline" title="Goulash Pipeline in Concourse" /></p>
+
+<p>I recently made a CI/CD pipeline in <a href="https://concourse.ci">Concourse</a> for deploying <a href="https://github.com/pivotalservices/goulash/">Goulash</a>. The pipeline definition can be found <a href="https://github.com/pivotalservices/goulash/blob/master/ci/pipeline.yml">here</a>.</p>
+
+<p>Figuring out how to split up the work your pipeline needs to do in jobs and tasks in Concourse is not always obvious. The way you define jobs and tasks will determine how repeatable steps in your pipeline are, how fast jobs run, and how easily you can debug tasks.</p>
+
+<p>In this post I will describe how I came to the job and task definitions in the pipeline for Goulash.</p>
+
+<p></p>
+
+<p>First, what does the pipeline do?</p>
+
+<p>On every push of code to the master branch, the pipeline automatically:</p>
+
+<ul>
+<li>Installs the vendored dependencies for the code</li>
+<li>Runs unit tests</li>
+<li>Builds a release candidate binary</li>
+<li>Bumps the release candidate version (1.0.1-rc.1 -&gt; 1.0.1-rc.2)</li>
+<li>Builds a tarball with the binary in it</li>
+<li>Uploads the tarball to a release candidate Google Cloud Storage bucket</li>
+<li>Deploys the binary in the tarball to a staging environment in Cloud Foundry</li>
+</ul>
+
+<p>When manually triggered, the pipeline:</p>
+
+<ul>
+<li>Downloads the latest release candidate tarball</li>
+<li>Unpacks the tarball</li>
+<li>Finalizes the release candidate version (1.0.1-rc.2 -&gt; 1.0.1)</li>
+<li>Uploads the release candidate tarball to a final release GCS bucket</li>
+<li>Creates a GitHub release with the final release tarball</li>
+<li>Deploys the binary in the tarball to the production environment in Cloud Foundry</li>
+</ul>
+
+<p>Attributes which were important to me in developing this pipeline:</p>
+
+<ul>
+<li>I wanted the same exact bits to be used for running tests and building the binary.</li>
+<li>I wanted the same exact binary to be deployed to both the staging and production environment. <em>(N.B. The binary is exactly the same in this case because it has no internal versioning)</em></li>
+<li>I wanted to be able to redeploy the binary to staging or production on demand without having to re-run other parts of the pipeline.</li>
+<li>I wanted it to be as fast as possible.</li>
+</ul>
+
+<p>Additionally, from a pipeline maintenance standpoint:</p>
+
+<ul>
+<li>I wanted to be able to <a href="http://concourse.ci/fly-execute.html">execute</a> tasks on the fly when necessary (for debugging, usually).</li>
+<li>I wanted tasks to be generic where possible, so they could be shared by different jobs.</li>
+</ul>
+
+<p>Below, I&rsquo;ll expand a bit on some of these.</p>
+
+<h2 id="defining-jobs">Defining jobs</h2>
+
+<p>For this pipeline I diverged from how I&rsquo;ve done things in the past with respect to running unit tests and building release artifacts.</p>
+
+<p>In the past I would have made a job for running unit tests which does just that, with the thinking that the job should be focussed on doing one thing only. It shouldn&rsquo;t also build the binary, upload it somewhere, etc.</p>
+
+<p>With this pipeline I built the jobs thinking more holistically about what each job represents.</p>
+
+<p>There is a job, <code>create-rc</code>, which creates a release candidate. What does it mean to create a release candidate? It means:</p>
+
+<ol>
+<li>run the tests</li>
+<li>create a binary</li>
+<li>create a tarball with the binary in it</li>
+<li>put the tarball somewhere</li>
+</ol>
+
+<p>This approach makes the pipeline more understandable from a higher level, as the tasks which are required to create a release candidate are contained within a single job. It also allows me to easily share exact bits between tasks. Sharing bits between jobs means putting them in a resource, which I feel is a bit heavy-handed. I don&rsquo;t want to have to create additional resources <em>purely</em> to share bits between jobs.</p>
+
+<h2 id="sharing-bits-between-tasks">Sharing bits between tasks</h2>
+
+<p>Concourse runs each task in a container. One job may have many tasks. Each task may define <a href="http://concourse.ci/running-tasks.html#outputs">outputs</a> which downstream tasks in the same job may use.</p>
+
+<p>My tasks that run unit tests and build the binary are independent, but share the same bits. To ensure the same bits are used, I defined three tasks:</p>
+
+<ol>
+<li>install-dependencies</li>
+<li>unit</li>
+<li>build</li>
+</ol>
+
+<p>The <code>install-dependencies</code> <a href="https://github.com/pivotalservices/goulash/blob/master/ci/install-dependencies.yml">task</a> defines an <a href="http://concourse.ci/running-tasks.html#outputs">output</a>, <code>goulash-with-dependencies</code>, that both <code>unit</code> and <code>build</code> get as copy-on-write volumes. This ensures they operate on the same bits, and cannot change the bits in such a way as to affect the other task.</p>
+
+<h2 id="making-it-fast">Making it fast</h2>
+
+<p>The reason <code>unit</code> and <code>build</code> are split into two tasks is for two reasons:</p>
+
+<ol>
+<li>Running unit tests is not dependent on building the binary, nor is building the binary dependent on running unit tests</li>
+<li>They can be run in <a href="http://concourse.ci/aggregate-step.html">aggregate</a>, which makes the job faster</li>
+</ol>
+
+<p>Whenever I define a job I look at what tasks can be run in aggregate to make the job faster. Generally, the initial <code>get</code> steps in a job can be run concurrently; they just set up resources for downstream tasks. There may be other tasks, like <code>unit</code> and <code>build</code> above, that also make sense to run concurrently.</p>
+
+<h2 id="making-tasks-generic-where-possible">Making tasks generic where possible</h2>
+
+<p>Wherever possible, I make generic tasks so I can re-use them.</p>
+
+<p>My pipeline has a task, <code>unpack-release</code>, which is shared by both <code>deploy-staging</code> and <code>deploy-production</code>. The task is simple: it takes a release tarball (which is specific to this pipeline) as an input and gives the unpacked result as an output named <code>unpacked-release</code>.</p>
+
+<p>In Concourse, when you <code>get</code> a resource, the name of the resource is what is used as the directory the resource&rsquo;s volume is mounted to in the task container. The following <code>get</code> will result in a volume mounted as <code>goulash-rc</code> in downstream task containers:</p>
+
+<pre><code>    - get: goulash-rc
+      ...
+</code></pre>
+
+<p>You can override this by using the <a href="http://concourse.ci/get-step.html#resource">resource</a> attribute on the <code>get</code> step. When you do this, the value passed to <code>get:</code> is what is used as the directory to mount the resource specified by <code>resource:</code>.</p>
+
+<pre><code>    - get: release
+      resource: goulash-rc
+      ...
+</code></pre>
+
+<p>The generic task wants an input called &ldquo;release&rdquo;; it doesn&rsquo;t need to know that the release is actually &ldquo;goulash-rc&rdquo;.</p>
+
+<p>A later task in the same job knows about the outputs from <code>unpack-release</code>, and uses that path:</p>
+
+<pre><code>  - put: goulash-staging
+    params:
+      manifest: goulash/manifests/staging.yml
+      path: unpacked-release
+      ...
+</code></pre>
+
+<p><em>N.B. You can also use <a href="https://concourse.ci/task-step.html#input_mapping">input_mapping</a> to achieve a similar result. <code>input_mapping</code> differs in that in renames the resources for only a specific task rather than for all downstream tasks.</em></p>
+
+<p>Additionally, to avoid duplicating the definition of the generic task in the pipeline YAML, the definition has been split into its <a href="https://github.com/pivotalservices/goulash/blob/master/ci/unpack-release.yml">own file</a> by using the <a href="http://concourse.ci/task-step.html#file">file</a> attribute on the task step.</p>
+
+<h2 id="running-tasks-on-the-fly">Running tasks on the fly</h2>
+
+<p>To <a href="http://concourse.ci/fly-execute.html">execute</a> a task on the fly, you need to separate its definition from the declaration in the pipeline YAML.</p>
+
+<p>You do this by specifying the <a href="http://concourse.ci/task-step.html#file">file</a> attribute in the task declaration in the pipeline that points to a <a href="http://concourse.ci/running-tasks.html#configuring-tasks">task YAML</a>.</p>
+</main>
+
+  <footer>
+  
+  
+  <hr/>
+  &copy; <a href="https://keybase.io/krishicks">Kris Hicks</a> 2017 | <a href="https://www.github.com/krishicks">github</a> | <a href="https://www.twitter.com/krishicks">twitter</a> | <a href="http://www.flickr.com/krishicks">flickr</a>
+  
+  </footer>
+  </body>
+</html>
+

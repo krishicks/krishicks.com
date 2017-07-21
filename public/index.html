@@ -1,366 +1,137 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
-<head>
-	<meta name="generator" content="Hugo 0.18.1" />
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<html lang="en-us">
+  <head>
+	<meta name="generator" content="Hugo 0.25.1" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>krishicks.com | krishicks.com</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+  </head>
 
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
-  <title>krishicks.com &middot; Kris Hicks</title>
-
-  
-  <link rel="stylesheet" href="http://www.krishicks.com/css/poole.css">
-  <link rel="stylesheet" href="http://www.krishicks.com/css/hyde.css">
-  <link rel="stylesheet" href="http://www.krishicks.com/css/poole-overrides.css">
-  <link rel="stylesheet" href="http://www.krishicks.com/css/hyde-overrides.css">
-  <link rel="stylesheet" href="http://www.krishicks.com/css/hyde-x.css">
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link href="/favicon.png" rel="icon">
-
-  
-  
-  
-  <link href="http://www.krishicks.com/index.xml" rel="alternate" type="application/rss+xml" title="krishicks.com &middot; Kris Hicks" />
-
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  
-</head>
-<body>
-<div class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      <img src="https://www.gravatar.com/avatar/fce785f273a2a0cf8a3a921e4d01d048?s=200" alt="gravatar">
-      <h1>Kris Hicks</h1>
-      <p class="lead">Software Engineer</p>
-    </div>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item"><a href="http://www.krishicks.com/">Blog</a></li>
+  <body>
+    <nav>
+    <ul class="menu">
       
-      <li class="sidebar-nav-item"><a href="/about">About</a></li>
+      <li><a href="/">Home</a></li>
       
-      <li class="sidebar-nav-item"><a href="https://github.com/krishicks/resume">Resume</a></li>
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/categories">Categories</a></li>
+      
+      <li><a href="/tags">Tags</a></li>
       
     </ul>
-
-    <ul class="sidebar-nav">
-      <li class="sidebar-nav-item">
-      <a href="https://www.github.com/krishicks"><i class="fa fa-github fa-3x"></i></a>
-      
-      
-      
-      
-      <a href="https://www.twitter.com/krishicks"><i class="fa fa-twitter fa-3x"></i></a>
-      <a href="http://www.flickr.com/krishicks"><i class="fa fa-flickr fa-3x"></i></a>
-      </li>
-    </ul>
-
-    <p>Copyright &copy; 2017<br/>
-  </div>
-</div>
-
-
-<div class="content container">
-  <div class="posts">
-    
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/pipeline-design-with-concourse/">Thoughts on Pipeline Design with Concourse</a>
-      </h1>
-      <span class="post-date">Jan 7, 2017 &middot; 5 minute read
-      </span>
-      <p></p>
-      <div class="summary">
-        <p><img src="/goulash-pipeline.png" alt="Goulash Pipeline" title="Goulash Pipeline in Concourse" /></p>
-
-<p>I recently made a CI/CD pipeline in <a href="https://concourse.ci">Concourse</a> for deploying <a href="https://github.com/pivotalservices/goulash/">Goulash</a>. The pipeline definition can be found <a href="https://github.com/pivotalservices/goulash/blob/master/ci/pipeline.yml">here</a>.</p>
-
-<p>Figuring out how to split up the work your pipeline needs to do in jobs and tasks in Concourse is not always obvious. The way you define jobs and tasks will determine how repeatable steps in your pipeline are, how fast jobs run, and how easily you can debug tasks.</p>
-
-<p>In this post I will describe how I came to the job and task definitions in the pipeline for Goulash.</p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/pipeline-design-with-concourse/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/notifications/">Notifications and Work</a>
-      </h1>
-      <span class="post-date">Nov 18, 2016 &middot; 3 minute read
-      </span>
-      <p></p>
-      <div class="summary">
-        <p>Call me old-fashioned.</p>
-
-<p>Before I started writing software I worked a variety of jobs. I bagged groceries, received calls at an answering service, stocked shelves at an electronics retailer, did data entry at a tool coating company, and took phone orders for office supplies, to name a few.</p>
-
-<p>Each of these jobs had two things in common: if you were late it was notable, and when you were at work, you <em>worked</em>. Being habitually late and taking personal calls at all hours of the day was looked down upon, and could lead to termination. If you wanted to take a call, you&rsquo;d likely have to wait to do it on your break.</p>
-
-<p>The jobs I held prior to writing software helped build my work ethic: I strive to always be early, and I come to work to <em>work</em>.</p>
-
-<p>I have noticed in the past few years that this work ethic is not shared by many of my peers.</p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/notifications/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/there-is-always-a-better-way/">There is Always a Better Way</a>
-      </h1>
-      <span class="post-date">Nov 5, 2016 &middot; 4 minute read
-      
-      <br/>
-      
-      <a class="label" href="http://www.krishicks.com/categories/development">development</a>
-      </span>
-      <p></p>
-      <div class="summary">
-        <p>I got into software development because of a single idea: there is always a better way.</p>
-
-<p>I was working at a title insurance company in the US during the housing boom of 2007. I was hired as a temp to do data entry for the calculation of fees associated with purchasing <a href="https://en.wikipedia.org/wiki/Title_insurance">title insurance</a>. It was a straightforward job, with one incredible hindrance: everyone was using adding machines, which is a fancy desktop calculator that prints out a receipt as you enter calculations.</p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/there-is-always-a-better-way/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/grpc-mutual-tls-golang/">Using gRPC with Mutual TLS in Golang</a>
-      </h1>
-      <span class="post-date">Nov 1, 2016 &middot; 3 minute read
-      
-      <br/>
-      
-      <a class="label" href="http://www.krishicks.com/categories/development">development</a><a class="label" href="http://www.krishicks.com/categories/golang">golang</a>
-      </span>
-      <p></p>
-      <div class="summary">
-        <p>So, you want to use <a href="http://www.grpc.io">gRPC</a>. Cool! And you want to use
-<a href="https://en.wikipedia.org/wiki/Mutual_authentication">mutual TLS</a>, too. But
-maybe, like me, you couldn&rsquo;t easily figure out how to accomplish this, given
-the documentation and examples out there. Here&rsquo;s how I did it.</p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/grpc-mutual-tls-golang/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/forza-6/">Notes on Forza 6</a>
-      </h1>
-      <span class="post-date">Sep 10, 2015 &middot; 2 minute read
-      
-      <br/>
-      
-      
-      </span>
-      <p></p>
-      <div class="summary">
-        <p>Here are some notes about Forza 6:</p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/forza-6/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/ketosoy/">KetoSoy</a>
-      </h1>
-      <span class="post-date">May 18, 2015 &middot; 4 minute read
-      
-      <br/>
-      
-      <a class="label" href="http://www.krishicks.com/categories/reviews">reviews</a>
-      </span>
-      <p></p>
-      <div class="summary">
-        <p>I&rsquo;ve been consuming <a href="http://www.ketosoy.com">KetoSoy</a> for about a month now.</p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/ketosoy/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/subtree-gh-pages/">Using git subtree with gh-pages</a>
-      </h1>
-      <span class="post-date">May 16, 2015 &middot; 4 minute read
-      
-      <br/>
-      
-      <a class="label" href="http://www.krishicks.com/categories/development">development</a>
-      </span>
-      <p></p>
-      <div class="summary">
-        <p>I recently switched to using <a href="http://www.gohugo.io">Hugo</a> to generate this site and needed a strategy to publish it. Previously I was using <a href="http://www.octopress.org">Octopress</a> which has scripts for managing the gh-pages branch automatically. The documentation on gohugo.io shows a workflow that uses <code>git subtree</code>, a tool I knew about but had never actually used before. I found the <a href="http://gohugo.io/tutorials/github-pages-blog#configure-git-workflow:fcefb200141ace3e7bfd6542457b7a72">tutorial</a> on the gohugo.io page to be confusing. Here, I describe the approach I used instead.</p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/subtree-gh-pages/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/phone-interviews/">Phone Interviews are Useless</a>
-      </h1>
-      <span class="post-date">May 23, 2014 &middot; 4 minute read
-      
-      <br/>
-      
-      <a class="label" href="http://www.krishicks.com/categories/interviews">interviews</a>
-      </span>
-      <p></p>
-      <div class="summary">
-        <p><em>See discussion about this post on <a href="https://news.ycombinator.com/item?id=9111310">Hacker News</a>.</em></p>
-
-<p>Yesterday, I did a coding challenge-based phone interview. When it ended, I had a mini retrospective with myself, and thought about what went well, and what didn&rsquo;t go well.</p>
-
-<p>Mostly, it didn&rsquo;t go well.</p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/phone-interviews/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/on-consulting/">On Consulting</a>
-      </h1>
-      <span class="post-date">Mar 17, 2013 &middot; 5 minute read
-      </span>
-      <p></p>
-      <div class="summary">
-        <p>After four years being a consultant I jumped ship and joined a startup.</p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/on-consulting/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    <div class="post">
-      <h1 class="post-title">
-        <a href="http://www.krishicks.com/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/">How to set up a Clojure dev environment on Snow Leopard</a>
-      </h1>
-      <span class="post-date">Feb 2, 2013 &middot; 1 minute read
-      
-      <br/>
-      
-      <a class="label" href="http://www.krishicks.com/categories/development">development</a>
-      </span>
-      <p></p>
-      <div class="summary">
-        <h3 id="homebrew-package-manager">Homebrew (package manager)</h3>
-
-<pre><code>$ ruby -e &quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&quot;
-</code></pre>
-
-<p>More information on Homebrew can be found on the <a href="http://mxcl.github.com/homebrew/" title="Homebrew home page">Homebrew home page</a></p>
-
-<p></p>
-      </div>
-      
-      <div class="read-more-link">
-        <a href="/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/">Read More…</a>
-      </div>
-      
-    </div>
-    
-    
-    
-    <ul class="pagination">
-        
-        <li>
-            <a href="/" aria-label="First"><span aria-hidden="true">&laquo;&laquo;</span></a>
-        </li>
-        
-        <li
-        class="disabled">
-        <a href="" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
-        </li>
-        
-        <li
-        class="active"><a href="/">1</a></li>
-        
-        <li
-        ><a href="/page/2/">2</a></li>
-        
-        <li
-        >
-        <a href="/page/2/" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
-        </li>
-        
-        <li>
-            <a href="/page/2/" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
-        </li>
-        
-    </ul>
-    
-  </div>
-</div>
+    <hr/>
+    </nav>
 
 
 
 
-<script>
-  var _gaq=[['_setAccount','UA-38009560-1'],['_trackPageview']];
-  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-  s.parentNode.insertBefore(g,s)}(document,'script'));
-</script>
 
-</body>
+
+<ul>
+  
+  <li>
+    <span class="date">2017/01/07</span>
+    <a href="/post/2017/01/07/thoughts-on-pipeline-design-with-concourse/">Thoughts on Pipeline Design with Concourse</a>
+  </li>
+  
+  <li>
+    <span class="date">2016/11/18</span>
+    <a href="/post/2016/11/18/notifications-and-work/">Notifications and Work</a>
+  </li>
+  
+  <li>
+    <span class="date">2016/11/05</span>
+    <a href="/post/2016/11/05/there-is-always-a-better-way/">There is Always a Better Way</a>
+  </li>
+  
+  <li>
+    <span class="date">2016/11/01</span>
+    <a href="/post/2016/11/01/using-grpc-with-mutual-tls-in-golang/">Using gRPC with Mutual TLS in Golang</a>
+  </li>
+  
+  <li>
+    <span class="date">2015/09/10</span>
+    <a href="/post/2015/09/10/notes-on-forza-6/">Notes on Forza 6</a>
+  </li>
+  
+  <li>
+    <span class="date">2015/05/18</span>
+    <a href="/post/2015/05/18/ketosoy/">KetoSoy</a>
+  </li>
+  
+  <li>
+    <span class="date">2015/05/16</span>
+    <a href="/post/2015/05/16/using-git-subtree-with-gh-pages/">Using git subtree with gh-pages</a>
+  </li>
+  
+  <li>
+    <span class="date">2014/05/23</span>
+    <a href="/post/2014/05/23/phone-interviews-are-useless/">Phone Interviews are Useless</a>
+  </li>
+  
+  <li>
+    <span class="date">2013/03/17</span>
+    <a href="/post/2013/03/17/on-consulting/">On Consulting</a>
+  </li>
+  
+  <li>
+    <span class="date">2013/02/02</span>
+    <a href="/post/2013/02/02/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/">How to set up a Clojure dev environment on Snow Leopard</a>
+  </li>
+  
+  <li>
+    <span class="date">2012/07/09</span>
+    <a href="/post/2012/07/09/rewinding-git-pull/">rewinding git pull</a>
+  </li>
+  
+  <li>
+    <span class="date">2012/07/03</span>
+    <a href="/post/2012/07/03/quick-tips/">git quick tips</a>
+  </li>
+  
+  <li>
+    <span class="date">2012/06/25</span>
+    <a href="/post/2012/06/25/rewinding-git-commit---amend/">rewinding git commit --amend</a>
+  </li>
+  
+  <li>
+    <span class="date">2012/06/13</span>
+    <a href="/post/2012/06/13/rerere/">rerere</a>
+  </li>
+  
+  <li>
+    <span class="date">2012/05/28</span>
+    <a href="/post/2012/05/28/git-rebase---onto/">git rebase --onto</a>
+  </li>
+  
+  <li>
+    <span class="date">2012/05/21</span>
+    <a href="/post/2012/05/21/git-add--e/">git add -e</a>
+  </li>
+  
+  <li>
+    <span class="date">2012/05/16</span>
+    <a href="/post/2012/05/16/git-reset--p/">git reset -p</a>
+  </li>
+  
+  <li>
+    <span class="date">2012/04/06</span>
+    <a href="/post/2012/04/06/git-exec/">git exec</a>
+  </li>
+  
+</ul>
+
+  <footer>
+  
+  
+  <hr/>
+  &copy; <a href="https://keybase.io/krishicks">Kris Hicks</a> 2017 | <a href="https://www.github.com/krishicks">github</a> | <a href="https://www.twitter.com/krishicks">twitter</a> | <a href="http://www.flickr.com/krishicks">flickr</a>
+  
+  </footer>
+  </body>
 </html>
 
