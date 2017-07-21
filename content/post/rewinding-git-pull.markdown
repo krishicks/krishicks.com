@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "rewinding git pull"
 date: "2012-07-09"
 categories:

@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "Phone Interviews are Useless"
 date: "2014-05-23"
 comments: true

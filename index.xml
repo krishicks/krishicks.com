@@ -2,19 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>krishicks.com</title>
-    <link>http://www.krishicks.com/index.xml</link>
+    <link>http://www.krishicks.com/</link>
     <description>Recent content on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 07 Jan 2017 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://www.krishicks.com/index.xml" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://www.krishicks.com/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Thoughts on Pipeline Design with Concourse</title>
-      <link>http://www.krishicks.com/post/pipeline-design-with-concourse/</link>
+      <link>http://www.krishicks.com/post/2017/01/07/thoughts-on-pipeline-design-with-concourse/</link>
       <pubDate>Sat, 07 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/pipeline-design-with-concourse/</guid>
+      <guid>http://www.krishicks.com/post/2017/01/07/thoughts-on-pipeline-design-with-concourse/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://www.krishicks.com/goulash-pipeline.png&#34; alt=&#34;Goulash Pipeline&#34; title=&#34;Goulash Pipeline in Concourse&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I recently made a CI/CD pipeline in &lt;a href=&#34;https://concourse.ci&#34;&gt;Concourse&lt;/a&gt; for deploying &lt;a href=&#34;https://github.com/pivotalservices/goulash/&#34;&gt;Goulash&lt;/a&gt;. The pipeline definition can be found &lt;a href=&#34;https://github.com/pivotalservices/goulash/blob/master/ci/pipeline.yml&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
@@ -23,142 +25,15 @@
 
 &lt;p&gt;In this post I will describe how I came to the job and task definitions in the pipeline for Goulash.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;First, what does the pipeline do?&lt;/p&gt;
-
-&lt;p&gt;On every push of code to the master branch, the pipeline automatically:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Installs the vendored dependencies for the code&lt;/li&gt;
-&lt;li&gt;Runs unit tests&lt;/li&gt;
-&lt;li&gt;Builds a release candidate binary&lt;/li&gt;
-&lt;li&gt;Bumps the release candidate version (1.0.1-rc.1 -&amp;gt; 1.0.1-rc.2)&lt;/li&gt;
-&lt;li&gt;Builds a tarball with the binary in it&lt;/li&gt;
-&lt;li&gt;Uploads the tarball to a release candidate Google Cloud Storage bucket&lt;/li&gt;
-&lt;li&gt;Deploys the binary in the tarball to a staging environment in Cloud Foundry&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;When manually triggered, the pipeline:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Downloads the latest release candidate tarball&lt;/li&gt;
-&lt;li&gt;Unpacks the tarball&lt;/li&gt;
-&lt;li&gt;Finalizes the release candidate version (1.0.1-rc.2 -&amp;gt; 1.0.1)&lt;/li&gt;
-&lt;li&gt;Uploads the release candidate tarball to a final release GCS bucket&lt;/li&gt;
-&lt;li&gt;Creates a GitHub release with the final release tarball&lt;/li&gt;
-&lt;li&gt;Deploys the binary in the tarball to the production environment in Cloud Foundry&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Attributes which were important to me in developing this pipeline:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;I wanted the same exact bits to be used for running tests and building the binary.&lt;/li&gt;
-&lt;li&gt;I wanted the same exact binary to be deployed to both the staging and production environment. &lt;em&gt;(N.B. The binary is exactly the same in this case because it has no internal versioning)&lt;/em&gt;&lt;/li&gt;
-&lt;li&gt;I wanted to be able to redeploy the binary to staging or production on demand without having to re-run other parts of the pipeline.&lt;/li&gt;
-&lt;li&gt;I wanted it to be as fast as possible.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Additionally, from a pipeline maintenance standpoint:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;I wanted to be able to &lt;a href=&#34;http://concourse.ci/fly-execute.html&#34;&gt;execute&lt;/a&gt; tasks on the fly when necessary (for debugging, usually).&lt;/li&gt;
-&lt;li&gt;I wanted tasks to be generic where possible, so they could be shared by different jobs.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Below, I&amp;rsquo;ll expand a bit on some of these.&lt;/p&gt;
-
-&lt;h2 id=&#34;defining-jobs&#34;&gt;Defining jobs&lt;/h2&gt;
-
-&lt;p&gt;For this pipeline I diverged from how I&amp;rsquo;ve done things in the past with respect to running unit tests and building release artifacts.&lt;/p&gt;
-
-&lt;p&gt;In the past I would have made a job for running unit tests which does just that, with the thinking that the job should be focussed on doing one thing only. It shouldn&amp;rsquo;t also build the binary, upload it somewhere, etc.&lt;/p&gt;
-
-&lt;p&gt;With this pipeline I built the jobs thinking more holistically about what each job represents.&lt;/p&gt;
-
-&lt;p&gt;There is a job, &lt;code&gt;create-rc&lt;/code&gt;, which creates a release candidate. What does it mean to create a release candidate? It means:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;run the tests&lt;/li&gt;
-&lt;li&gt;create a binary&lt;/li&gt;
-&lt;li&gt;create a tarball with the binary in it&lt;/li&gt;
-&lt;li&gt;put the tarball somewhere&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;This approach makes the pipeline more understandable from a higher level, as the tasks which are required to create a release candidate are contained within a single job. It also allows me to easily share exact bits between tasks. Sharing bits between jobs means putting them in a resource, which I feel is a bit heavy-handed. I don&amp;rsquo;t want to have to create additional resources &lt;em&gt;purely&lt;/em&gt; to share bits between jobs.&lt;/p&gt;
-
-&lt;h2 id=&#34;sharing-bits-between-tasks&#34;&gt;Sharing bits between tasks&lt;/h2&gt;
-
-&lt;p&gt;Concourse runs each task in a container. One job may have many tasks. Each task may define &lt;a href=&#34;http://concourse.ci/running-tasks.html#outputs&#34;&gt;outputs&lt;/a&gt; which downstream tasks in the same job may use.&lt;/p&gt;
-
-&lt;p&gt;My tasks that run unit tests and build the binary are independent, but share the same bits. To ensure the same bits are used, I defined three tasks:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;install-dependencies&lt;/li&gt;
-&lt;li&gt;unit&lt;/li&gt;
-&lt;li&gt;build&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;The &lt;code&gt;install-dependencies&lt;/code&gt; &lt;a href=&#34;https://github.com/pivotalservices/goulash/blob/master/ci/install-dependencies.yml&#34;&gt;task&lt;/a&gt; defines an &lt;a href=&#34;http://concourse.ci/running-tasks.html#outputs&#34;&gt;output&lt;/a&gt;, &lt;code&gt;goulash-with-dependencies&lt;/code&gt;, that both &lt;code&gt;unit&lt;/code&gt; and &lt;code&gt;build&lt;/code&gt; get as copy-on-write volumes. This ensures they operate on the same bits, and cannot change the bits in such a way as to affect the other task.&lt;/p&gt;
-
-&lt;h2 id=&#34;making-it-fast&#34;&gt;Making it fast&lt;/h2&gt;
-
-&lt;p&gt;The reason &lt;code&gt;unit&lt;/code&gt; and &lt;code&gt;build&lt;/code&gt; are split into two tasks is for two reasons:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;Running unit tests is not dependent on building the binary, nor is building the binary dependent on running unit tests&lt;/li&gt;
-&lt;li&gt;They can be run in &lt;a href=&#34;http://concourse.ci/aggregate-step.html&#34;&gt;aggregate&lt;/a&gt;, which makes the job faster&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Whenever I define a job I look at what tasks can be run in aggregate to make the job faster. Generally, the initial &lt;code&gt;get&lt;/code&gt; steps in a job can be run concurrently; they just set up resources for downstream tasks. There may be other tasks, like &lt;code&gt;unit&lt;/code&gt; and &lt;code&gt;build&lt;/code&gt; above, that also make sense to run concurrently.&lt;/p&gt;
-
-&lt;h2 id=&#34;making-tasks-generic-where-possible&#34;&gt;Making tasks generic where possible&lt;/h2&gt;
-
-&lt;p&gt;Wherever possible, I make generic tasks so I can re-use them.&lt;/p&gt;
-
-&lt;p&gt;My pipeline has a task, &lt;code&gt;unpack-release&lt;/code&gt;, which is shared by both &lt;code&gt;deploy-staging&lt;/code&gt; and &lt;code&gt;deploy-production&lt;/code&gt;. The task is simple: it takes a release tarball (which is specific to this pipeline) as an input and gives the unpacked result as an output named &lt;code&gt;unpacked-release&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;In Concourse, when you &lt;code&gt;get&lt;/code&gt; a resource, the name of the resource is what is used as the directory the resource&amp;rsquo;s volume is mounted to in the task container. The following &lt;code&gt;get&lt;/code&gt; will result in a volume mounted as &lt;code&gt;goulash-rc&lt;/code&gt; in downstream task containers:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    - get: goulash-rc
-      ...
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You can override this by using the &lt;a href=&#34;http://concourse.ci/get-step.html#resource&#34;&gt;resource&lt;/a&gt; attribute on the &lt;code&gt;get&lt;/code&gt; step. When you do this, the value passed to &lt;code&gt;get:&lt;/code&gt; is what is used as the directory to mount the resource specified by &lt;code&gt;resource:&lt;/code&gt;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    - get: release
-      resource: goulash-rc
-      ...
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The generic task wants an input called &amp;ldquo;release&amp;rdquo;; it doesn&amp;rsquo;t need to know that the release is actually &amp;ldquo;goulash-rc&amp;rdquo;.&lt;/p&gt;
-
-&lt;p&gt;A later task in the same job knows about the outputs from &lt;code&gt;unpack-release&lt;/code&gt;, and uses that path:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;  - put: goulash-staging
-    params:
-      manifest: goulash/manifests/staging.yml
-      path: unpacked-release
-      ...
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;em&gt;N.B. You can also use &lt;a href=&#34;https://concourse.ci/task-step.html#input_mapping&#34;&gt;input_mapping&lt;/a&gt; to achieve a similar result. &lt;code&gt;input_mapping&lt;/code&gt; differs in that in renames the resources for only a specific task rather than for all downstream tasks.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Additionally, to avoid duplicating the definition of the generic task in the pipeline YAML, the definition has been split into its &lt;a href=&#34;https://github.com/pivotalservices/goulash/blob/master/ci/unpack-release.yml&#34;&gt;own file&lt;/a&gt; by using the &lt;a href=&#34;http://concourse.ci/task-step.html#file&#34;&gt;file&lt;/a&gt; attribute on the task step.&lt;/p&gt;
-
-&lt;h2 id=&#34;running-tasks-on-the-fly&#34;&gt;Running tasks on the fly&lt;/h2&gt;
-
-&lt;p&gt;To &lt;a href=&#34;http://concourse.ci/fly-execute.html&#34;&gt;execute&lt;/a&gt; a task on the fly, you need to separate its definition from the declaration in the pipeline YAML.&lt;/p&gt;
-
-&lt;p&gt;You do this by specifying the &lt;a href=&#34;http://concourse.ci/task-step.html#file&#34;&gt;file&lt;/a&gt; attribute in the task declaration in the pipeline that points to a &lt;a href=&#34;http://concourse.ci/running-tasks.html#configuring-tasks&#34;&gt;task YAML&lt;/a&gt;.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Notifications and Work</title>
-      <link>http://www.krishicks.com/post/notifications/</link>
+      <link>http://www.krishicks.com/post/2016/11/18/notifications-and-work/</link>
       <pubDate>Fri, 18 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/notifications/</guid>
+      <guid>http://www.krishicks.com/post/2016/11/18/notifications-and-work/</guid>
       <description>&lt;p&gt;Call me old-fashioned.&lt;/p&gt;
 
 &lt;p&gt;Before I started writing software I worked a variety of jobs. I bagged groceries, received calls at an answering service, stocked shelves at an electronics retailer, did data entry at a tool coating company, and took phone orders for office supplies, to name a few.&lt;/p&gt;
@@ -169,611 +44,101 @@
 
 &lt;p&gt;I have noticed in the past few years that this work ethic is not shared by many of my peers.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;Since not long after I began writing software full-time, I have done it in the form of &lt;a href=&#34;https://en.wikipedia.org/wiki/Pair_programming&#34;&gt;pair programming&lt;/a&gt;. Many people deride pair programming as purely a way to keep them off of Facebook and Reddit; a form of policing. While pairing does tend towards allowing for fewer distractions, that is only a side-effect, and it is not guaranteed.&lt;/p&gt;
-
-&lt;p&gt;I began pair programming because I wanted to become a better developer, and pairing with people who were more experienced than me would enable that. The fact that it allowed for fewer distractions was a benefit to me. As our society becomes more and more connected, and with the prevalence of smartphones and smartwatches, distractions have become more commonplace while pairing than in the past. The reason? Notifications.&lt;/p&gt;
-
-&lt;p&gt;While it is unlikely to find someone using Facebook on their computer while pairing, it is quite likely to find them receiving notifications from Facebook on their phone or watch, and even responding to them.&lt;/p&gt;
-
-&lt;p&gt;Receiving and responding to notifications is non-work, something that should wait for a break. When I pair with someone who receives and responds to notifications all day, my desire to pair with them is greatly reduced: in allowing notifications while pairing they have shown me that they feel their notifications are more important than the work we are doing together.&lt;/p&gt;
-
-&lt;p&gt;Pairing well requires a lot of conversation for both members of the pair to maintain a similar level of understanding. I have found myself talking about a problem or proposing a solution while my pair receives a notification, and then responds to it. While they respond to the notification I am effectively talking to myself, and then have to repeat myself when they finish. Sometimes people try to hide the fact that they are responding to a notification, which just makes it worse. Their attention is still elsewhere, but it is less obvious to me, which means I spend more time talking to myself.&lt;/p&gt;
-
-&lt;p&gt;I am not sure what to do about this sad state of affairs other than to continue bringing it up when I notice the person I am pairing with feels their notifications are more important than work.&lt;/p&gt;
-
-&lt;p&gt;I would prefer a workplace where &lt;em&gt;everyone&lt;/em&gt; has the same respect for the work that I do, where muting your phone&amp;rsquo;s notifications was the norm. That continues to be my dream.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>There is Always a Better Way</title>
-      <link>http://www.krishicks.com/post/there-is-always-a-better-way/</link>
+      <link>http://www.krishicks.com/post/2016/11/05/there-is-always-a-better-way/</link>
       <pubDate>Sat, 05 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/there-is-always-a-better-way/</guid>
+      <guid>http://www.krishicks.com/post/2016/11/05/there-is-always-a-better-way/</guid>
       <description>&lt;p&gt;I got into software development because of a single idea: there is always a better way.&lt;/p&gt;
 
 &lt;p&gt;I was working at a title insurance company in the US during the housing boom of 2007. I was hired as a temp to do data entry for the calculation of fees associated with purchasing &lt;a href=&#34;https://en.wikipedia.org/wiki/Title_insurance&#34;&gt;title insurance&lt;/a&gt;. It was a straightforward job, with one incredible hindrance: everyone was using adding machines, which is a fancy desktop calculator that prints out a receipt as you enter calculations.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;I found the usage of the adding machines remarkable because we were all sitting in front of computers with Microsoft Excel installed on them.&lt;/p&gt;
-
-&lt;p&gt;I knew of Excel but had no use for it before I joined the company, so I went along with using the adding machine at first. After seeing how unreliable and slow they were, I decided to teach myself enough Excel to have it do the title insurance fee calculations for me.&lt;/p&gt;
-
-&lt;p&gt;Excel was a &lt;em&gt;better way&lt;/em&gt; to do these calculations: more reliable, repeatable, and less error-prone. Create a cell or cells with formulas once, and just change the house purchase price to see the new result. No intermediate calculations required, and certainly none done by hand. No double-checking of receipt paper. Just copy and paste the result from Excel into the appropriate textfield in the browser.&lt;/p&gt;
-
-&lt;p&gt;After doing this for a while my supervisor took note: my error rate was greatly reduced, and I was able to do more work as well. He wondered if I would be interested in working on implementing some &amp;ldquo;macro&amp;rdquo; software they&amp;rsquo;d bought, which was meant to be able to do what I&amp;rsquo;d done in Excel, automating the calculating of the fees, but to go a step further and put result into the browser, as well.&lt;/p&gt;
-
-&lt;p&gt;It had a simple scripting language that allowed you to drive the mouse pointer, having it click around the desktop, or within a specific application. After learning the very basic scripting language and trying to repeat what I&amp;rsquo;d done in Excel, I found it not to be powerful enough to reliably enter the values directly into the browser. The scripting language and its ability to do calculations was too poor. I went back to using Excel.&lt;/p&gt;
-
-&lt;p&gt;The idea of automating the entire workflow was very attractive, and stuck with me. Copying and pasting things from Excel into Internet Explorer had its drawbacks, and was also not fast enough. My experience with the macro software showed me there was a better way.&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;d been having conversations with a friend of mine for months, maybe years at that point, about getting into software development. The problem was I didn&amp;rsquo;t know where to start. I had bought a variety of software books on topics such as HTML/CSS, Java, and C, but couldn&amp;rsquo;t translate what they were teaching into something I could use. The issue then was that I didn&amp;rsquo;t have a problem to solve, or didn&amp;rsquo;t have the ability to identify problems that could be solved with software.&lt;/p&gt;
-
-&lt;p&gt;At my title insurance data entry job I now had a problem that I saw could be solved with software: calculate the fees and enter them into the browser as quickly and reliably as possible, with the least amount of intervention from me.&lt;/p&gt;
-
-&lt;p&gt;I began looking into learning VBA, with the idea that I could learn enough of it to get the calculations from Excel into IE6, which appeared to be possible. In searching for things related to &amp;ldquo;automating the web browser&amp;rdquo;, I came across a Ruby testing library called &lt;a href=&#34;https://watir.github.io&#34;&gt;WATIR&lt;/a&gt;. WATIR allows you to write  Ruby to drive a web browser. Once I discovered WATIR, I had both a problem to solve and the means to do it.&lt;/p&gt;
-
-&lt;p&gt;The rest, as they say, is history.&lt;/p&gt;
-
-&lt;p&gt;I taught myself enough Ruby to write a full replacement of the macro software, which I then used to completely automate my job. What used to take 13-15 minutes to do unreliably now took 10-12 seconds, reliably. The only thing that made it that slow and variable was the webpage load times.&lt;/p&gt;
-
-&lt;p&gt;After a year and a half at the title insurance company, I left to become a real programmer. I wasn&amp;rsquo;t learning fast enough at that point. Joining ThoughtWorks was a better way to learn.&lt;/p&gt;
-
-&lt;p&gt;Perhaps this idea, that there is always a better way, is also useful to you. I used it for figuring out how to do data entry better, and now I use it when becoming better at writing software.&lt;/p&gt;
-
-&lt;p&gt;The only caveat that I would add is that while there often is a better way, there is a point of diminishing returns. Being able to recognize when what you&amp;rsquo;ve got is &lt;em&gt;good enough&lt;/em&gt; is important.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Using gRPC with Mutual TLS in Golang</title>
-      <link>http://www.krishicks.com/post/grpc-mutual-tls-golang/</link>
+      <link>http://www.krishicks.com/post/2016/11/01/using-grpc-with-mutual-tls-in-golang/</link>
       <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/grpc-mutual-tls-golang/</guid>
+      <guid>http://www.krishicks.com/post/2016/11/01/using-grpc-with-mutual-tls-in-golang/</guid>
       <description>&lt;p&gt;So, you want to use &lt;a href=&#34;http://www.grpc.io&#34;&gt;gRPC&lt;/a&gt;. Cool! And you want to use
 &lt;a href=&#34;https://en.wikipedia.org/wiki/Mutual_authentication&#34;&gt;mutual TLS&lt;/a&gt;, too. But
 maybe, like me, you couldn&amp;rsquo;t easily figure out how to accomplish this, given
 the documentation and examples out there. Here&amp;rsquo;s how I did it.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;This example code uses a CA, certs, and private keys which were generated using
-&lt;a href=&#34;https://github.com/square/certstrap&#34;&gt;certstrap&lt;/a&gt;. Skip down
-&lt;a href=&#34;#creating-test-ca-certs-private-keys&#34;&gt;below&lt;/a&gt; to see how to get and use
-certstrap.&lt;/p&gt;
-
-&lt;h3 id=&#34;server-configuration&#34;&gt;Server Configuration&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code&gt;certificate, err := tls.LoadX509KeyPair(
-  &amp;quot;out/example.com.crt&amp;quot;,
-  &amp;quot;out/example.com.key&amp;quot;,
-)
-
-certPool := x509.NewCertPool()
-bs, err := ioutil.ReadFile(&amp;quot;out/My_Root_CA.crt&amp;quot;)
-if err != nil {
-  log.Fatalf(&amp;quot;failed to read client ca cert: %s&amp;quot;, err)
-}
-
-ok := certPool.AppendCertsFromPEM(bs)
-if !ok {
-  log.Fatal(&amp;quot;failed to append client certs&amp;quot;)
-}
-
-lis, err := net.Listen(&amp;quot;tcp&amp;quot;, &amp;quot;127.0.0.1&amp;quot;)
-if err != nil {
-  log.Fatalf(&amp;quot;failed to listen: %s&amp;quot;, err)
-}
-
-tlsConfig := &amp;amp;tls.Config{
-  ClientAuth:   tls.RequireAndVerifyClientCert,
-  Certificates: []tls.Certificate{certificate},
-  ClientCAs:    certPool,
-}
-
-serverOption := grpc.Creds(credentials.NewTLS(tlsConfig))
-server := grpc.NewServer(serverOption)
-
-// register your server
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;client-configuration&#34;&gt;Client Configuration&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code&gt;certificate, err := tls.LoadX509KeyPair(
-  &amp;quot;out/127.0.0.1.crt&amp;quot;,
-  &amp;quot;out/127.0.0.1.key&amp;quot;,
-)
-
-certPool := x509.NewCertPool()
-bs, err := ioutil.ReadFile(&amp;quot;out/My_Root_CA.crt&amp;quot;)
-if err != nil {
-  log.Fatalf(&amp;quot;failed to read ca cert: %s&amp;quot;, err)
-}
-
-ok := certPool.AppendCertsFromPEM(bs)
-if !ok {
-  log.Fatal(&amp;quot;failed to append certs&amp;quot;)
-}
-
-transportCreds := credentials.NewTLS(&amp;amp;tls.Config{
-  ServerName:   &amp;quot;example.com&amp;quot;,
-  Certificates: []tls.Certificate{certificate},
-  RootCAs:      certPool,
-})
-
-dialOption := grpc.WithTransportCredentials(transportCreds)
-conn, err := grpc.Dial(&amp;quot;example.com&amp;quot;, dialOption)
-if err != nil {
-    log.Fatalf(&amp;quot;failed to dial server: %s&amp;quot;, err)
-}
-defer conn.Close()
-
-// make your client
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If your client certificate already has the CA concatenated to it, you can use
-x509.ParseCertificate, as in the following gist:
-&lt;a href=&#34;https://gist.github.com/artyom/6897140&#34;&gt;https://gist.github.com/artyom/6897140&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;creating-test-ca-certs-private-keys&#34;&gt;Creating test CA, certs, private keys&lt;/h3&gt;
-
-&lt;p&gt;For testing, or for deploying an application which only you will access, it
-makes sense to generate a self-signed CA and self-signed certs.&lt;/p&gt;
-
-&lt;p&gt;Creating a self-signed CA, self-signed certs, and keys suitable for use in Go
-is hard. Use &lt;a href=&#34;https://github.com/square/certstrap&#34;&gt;certstrap&lt;/a&gt; to make it
-easier.&lt;/p&gt;
-
-&lt;h4 id=&#34;get-certstrap&#34;&gt;Get certstrap&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git clone git@github.com:square/certstrap
-$ cd certstrap
-$ ./build
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The following commands assume you run them within the directory you cloned
-certstrap to.&lt;/p&gt;
-
-&lt;h4 id=&#34;create-a-ca-server-cert-and-private-key&#34;&gt;Create a CA, server cert, and private key&lt;/h4&gt;
-
-&lt;p&gt;&lt;em&gt;Note: &lt;code&gt;certstrap&lt;/code&gt; will prompt you for a password. For testing, you may leave
-it blank.&lt;/em&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ bin/certstrap init --common-name &amp;quot;My Root CA&amp;quot;
-Created out/My_Root_CA.key
-Created out/My_Root_CA.crt
-Created out/My_Root_CA.crl
-
-$ bin/certstrap request-cert --domain mydomain.com
-Created out/mydomain.com.key
-Created out/mydomain.com.csr
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you&amp;rsquo;re generating a cert for an IP, use the &amp;ndash;ip flag, e.g. &lt;code&gt;--ip
-127.0.0.1&lt;/code&gt;. Golang will complain about &amp;ldquo;No IP SANs&amp;rdquo; otherwise.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ bin/certstrap sign --CA &amp;quot;My Root CA&amp;quot; mydomain.com # or the IP
-Created out/mydomain.com.crt from out/mydomain.com.csr signed by out/My_Root_CA.key
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;At this point you can choose to create a second CA for the client, or just use
-the same CA to sign another csr. We&amp;rsquo;ll use the same one for this example.&lt;/p&gt;
-
-&lt;h4 id=&#34;create-client-cert-and-private-key&#34;&gt;Create client cert and private key&lt;/h4&gt;
-
-&lt;pre&gt;&lt;code&gt;$ bin/certstrap request-cert --ip 127.0.0.1
-Created out/127.0.0.1.key
-Created out/127.0.0.1.csr
-
-$ bin/certstrap sign --CA &amp;quot;My Root CA&amp;quot; 127.0.0.1
-Created out/127.0.0.1.crt from out/127.0.0.1.csr signed by out/My_Root_CA.key
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now you&amp;rsquo;re ready to rock and roll. Head back to &lt;a href=&#34;#server-configuration&#34;&gt;server
-configuration&lt;/a&gt; if you need to.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Notes on Forza 6</title>
-      <link>http://www.krishicks.com/post/forza-6/</link>
+      <link>http://www.krishicks.com/post/2015/09/10/notes-on-forza-6/</link>
       <pubDate>Thu, 10 Sep 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/forza-6/</guid>
+      <guid>http://www.krishicks.com/post/2015/09/10/notes-on-forza-6/</guid>
       <description>&lt;p&gt;Here are some notes about Forza 6:&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;The intro movie is annoyingly unskippable.&lt;/li&gt;
-&lt;li&gt;The initial race has all assists set to max, which makes it very boring, and is also unskippable.&lt;/li&gt;
-&lt;li&gt;When the initial race is complete and the rest of the game hasn&amp;rsquo;t yet been installed, a message, &amp;ldquo;Installing content. You are free to continue playing while the installation completes.&amp;rdquo; is shown, but there is nothing you can do at that point but wait.&lt;/li&gt;
-&lt;li&gt;The annoying female voiceover remains, and is not able to be muted.&lt;/li&gt;
-&lt;li&gt;Why is there so much voiceover instruction? This game isn&amp;rsquo;t so complicated. And the voicover instructions aren&amp;rsquo;t skippable, nor do they have subtitles.&lt;/li&gt;
-&lt;li&gt;The (A) Select and (B) Back overlay in the lower right of the screen is often hard to notice or read, and is shown in response to a modal question, which is only a voiceover.&lt;/li&gt;
-&lt;li&gt;Voiceovers happen after pretty much every single button press in the first few minutes of the game, and aren&amp;rsquo;t skippable.&lt;/li&gt;
-&lt;li&gt;Changing driver difficulty plays the little video of your car driving up to the pits again, for some reason.&lt;/li&gt;
-&lt;li&gt;You still can&amp;rsquo;t mute the UI sounds like you could in Forza 4.&lt;/li&gt;
-&lt;li&gt;Free look when selecting paint for a new car works similarly to Forzavista.&lt;/li&gt;
-&lt;li&gt;You are repeatedly forced to start consecutive races without being able to exit to the main menu.&lt;/li&gt;
-&lt;li&gt;You can buy mods just before starting a race, at least in career mode.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;compared-to-forza-5&#34;&gt;Compared to Forza 5&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;You can no longer change the view while rewinding.&lt;/li&gt;
-&lt;li&gt;You can skip the &amp;ldquo;This is your..&amp;rdquo; voiceover when you buy a new car.&lt;/li&gt;
-&lt;li&gt;The same kinds of hits that used to shatter window glass no longer do.&lt;/li&gt;
-&lt;li&gt;You can once again tune your car just before starting a race.&lt;/li&gt;
-&lt;li&gt;Many cars in the game have what appears to be flat/matte paint&lt;/li&gt;
-&lt;li&gt;Pressing &amp;ldquo;A&amp;rdquo; while rewinding no longer plays a sound.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;bugs&#34;&gt;Bugs&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;At the start of a race, the view changes to that of cockpit, then to the view you actually have set.&lt;/li&gt;
-&lt;li&gt;Colliding with the rear of the car in front of you rarely, if ever, produces a sound.&lt;/li&gt;
-&lt;li&gt;Your place (upper left) re-renders itself with a sliding animation at random, even when place doesn&amp;rsquo;t change.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;This list will be updated as I continue playing.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>KetoSoy</title>
-      <link>http://www.krishicks.com/post/ketosoy/</link>
+      <link>http://www.krishicks.com/post/2015/05/18/ketosoy/</link>
       <pubDate>Mon, 18 May 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/ketosoy/</guid>
+      <guid>http://www.krishicks.com/post/2015/05/18/ketosoy/</guid>
       <description>&lt;p&gt;I&amp;rsquo;ve been consuming &lt;a href=&#34;http://www.ketosoy.com&#34;&gt;KetoSoy&lt;/a&gt; for about a month now.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;what-is-it&#34;&gt;What is it?&lt;/h3&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;KetoSoy is a chocolate flavored meal replacement shake engineered to make the ketogenic diet easy.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;It is similar in idea to &lt;a href=&#34;https://www.soylent.com&#34;&gt;Soylent&lt;/a&gt;, though with a very different ingredient profile.&lt;/p&gt;
-
-&lt;p&gt;The main difference between the two is carbohydrates. Soylent is high in carbohydrates. KetoSoy is &lt;a href=&#34;http://www.nytimes.com/2014/09/02/health/low-carb-vs-low-fat-diet.html&#34;&gt;high in fat&lt;/a&gt; and low in carbohydrates to keep you in &lt;a href=&#34;https://en.wikipedia.org/wiki/Ketosis&#34;&gt;ketosis&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;For one serving:&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;th&gt;&lt;/th&gt;
-  &lt;th&gt;Soylent 1.5&lt;/th&gt;
-  &lt;th&gt;KetoSoy 0.9&lt;/th&gt;
-  &lt;tr&gt;
-    &lt;td&gt;Calories&lt;/td&gt;
-    &lt;td&gt;500&lt;/td&gt;
-    &lt;td&gt;600&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;Calories from Fat&lt;/td&gt;
-    &lt;td&gt;210&lt;/td&gt;
-    &lt;td&gt;450&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;Fat&lt;/td&gt;
-    &lt;td&gt;24g&lt;/td&gt;
-    &lt;td&gt;50g&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;Carbohydrates&lt;/td&gt;
-    &lt;td&gt;204g&lt;/td&gt;
-    &lt;td&gt;24g&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;Protein&lt;/td&gt;
-    &lt;td&gt;21g&lt;/td&gt;
-    &lt;td&gt;27g&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;Protein source&lt;/td&gt;
-    &lt;td&gt;rice&lt;/td&gt;
-    &lt;td&gt;milk&lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/table&gt;
-
-&lt;p&gt;&lt;em&gt;The complete nutrition profile of each is available at their respective sites.&lt;/em&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;why&#34;&gt;Why?&lt;/h3&gt;
-
-&lt;p&gt;I saw KetoSoy mentioned on &lt;a href=&#34;http://www.reddit.com/r/soylent/comments/2o02kx/as_promised_ketosoy_the_ketogenic_soylent_is_now/&#34;&gt;Reddit&lt;/a&gt; while checking up on the state of Soylent. The ingredient profile of Soylent never appealed to me, but KetoSoy&amp;rsquo;s looked right up my alley.&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;ve been aiming for a high-fat, low-carb, Paleo-ish diet for about a year now. I don&amp;rsquo;t cook at home; I eat out exclusively (or in, with &lt;a href=&#34;https://munchery.com&#34;&gt;Munchery&lt;/a&gt;). I wanted an alternative for the times that I didn&amp;rsquo;t really want to go out, when Munchery&amp;rsquo;s menu didn&amp;rsquo;t look enticing, or when I wanted to limit my caloric intake.&lt;/p&gt;
-
-&lt;p&gt;It&amp;rsquo;s also much cheaper than going out: with the monthly subscription a 15-day supply comes out to $10 &lt;strong&gt;per day&lt;/strong&gt; (without the subscription, $12.50). Adding the extra protein powder and chia seeds does increase this, but only slightly.&lt;/p&gt;
-
-&lt;h3 id=&#34;how&#34;&gt;How?&lt;/h3&gt;
-
-&lt;p&gt;To prepare a day&amp;rsquo;s worth (3 servings) of KetoSoy, I use these steps with a &lt;a href=&#34;http://amzn.com/B00LBFUKIA&#34;&gt;Vitamix&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Prep:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;210g of KetoSoy&lt;/li&gt;
-&lt;li&gt;84g of &lt;a href=&#34;http://amzn.com/B0015AQL1Q&#34;&gt;flavorless protein powder&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;3 tablespoons of &lt;a href=&#34;http://amzn.com/B00H889MGK&#34;&gt;chia seeds&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Blend:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;Put the KetoSoy, protein powder, and chia seeds in a large container, like a &lt;a href=&#34;http://amzn.com/B00MVMCUK8&#34;&gt;Blender Bottle&lt;/a&gt; or a re-used, clean and empty KetoSoy oil bottle with the top cut off&lt;/li&gt;
-&lt;li&gt;Add 8 cups of water to the Vitamix container&lt;/li&gt;
-&lt;li&gt;Add 10 tablespoons of the oil included with KetoSoy to the Vitamix container&lt;/li&gt;
-&lt;li&gt;Blend the water and oil to emulsify them&lt;/li&gt;
-&lt;li&gt;With the Vitamix on its lowest setting, slowly add the protein powder until it&amp;rsquo;s blended&lt;/li&gt;
-&lt;li&gt;Slowly add the chia seeds, increasing the speed of the Vitamix as necessary&lt;/li&gt;
-&lt;li&gt;Slowly add the KetoSoy, increasing the speed of the Vitamix as necessary&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;This process, while not perfect, has yielded the most repeatable results for me so far. If I run into any issues blending I&amp;rsquo;ll pour out the contents of the Vitamix into the &lt;a href=&#34;http://amzn.com/B00DCYNP2G&#34;&gt;2-liter airtight pitcher&lt;/a&gt; I plan to store the finished mixture in, then slowly pour it back into the Vitamix, starting at a low speed and increasing it until everything is properly blended.&lt;/p&gt;
-
-&lt;p&gt;You may have noticed I do not add the optional liquid sweetener. I find the flavor profile to be delicious without it, and the sweetener only ruins it. I only tried the liquid Stevia, for what it&amp;rsquo;s worth.&lt;/p&gt;
-
-&lt;p&gt;The texture and taste are both wonderful, especially with the added protein powder and chia seeds.&lt;/p&gt;
-
-&lt;h3 id=&#34;effects&#34;&gt;Effects&lt;/h3&gt;
-
-&lt;p&gt;I did lose some weight, which might alarm people that know me. I went from 82kg to 77kg within the first week of KetoSoy (this leads me to believe ketosis was achieved, but I cannot confirm as I did not test it empirically). My weight does rapidly go back up to 80kg if I eat what I would normally eat all the time, which I now only eat sparingly (the pork chop at &lt;a href=&#34;http://nopasf.com&#34;&gt;NOPA&lt;/a&gt;, the fried chicken at &lt;a href=&#34;http://magnoliapub.com/&#34;&gt;Magnolia&lt;/a&gt;).&lt;/p&gt;
-
-&lt;p&gt;I haven&amp;rsquo;t had any gastrointestinal issues with KetoSoy, something that Soylent users have &lt;a href=&#34;http://www.reddit.com/r/soylent/comments/32t042/lpt_drink_slowly_to_avoid_bloatinggas/&#34;&gt;repeatedly&lt;/a&gt; &lt;a href=&#34;http://www.reddit.com/r/soylent/comments/2qaw3o/has_anyone_else_gotten_way_less_gas_with_soylent/&#34;&gt;talked&lt;/a&gt; &lt;a href=&#34;http://www.reddit.com/r/soylent/comments/2cwxwq/day_7_official_soylent_still_having_gas/&#34;&gt;about&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;I haven&amp;rsquo;t had any &lt;a href=&#34;http://www.reddit.com/r/soylent/comments/2uuqac/a_little_over_a_week_in_on_ketosoy/&#34;&gt;mental fog&lt;/a&gt;, though I do add ~500 calories (the added protein powder and chia seeds).&lt;/p&gt;
-
-&lt;p&gt;I also don&amp;rsquo;t believe I actually ever get into ketosis (despite the weight loss), though I have yet to actually test this with the &lt;a href=&#34;http://amzn.com/B001DCV9S6&#34;&gt;test strips&lt;/a&gt;. My breath never seems to become &lt;a href=&#34;http://www.webmd.com/oral-health/features/low-carb-diets-can-cause-bad-breath&#34;&gt;ketosis-breath&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&#34;do-i-recommend-it&#34;&gt;Do I recommend it?&lt;/h3&gt;
-
-&lt;p&gt;Yes. The price is right, and the texture and taste is lovely.&lt;/p&gt;
-
-&lt;p&gt;Before I began this process I had full bloodwork done. After doing KetoSoy for a while longer I will get bloodwork done again to see if there are any changes, good or bad, and update this post with the results. The bloodwork I got back before showed me in fantastic health.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Using git subtree with gh-pages</title>
-      <link>http://www.krishicks.com/post/subtree-gh-pages/</link>
+      <link>http://www.krishicks.com/post/2015/05/16/using-git-subtree-with-gh-pages/</link>
       <pubDate>Sat, 16 May 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/subtree-gh-pages/</guid>
+      <guid>http://www.krishicks.com/post/2015/05/16/using-git-subtree-with-gh-pages/</guid>
       <description>&lt;p&gt;I recently switched to using &lt;a href=&#34;http://www.gohugo.io&#34;&gt;Hugo&lt;/a&gt; to generate this site and needed a strategy to publish it. Previously I was using &lt;a href=&#34;http://www.octopress.org&#34;&gt;Octopress&lt;/a&gt; which has scripts for managing the gh-pages branch automatically. The documentation on gohugo.io shows a workflow that uses &lt;code&gt;git subtree&lt;/code&gt;, a tool I knew about but had never actually used before. I found the &lt;a href=&#34;http://gohugo.io/tutorials/github-pages-blog#configure-git-workflow:fcefb200141ace3e7bfd6542457b7a72&#34;&gt;tutorial&lt;/a&gt; on the gohugo.io page to be confusing. Here, I describe the approach I used instead.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;My goal is to have a clean &lt;code&gt;gh-pages&lt;/code&gt; branch that contains the minimum content it needs to have a meaningful history, and a &lt;code&gt;master&lt;/code&gt; branch that makes sense.&lt;/p&gt;
-
-&lt;p&gt;The first thing to do is generate the site in &lt;code&gt;public/&lt;/code&gt; by running &lt;code&gt;hugo&lt;/code&gt; while on &lt;code&gt;master&lt;/code&gt; and in the root directory of the repository:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git checkout master
-$ hugo
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;At this point, create an orphaned &lt;code&gt;gh-pages&lt;/code&gt; branch:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git checkout --orphan gh-pages
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;em&gt;Note: the &lt;code&gt;gh-pages&lt;/code&gt; branch won&amp;rsquo;t show up in &lt;code&gt;git branch&lt;/code&gt; yet. Don&amp;rsquo;t worry about that.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;If you check &lt;code&gt;git status&lt;/code&gt; you&amp;rsquo;ll see a bunch of staged files–the contents that were in &lt;code&gt;master&lt;/code&gt;. Unstage these with &lt;code&gt;git reset&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git reset .
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now everything that was staged will be untracked. Clean up those untracked files with &lt;code&gt;git clean&lt;/code&gt;, &amp;nbsp;&lt;strong&gt;excluding public&lt;/strong&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git clean --force -d --exclude public
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now you should see &lt;code&gt;public/&lt;/code&gt; as the only untracked directory.&lt;/p&gt;
-
-&lt;p&gt;Of course, GitHub Pages wants the content that&amp;rsquo;s currently in &lt;code&gt;public/&lt;/code&gt; as the root of the &lt;code&gt;gh-pages&lt;/code&gt; branch. Let&amp;rsquo;s make that happen. Copy the contents of &lt;code&gt;public/&lt;/code&gt; to the current directory with the tool of your choice, like &lt;code&gt;mv&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ mv public/* .
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;At this point you can safely get rid of &lt;code&gt;public/&lt;/code&gt;, &amp;nbsp;so run &lt;code&gt;git clean&lt;/code&gt; again, this time only including &lt;code&gt;public&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git clean --force -d public # or just rm -r public
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now you&amp;rsquo;re in a position to add everything that was in &lt;code&gt;public/&lt;/code&gt;, and is now in the current directory, to make the initial commit. I used &amp;ldquo;Generate site&amp;rdquo; as the message:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git add .
-$ git commit -m &amp;quot;Generate site&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;em&gt;Note: Only after making the above commit will the &lt;code&gt;gh-pages&lt;/code&gt; branch appear in &lt;code&gt;git branch&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Now push the &lt;code&gt;gh-pages&lt;/code&gt; branch to origin:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git push -u origin gh-pages:gh-pages
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;At this point your GitHub Pages site will be generated by GitHub, and will be live shortly.&lt;/p&gt;
-
-&lt;p&gt;The following steps are what we&amp;rsquo;ll do to make re-generating and updating the site an easy affair. First, check out &lt;code&gt;master&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git checkout master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now that the branch is on the remote, we&amp;rsquo;ll add it as a subtree under &lt;code&gt;public/&lt;/code&gt; on &lt;code&gt;master&lt;/code&gt;. Be sure to replace the &lt;code&gt;&amp;lt;placeholder&amp;gt;&lt;/code&gt; with your own repo:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git subtree add --prefix public &amp;lt;repo_url&amp;gt; gh-pages
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you &lt;code&gt;ls public&lt;/code&gt; you&amp;rsquo;ll see the content generated by hugo, and if you &lt;code&gt;git log -2&lt;/code&gt; you&amp;rsquo;ll see the commit you made on &lt;code&gt;gh-pages&lt;/code&gt; in addition to the commit that added the subtree to &lt;code&gt;master&lt;/code&gt;. Push &lt;code&gt;master&lt;/code&gt; and you&amp;rsquo;re all set:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git push origin master:master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now each time you update something in &lt;code&gt;content/&lt;/code&gt;:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;commit the changes to &lt;code&gt;content/&lt;/code&gt; on &lt;code&gt;master&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;re-generate the site with &lt;code&gt;hugo&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;commit the changes to &lt;code&gt;public/&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;push the changes to the subtree (which will update &lt;code&gt;gh-pages&lt;/code&gt;)&lt;/li&gt;
-&lt;li&gt;push the changes to &lt;code&gt;master&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;As so:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git add content
-$ git commit -m &amp;quot;Added insightful post on the social lives of kittens&amp;quot;
-$ hugo
-$ git add public
-$ git commit -m &amp;quot;Regenerate site&amp;quot;
-$ git subtree push --prefix public &amp;lt;repo_url&amp;gt; gh-pages
-$ git push origin master:master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now when you look at the history of &lt;code&gt;gh-pages&lt;/code&gt;, &amp;nbsp;all you&amp;rsquo;ll see are the generate/regenerate commits:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git fetch gh-pages
-$ git log gh-pages
-102c92b 6 minutes ago Kris Hicks | Regenerate site
-af759b6 10 minutes ago Kris Hicks | Regenerate site
-69045e6 2 hours ago Kris Hicks | Generate site
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Whereas on &lt;code&gt;master&lt;/code&gt; you&amp;rsquo;ll see the changes to the content, in addition to the changes on the subtree:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log master
-1df64be 7 minutes ago Kris Hicks | Regenerate site
-d244956 8 minutes ago Kris Hicks | Update phone-interviews post with HN link
-66c4e29 11 minutes ago Kris Hicks | Regenerate site
-bea8982 11 minutes ago Kris Hicks | Update rerere post
-456c79e 14 minutes ago Kris Hicks | Add static/
-cfb98dc 18 minutes ago Kris Hicks | Add &#39;public/&#39; from commit &#39;69045e6db8a929e0476c7553917981e3c9545c4e&#39;
-69045e6 2 hours ago Kris Hicks | Generate site
-daf97fc 3 hours ago Kris Hicks | Add keybase.txt
-483bfec 3 hours ago Kris Hicks | Add CNAME
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This makes more sense to me than the approach listed on the gohugo.io tutorial, which leaves you with weird merge commits and messy history otherwise.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Phone Interviews are Useless</title>
-      <link>http://www.krishicks.com/post/phone-interviews/</link>
+      <link>http://www.krishicks.com/post/2014/05/23/phone-interviews-are-useless/</link>
       <pubDate>Fri, 23 May 2014 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/phone-interviews/</guid>
+      <guid>http://www.krishicks.com/post/2014/05/23/phone-interviews-are-useless/</guid>
       <description>&lt;p&gt;&lt;em&gt;See discussion about this post on &lt;a href=&#34;https://news.ycombinator.com/item?id=9111310&#34;&gt;Hacker News&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;Yesterday, I did a coding challenge-based phone interview. When it ended, I had a mini retrospective with myself, and thought about what went well, and what didn&amp;rsquo;t go well.&lt;/p&gt;
 
 &lt;p&gt;Mostly, it didn&amp;rsquo;t go well.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;I dislike coding challenges, and interviews that are based around them. As soon as the coding challenge begins, my heartrate jumps and my stress levels rise. It&amp;rsquo;s like being put on stage.&lt;/p&gt;
-
-&lt;p&gt;Often, when doing a coding challenge, I make silly mistakes and find myself forgetting to use idioms. It&amp;rsquo;s only after the interview is over and I&amp;rsquo;ve relaxed a bit that I realize what my errors were and where I deviated from how I&amp;rsquo;d write code normally, and rewrite the code to my usual standard. But at that point the interview&amp;rsquo;s over, and I&amp;rsquo;ve already lost.&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;m similarly bad at whiteboard coding. I don&amp;rsquo;t ever do it outside of interviews, and I rarely do interviews. I avoided interviewing at Twitter for a long time because I was sure I wouldn&amp;rsquo;t get through the interview process, which I knew to consist of both a phone interview and whiteboard coding. After a couple of my friends joined and I had a chat with an engineering manager there, I figured I&amp;rsquo;d give it a shot. If anything, it&amp;rsquo;d be practice for interviewing, which I&amp;rsquo;m terrible at.&lt;/p&gt;
-
-&lt;p&gt;I didn&amp;rsquo;t get past the phone interview.&lt;/p&gt;
-
-&lt;p&gt;Most of the reason I&amp;rsquo;m so bad at coding challenge-based phone interviews and whiteboard coding is I have very low confidence in them as effective tools for interviewing.&lt;/p&gt;
-
-&lt;p&gt;Coding challenges done over the phone will select for people who are good at doing coding challenges over the phone.&lt;/p&gt;
-
-&lt;p&gt;It&amp;rsquo;s probably the case that people who use coding challenges over the phone as a tool for interviewing feel differently than me about them. This was illustrated when I had the aforementioned chat with the engineering manager at Twitter. He applied the same low value to coding challenges as me, but knew he&amp;rsquo;d have to go through them to get the job. So he bought and read “Cracking the Coding Interview” to fill his developer toolbox with tools he doesn&amp;rsquo;t usually use, and wouldn&amp;rsquo;t expect to use in the position he was interviewing for, because the interview process expected it of him. He jumped through the hoops because everyone else jumped through the same hoops, and doing that particular bit of acrobatics was what everyone else wanted from their new hires. Sure, someone might be a great developer in their own right, but &lt;em&gt;can they jump through the hoops?&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;At Pivotal, the gating portion of the interview is done differently from any other place I&amp;rsquo;ve interviewed at. The interview begins with, instead of a coding challenge, a TDD challenge: the interviewee is presented with a few failing tests for a reasonably simple problem, sitting side by side (&lt;em&gt;pairing&lt;/em&gt;) with the interviewer in a typical work environment. The interviewee explains what kind of code they&amp;rsquo;d write to pass each test, and the interviewer does the typing. When all the tests pass, the interviewee gets to add new tests of their own, since there are certain tests that are missing (by design). This system allows the candidate to get a good idea of what they&amp;rsquo;d be doing day-to-day (pairing, TDD) in a realistic work environment. It also allows the interviewer to get a better idea of how the candidate approaches problem-solving.&lt;/p&gt;
-
-&lt;p&gt;When I was interviewing for my replacement at DaisyBill, I opted for a similar approach. I took an actual production feature I developed, copied a subset of the tests I wrote for the feature, and left a shell of the implementation for the interviewee to use as a starting point. This made for a repeatable, real-world-based, effective interview.&lt;/p&gt;
-
-&lt;p&gt;For more reading on effective interview processes, I recommend reading about &lt;a href=&#34;http://ejohn.org/blog/project-based-interviews&#34;&gt;Project-Based Interviews&lt;/a&gt; and &lt;a href=&#34;https://github.com/blog/1269-the-github-hiring-experience&#34;&gt;The GitHub Hiring Experience&lt;/a&gt;.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>On Consulting</title>
-      <link>http://www.krishicks.com/post/on-consulting/</link>
+      <link>http://www.krishicks.com/post/2013/03/17/on-consulting/</link>
       <pubDate>Sun, 17 Mar 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/on-consulting/</guid>
+      <guid>http://www.krishicks.com/post/2013/03/17/on-consulting/</guid>
       <description>&lt;p&gt;After four years being a consultant I jumped ship and joined a startup.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;In this post I describe my time as a consultant, what I learned during the experience, and why I got out. If you’re considering joining a consultancy, this post is for you.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;The consulting I refer to in this post is specifically software consulting, though I believe it applies to other facets of consulting as well.&lt;/em&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;in-the-beginning&#34;&gt;In the beginning&lt;/h3&gt;
-
-&lt;p&gt;Prior to consulting I worked at a company where I was the only developer. I wasn’t a developer when I joined, but over the course of about a year I taught myself to program in Ruby and that became my full-time job. I made some good software but never felt truly satisfied with the pace of my progress. I wanted to be better, faster. I wanted to learn from and work with other people.&lt;/p&gt;
-
-&lt;p&gt;That is where my consulting journey began.&lt;/p&gt;
-
-&lt;h3 id=&#34;thoughtworks&#34;&gt;ThoughtWorks&lt;/h3&gt;
-
-&lt;p&gt;I joined ThoughtWorks in 2009 after having been to a few of the Chi.rb meetups they hosted.&lt;/p&gt;
-
-&lt;p&gt;Soon after I joined I was put on a project in Atlanta. The team I joined was exactly what I was looking for: 30 or so developers who were all much more experienced than I was, working on a very large Rails codebase.&lt;/p&gt;
-
-&lt;p&gt;It was my first time pairing, doing TDD, doing Rails, and being a consultant.&lt;/p&gt;
-
-&lt;p&gt;Though, to be honest, I wasn’t really a consultant then. I was a pretty green developer that was easily absorbed into a large team at a reduced rate. In the first 6 months on that project I was doing more learning than giving much back to the project. I had to learn the stack (Rails, JavaScript, MySQL), the tools (Subversion, TextMate), testing (RSpec, Selenium), and the method (agile, TDD, pairing) in addition to Object-oriented design and a very large domain model.&lt;/p&gt;
-
-&lt;p&gt;I wasn’t a consultant in the sense of being an expert in a domain or a technology, lending my expertise to the client to help them grow. I was a consultant purely in the sense that I was being flown in on a weekly basis to the client’s site to work on their application.&lt;/p&gt;
-
-&lt;p&gt;The client had their own developers, but they were all more senior than I was. They knew the stack, the tools, the domain better, having been there for years already.&lt;/p&gt;
-
-&lt;p&gt;My experience on that project set a precedent for me that gave me a false idea of what it meant to be a consultant.&lt;/p&gt;
-
-&lt;p&gt;I worked on a few other projects at ThoughtWorks, all with a similar theme. My knowledge grew and I became a better developer, but I didn’t become a better consultant. I didn’t even know what it meant to be a consultant then, let alone a good one.&lt;/p&gt;
-
-&lt;h3 id=&#34;pivotal-labs&#34;&gt;Pivotal Labs&lt;/h3&gt;
-
-&lt;p&gt;I joined Pivotal Labs in 2011.&lt;/p&gt;
-
-&lt;p&gt;After all the time I spent at ThoughtWorks becoming a better developer, I continued in the same fashion on joining Pivotal.&lt;/p&gt;
-
-&lt;p&gt;I worked on a few projects, some with only a couple client developers, some with none, one which was purely staff-augmentation (meaning the client wanted us purely to increase their capacity to deliver software, not necessarily to teach them how to write it), all which kept the idea in my head that being a consultant meant writing good software, and no more.&lt;/p&gt;
-
-&lt;p&gt;It wasn’t until later, while still at Pivotal, that it was impressed upon me what it meant to be a consultant.&lt;/p&gt;
-
-&lt;h3 id=&#34;in-the-end&#34;&gt;In the end&lt;/h3&gt;
-
-&lt;p&gt;One of the best developers I’ve worked with to date also happens to be one of the best consultants I’ve worked with to date.&lt;/p&gt;
-
-&lt;p&gt;It was from him that I learned that the duty of a consultant is not simply to join a project, write code, and eventually exit, as had been my experience for the three previous years being a consultant.&lt;/p&gt;
-
-&lt;p&gt;I thought my job as a consultant was to write the best code I could, to do the best job I could for the client. That’s how I thought I best delivered value.&lt;/p&gt;
-
-&lt;p&gt;I was wrong.&lt;/p&gt;
-
-&lt;p&gt;Consulting means working with clients and client developers who are less experienced or less capable of writing the software they need. As a consultant your job is to help them build what they need while making a concerted effort to teach them how to continue building it once you’re gone.&lt;/p&gt;
-
-&lt;p&gt;I had been merely a developer, not a consultant, for years. It’s probably the case that I imparted some knowledge onto the client developers I’ve worked with, but my primary motivation was writing good software at my pace, not being a good teacher. In that sense, I failed my clients.&lt;/p&gt;
-
-&lt;h3 id=&#34;parting-words&#34;&gt;Parting words&lt;/h3&gt;
-
-&lt;p&gt;I hope you’ve gotten out of this an understanding of what I believe it means to be a proper consultant, such that you might make an informed decision to decide whether or not consulting is for you.&lt;/p&gt;
-
-&lt;p&gt;I decided it wasn’t for me; I wanted to build a product that I would own, where I would work only with people that were as capable as I was or moreso. By definition, not a consultant.&lt;/p&gt;
-
-&lt;p&gt;Of course, you can join a consultancy and be just a developer, but if you do so you’re missing the point, and doing a disservice to your clients.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>How to set up a Clojure dev environment on Snow Leopard</title>
-      <link>http://www.krishicks.com/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</link>
+      <link>http://www.krishicks.com/post/2013/02/02/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</link>
       <pubDate>Sat, 02 Feb 2013 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</guid>
+      <guid>http://www.krishicks.com/post/2013/02/02/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</guid>
       <description>&lt;h3 id=&#34;homebrew-package-manager&#34;&gt;Homebrew (package manager)&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;$ ruby -e &amp;quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&amp;quot;
@@ -781,628 +146,112 @@ daf97fc 3 hours ago Kris Hicks | Add keybase.txt
 
 &lt;p&gt;More information on Homebrew can be found on the &lt;a href=&#34;http://mxcl.github.com/homebrew/&#34; title=&#34;Homebrew home page&#34;&gt;Homebrew home page&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;emacs-24-editor&#34;&gt;Emacs 24 (editor)&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code&gt;$ brew install emacs --cocoa --use-git-head --HEAD # this takes a while
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;emacs-prelude-enhanced-emacs-24-configuration&#34;&gt;Emacs Prelude (enhanced Emacs 24 configuration)&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git clone git://github.com/bbatsov/prelude.git /path/to/prelude
-$ ln -s /path/to/prelude ~/.emacs.d
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;More information on Prelude can be found on the &lt;a href=&#34;http://batsov.com/prelude/&#34; title=&#34;Prelude home page&#34;&gt;Prelude home page&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&#34;paredit-emacs-minor-mode-for-editing-parentheses&#34;&gt;ParEdit (emacs minor mode for editing parentheses)&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code&gt;$ emacs
-M-x package-install [RET] paredit [RET]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Add to ~/.emacs.d/init.el:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(add-hook &#39;nrepl-mode-hook &#39;paredit-mode)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;See the EmacsWiki: &lt;a href=&#34;http://emacswiki.org/emacs/ParEdit&#34; title=&#34;ParEdit&#34;&gt;ParEdit&lt;/a&gt; and &lt;a href=&#34;http://emacswiki.org/emacs/PareditCheatsheet&#34; title=&#34;ParEdit Cheatsheet&#34;&gt;ParEdit Cheatsheet&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&#34;clojure&#34;&gt;Clojure&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git clone https://github.com/clojure/clojure.git /path/to/clojure
-$ cd /path/to/clojure
-$ ./antsetup.sh
-$ ant
-$ mkdir ~/.clojure
-$ ln -s /path/to/clojure/clojure.jar ~/.clojure/clojure.jar
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;leiningen-clojure-automation-tool&#34;&gt;Leiningen (Clojure automation tool)&lt;/h3&gt;
-
-&lt;pre&gt;&lt;code&gt;$ wget -O /usr/local/bin/lein https://raw.github.com/technomancy/leiningen/preview/bin/lein
-$ chmod 755 /usr/local/bin/lein
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;More information on Leiningen can be found on the &lt;a href=&#34;http://leiningen.org/&#34; title=&#34;Leiningen home page&#34;&gt;Leiningen home page&lt;/a&gt;.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Finally:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ emacs
-M-x nrepl-jack-in
-&lt;/code&gt;&lt;/pre&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>rewinding git pull</title>
-      <link>http://www.krishicks.com/post/rewinding-git-pull/</link>
+      <link>http://www.krishicks.com/post/2012/07/09/rewinding-git-pull/</link>
       <pubDate>Mon, 09 Jul 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/rewinding-git-pull/</guid>
+      <guid>http://www.krishicks.com/post/2012/07/09/rewinding-git-pull/</guid>
       <description>&lt;p&gt;If you&amp;rsquo;re using a rebase strategy for the first time you may run &lt;code&gt;git pull&lt;/code&gt; in a situation where Git practically tells you to do it, but you don&amp;rsquo;t actually want to do it.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;The situation is described below, and the method to unwind it follows. I&amp;rsquo;ve added pictures of the branches between hashes to make it clear what the state of the world is at any given point prior to or after running a particular command, which I hope makes it easier to follow.&lt;/p&gt;
-
-&lt;p&gt;First, you update master, as it&amp;rsquo;s out of date:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#############################
-A--B--C--D origin/master
-A--B--C master
-#############################
-
-(master) $ git pull
-Updating C..D
-Fast-forward
-...snip...
-
-#############################
-A--B--C--D origin/master
-A--B--C--D master
-#############################
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You create and checkout a topic branch, topicA:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(master) $ git checkout -b topicA
-Switched to a new branch &#39;topicA&#39;
-
-#############################
-A--B--C--D origin/master
-A--B--C--D master
-          \
-           topicA
-#############################
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You make some changes, commit, and push it to origin.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(topicA) $ git commit -am &amp;quot;Changed README&amp;quot;
-
-#############################
-A--B--C--D origin/master
-A--B--C--D master
-          \
-           E topicA
-#############################
-
-(topicA) $ git push -u origin
-(topicA) Counting objects: 28, done.
-...snip...
-(topicA)  * [new branch]      topicA -&amp;amp;gt; topicA
-(topicA) Branch topicA set up to track remote branch topicA from origin.
-
-#############################
-A--B--C--D origin/master
-A--B--C--D master
-          \
-           E topicA
-A--B--C--D--E origin/topicA
-#############################
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;At this point you have your local topicA, and also origin has a copy of topicA:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(topicA) $ git branch -a
-* topicA
-remotes/origin/topicA
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You continue doing work, making more commits on your branch. Some time has passed since you branched from master, and another commit, F, has been pushed to origin/master.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(topicA) $ git fetch # to update your local repository&#39;s knowledge of the remote
-
-#############################
-A--B--C--D--F origin/master
-A--B--C--D master
-          \
-           E--G--H topicA
-A--B--C--D--E origin/topicA
-#############################
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;At this point you want to rebase on top of origin/master to get the updates (in this case, F).&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git rebase origin/master
-First, rewinding head to replay your work on top of it...
-...snip...
-
-#############################
-A--B--C--D--F origin/master
-             \
-              E&#39;--G&#39;--H&#39; topicA
-A--B--C--D master
-A--B--C--D--E origin/topicA
-#############################
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And then you want to push your updated topicA, with your new commits and the new commit from origin/master up to origin:&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;The following assumes you have &lt;code&gt;git config.push default upstream&lt;/code&gt; set. This configuration parameter limits the branch that git will attempt to push. I highly recommend you set that value as the default is to push &lt;em&gt;all&lt;/em&gt; branches, which you probably do not want.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(topicA) $ git push
-To git@github.com:intentmedia/code.git
-! [rejected]        topicA -&amp;amp;gt; topicA (non-fast-forward)
-error: failed to push some refs to &#39;git@github.com:krishicks/krishicks.git&#39;
-To prevent you from losing history, non-fast-forward updates were rejected
-Merge the remote changes (e.g. &#39;git pull&#39;) before pushing again.  See the
-&#39;Note about fast-forwards&#39; section of &#39;git push --help&#39; for details.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is where trouble sets in.&lt;/p&gt;
-
-&lt;p&gt;First, Git tells you the push was rejected because you would have lost history. Then comes the troublesome line: &amp;ldquo;Merge the remote changes (e.g. &amp;lsquo;git pull&amp;rsquo;) before pushing again.&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;If you were working on master and made some commits, and someone else made some commits on master as well and pushed before you did, you would end up with the same situation as above. The push would be rejected because you don&amp;rsquo;t have the commits that the other person made. Thus, if your push were to succeed their work would be lost on origin/master. This is what Git is referring to when it says &amp;ldquo;To prevent you from losing history..&amp;rdquo; The history that would be lost would be the work the other person did.&lt;/p&gt;
-
-&lt;p&gt;In the situation we&amp;rsquo;ve been building up, making commits and rebasing topicA, you&amp;rsquo;re the only person committing to the branch and the history you would &amp;ldquo;lose&amp;rdquo; is the set of pre-rebase commits that you pushed to the remote originally (in this case, E). You&amp;rsquo;ve overwritten E with E&amp;rsquo; during the rebase, and Git doesn&amp;rsquo;t want you to lose the E that&amp;rsquo;s on the remote.&lt;/p&gt;
-
-&lt;p&gt;What you should do in this situation is &lt;code&gt;git push -f&lt;/code&gt; to force-push the branch. You know you&amp;rsquo;re going to lose E that&amp;rsquo;s on the remote, but that&amp;rsquo;s fine because you have E&amp;rsquo; on your local topicA. You intend to replace whatever is on the remote with whatever you have locally.&lt;/p&gt;
-
-&lt;p&gt;The problem is that it says to do a &lt;code&gt;git pull&lt;/code&gt;, which will pull the remote E into your local, which you don&amp;rsquo;t want. That will give you a merge commit, I:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;A--B--C--D--F origin/master
-             \
-              E&#39;--G&#39;--H&#39; topicA
-                       \
-                        I
-A--B--C--D master      /
-A--B--C--D------------E origin/topicA
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you did a git log at this point you&amp;rsquo;d see that the merge commit I brought in E, which has the same message but a different SHA than your rebased E&amp;rsquo;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(topicA) $ git log --graph --oneline
-* I Merge branch &#39;origin/topicA&#39; into topicA
-|
-| * E
-* | H&#39;
-* | G&#39;
-* | E&#39;
-|/
-* D
-* C
-* B
-* A
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;So, how do you fix this? You can hard reset back to H&amp;rsquo;, which gets rid of the merge commit, but &lt;strong&gt;only if you didn&amp;rsquo;t already make more commits after the faulty &lt;code&gt;git pull&lt;/code&gt;.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(topicA) $ git reset --hard H&#39; # Only if you didn&#39;t make any more commits!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you have made commits after, with your log looking like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(topicA) $ git log --graph --oneline
-* K
-* J
-* I Merge branch &#39;origin/topicA&#39; into topicA
-|
-| * E
-* | H&#39;
-* | G&#39;
-* | E&#39;
-|/
-* D
-* C
-* B
-* A
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You need to use the two-argument form of &lt;a href=&#34;https://pivotallabs.com/users/khicks/blog/articles/2118-git-rebase-onto&#34; title=&#34;git rebase --onto&#34;&gt;git rebase &amp;ndash;onto&lt;/a&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(topicA) $ git rebase --onto H&#39; J~1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;That will get rid of the merge commit, leaving you with:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(topicA) $ git log --graph --oneline
-* K
-* J
-* H&#39;
-* G&#39;
-* E&#39;
-* D
-* C
-* B
-* A
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And now you can &lt;code&gt;git push -f&lt;/code&gt;. The &lt;a href=&#34;http://linux.die.net/man/1/git-push&#34; title=&#34;docs on git-push&#34;&gt;docs on git-push&lt;/a&gt; (or &lt;code&gt;git push --help&lt;/code&gt;) do give you a better explanation than the message when the push is rejected, in the section NOTE ABOUT FAST-FORWARDS.&lt;/p&gt;
-
-&lt;p&gt;A simple rule about &lt;code&gt;git pull&lt;/code&gt; is to not ever use it unless you&amp;rsquo;re on master and have made no commits that put you ahead of origin/master, which you can easily tell with:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(master) $ git fetch
-(master) $ git log @{u}..
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;or&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(master) $ git fetch
-(master) $ git status
-# On branch master
-nothing to commit (working directory clean)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If the result from &lt;code&gt;git log @{u}&lt;/code&gt; is empty or you don&amp;rsquo;t get &amp;ldquo;# Your branch is ahead of &amp;lsquo;origin/master&amp;rsquo; by  commit(s)&amp;rdquo; message after &lt;code&gt;git status&lt;/code&gt;, you&amp;rsquo;re OK to &lt;code&gt;git pull&lt;/code&gt;. In no other case do you need to, or should you, &lt;code&gt;git pull&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;I generally recommend always working on a topic branch and keeping master clean to avoid accidentally running &lt;code&gt;git push -f&lt;/code&gt; on master, and to enforce the idea that after you fetch, you&amp;rsquo;re rebasing on top of origin/master directly instead of doing &lt;code&gt;git pull --rebase&lt;/code&gt; while on master, which hides the fact that you&amp;rsquo;re rebasing on top of origin/master.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>git quick tips</title>
-      <link>http://www.krishicks.com/post/quick-tips/</link>
+      <link>http://www.krishicks.com/post/2012/07/03/quick-tips/</link>
       <pubDate>Tue, 03 Jul 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/quick-tips/</guid>
+      <guid>http://www.krishicks.com/post/2012/07/03/quick-tips/</guid>
       <description>&lt;p&gt;The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;go-headless&#34;&gt;Go HEADless&lt;/h2&gt;
-
-&lt;p&gt;In many (and perhaps all) cases HEAD is implied when no ref is given, such as the following equivalent statements:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log origin/master..HEAD
-$ git log origin/master..
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;upstream-reference&#34;&gt;Upstream reference&lt;/h2&gt;
-
-&lt;p&gt;Before you start referring to the upstream, you&amp;rsquo;ll want to do a &lt;code&gt;git fetch&lt;/code&gt; to update your refs/heads:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git fetch
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You only need to do this once in a while, or whenever you know the upstream to have changed.&lt;/p&gt;
-
-&lt;p&gt;You can refer to the upstream of any branchname or otherwise symbolic-ref by appending &lt;code&gt;@{u}&lt;/code&gt; to the ref, such as:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log master@{u}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you just want the upstream of the current branch, whatever it may be, you can replace master from above with HEAD:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log HEAD@{u}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;upstream-difference&#34;&gt;Upstream difference&lt;/h2&gt;
-
-&lt;p&gt;Often, I&amp;rsquo;ll want to see what commits are on upstream that I don&amp;rsquo;t have. I usually will do this via:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log @{u}..
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Which, when on master, is equivalent to:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log origin/master..HEAD
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You can see the reverse difference, or the commits are on the remote that you don&amp;rsquo;t have, by reversing the range:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log ..@{u}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Which, again on master, is equivalent to:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log HEAD..origin/master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;em&gt;To see the full list of formats recognizable, see &lt;code&gt;git revisions --help&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;If you want to see both of the above at the same time, you can use &lt;code&gt;git log&lt;/code&gt; with the &amp;ndash;left-right parameter. I&amp;rsquo;ve also included &amp;ndash;format=&amp;rdquo; and &amp;ndash;oneline (which must be passed in that order), which may be optional depending on your format configuration, but for me are not:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log HEAD@{u}...HEAD --left-right --format=&#39;&#39; --oneline
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Which can be shortened to:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log @{u}... --left-right --format=&#39;&#39; --oneline
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;em&gt;Note: The above example uses three dots, not two, to show only the commits which are reachable as ancestors of one branch but not the other.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;You can replace HEAD in the above with any symbolic-ref or branchname to use as a reference instead. The output (with the format given previously) will look like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt; e86bd83 D
-&amp;lt; 6ea2155 C
-&amp;gt; eb2de55 B
-&amp;gt; 74829bd A
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Commits beginning with &amp;ldquo;&amp;lt;&amp;rdquo; are only on the left side of the triple-dot (in this case, the upstream), commits beginning with &amp;ldquo;&amp;gt;&amp;rdquo; are only on the right side (in this case, the current branch). A..D are the commit messages.&lt;/p&gt;
-
-&lt;h2 id=&#34;is-it-merged&#34;&gt;Is it merged?&lt;/h2&gt;
-
-&lt;p&gt;To find out if a particular branch has been merged into origin/master, you could dig through the log on master and search for it:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log origin/master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Or, if you knew who would have merged it, you could limit the above with that:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git log origin/master --author Kris
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I wanted a better way, and I found it. I wanted to see if a particular branch had been merged to master without changing branches or having to dig through a log looking for the merge of the branch.&lt;/p&gt;
-
-&lt;p&gt;The situation that prompted this was that I had a topic branch, topicB, which depended on another topic branch, topicA. I wanted to see if topicA had been merged into master to find out if I could rebase onto master to get up to date, or if I should continue rebasing on top of the branch.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git fetch
-$ git branch --contains topicB@{u} -r
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This gives you a list of all the remote branches that can reach (as an ancestor) the ref given. origin/master will be right at the top if the branch has been merged into it.&lt;/p&gt;
-
-&lt;p&gt;Many thanks to &lt;a href=&#34;http://newartisans.com/2008/04/git-from-the-bottom-up/&#34; title=&#34;John Wiegley&#34;&gt;John Wiegley&lt;/a&gt;, &lt;a href=&#34;http://www.git-scm.com/book&#34; title=&#34;Scott Chacon&#34;&gt;Scott Chacon&lt;/a&gt; and &lt;a href=&#34;http://serverfault.com/a/384862&#34; title=&#34;Mark Longair&#34;&gt;Mark Longair&lt;/a&gt; for the sources of the tips.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>rewinding git commit --amend</title>
-      <link>http://www.krishicks.com/post/rewinding-git-commit-amend/</link>
+      <link>http://www.krishicks.com/post/2012/06/25/rewinding-git-commit---amend/</link>
       <pubDate>Mon, 25 Jun 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/rewinding-git-commit-amend/</guid>
+      <guid>http://www.krishicks.com/post/2012/06/25/rewinding-git-commit---amend/</guid>
       <description>&lt;p&gt;It may come to pass that you will run &lt;code&gt;git commit --amend&lt;/code&gt; by mistake. When this happens, you&amp;rsquo;ll want to unwind the operation you just did.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;In some cases the changes are simple enough that you can use &lt;a href=&#34;http://www.krishicks.com/blog/2012/05/16/git-reset-p/&#34; title=&#34;git reset -p&#34;&gt;git reset -p&lt;/a&gt; to remove those lines from the commit. However, sometimes &lt;code&gt;git reset -p&lt;/code&gt; isn&amp;rsquo;t up to the task, as in the case when the changeset is very large. Luckily, git has a ticker tape of the changes you make to each branch, which is called the reflog.&lt;/p&gt;
-
-&lt;p&gt;The reflog records when the tip of a branch is updated. The tip is updated any time you create a new commit, amend a commit, reset a commit, switch branches, etc. Basically, any time HEAD changes, you will get a reflog entry. The reflog therefore is a great tool for understanding how the repository came to be in a particular state.&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;git reflog -2&lt;/code&gt; will give you the last two operations that Git performed. In the case of an amend, it will look something like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;C HEAD@{0}: commit (amend): Something something something commit message
-B HEAD@{1}: reset: moving to HEAD~1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;code&gt;git commit --amend&lt;/code&gt; is kind of shorthand for the following, given changes have been made, and are either in the index or in the working directory:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git stash
-$ git reset HEAD~1
-$ git stash pop
-$ git add .
-$ git commit
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Or, in English:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Save the changes that you want to apply to the HEAD commit off in the stash&lt;/li&gt;
-&lt;li&gt;Remove the HEAD commit and put its contents in the index&lt;/li&gt;
-&lt;li&gt;Apply the stashed changes to the working directory, adding them to the changes from the commit that was reset&lt;/li&gt;
-&lt;li&gt;Make a new commit&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Thus, the last two operations in the reflog are &lt;strong&gt;reset&lt;/strong&gt; and &lt;strong&gt;commit&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;So, what can we do with this? Well, B was HEAD before the amend happened. C is the amended commit. &lt;code&gt;git diff C..B&lt;/code&gt; will show you what changes were applied as part of the amend:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git diff C..B
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;From here you can use &lt;code&gt;git apply&lt;/code&gt; to apply the reverse of what you amended earlier to your working tree:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git diff C..B | git apply -
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Note: The hyphen in &lt;code&gt;git apply -&lt;/code&gt; causes &lt;code&gt;git apply&lt;/code&gt; to take stdin as input.&lt;/li&gt;
-&lt;li&gt;Extra Note: The arguments to &lt;code&gt;git diff&lt;/code&gt; are given in reverse order, with the later commit happening first to show the reverse of the amend. It&amp;rsquo;s the same as doing &lt;code&gt;git diff B..C -R&lt;/code&gt;, which reverses the diff output. Additionally, the -R argument may be applied to &lt;code&gt;git apply&lt;/code&gt; instead of &lt;code&gt;git diff&lt;/code&gt; to achieve the same effect.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now we can do another amend to put the commit back to where it was before we did the previous amend:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git commit -a --amend -CHEAD
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And then, by reversing the order of the refs to &lt;code&gt;git diff&lt;/code&gt;, get the changes we want to apply to the correct commit back:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git diff B..C | git apply -
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And commit as necessary, this time using &amp;ndash;fixup to indicate the correct commit (in this example, A):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git commit -a --fixup A
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then you can rebase either now or at a later time to do the &amp;lsquo;amend&amp;rsquo; you had originally intended:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ git rebase --i --autosquash A~1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;So don&amp;rsquo;t fret when you do an accidental amend. It&amp;rsquo;s just a couple commands away from being unwound and applied to the correct commit.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>rerere</title>
-      <link>http://www.krishicks.com/post/rerere/</link>
+      <link>http://www.krishicks.com/post/2012/06/13/rerere/</link>
       <pubDate>Wed, 13 Jun 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/rerere/</guid>
+      <guid>http://www.krishicks.com/post/2012/06/13/rerere/</guid>
       <description>&lt;p&gt;There have been times where I performed a rebase and had to resolve conflicts as part of the rebase, and then decided to abort the rebase for one reason or another.&lt;/p&gt;
 
 &lt;p&gt;Without &lt;code&gt;rerere&lt;/code&gt; the next time I went to perform the rebase I&amp;rsquo;d end up having to resolve at least some of the same conflicts I had previously, which is annoying.&lt;/p&gt;
 
 &lt;p&gt;This is where &lt;code&gt;rerere&lt;/code&gt; comes in.&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
-
-&lt;p&gt;&amp;ldquo;rerere&amp;rdquo; stands for &lt;strong&gt;re&lt;/strong&gt;use &lt;strong&gt;re&lt;/strong&gt;corded &lt;strong&gt;re&lt;/strong&gt;solution.&lt;/p&gt;
-
-&lt;p&gt;What &lt;code&gt;rerere&lt;/code&gt; does is save the resolution of a conflict so that it can be re-applied later if it sees the same conflict again. When Git sees the conflict which it already has a resolution recorded for, it will apply the resolution automatically for you, and give you the opportunity to accept the resolution as applied, or change it.&lt;/p&gt;
-
-&lt;p&gt;Turning it on can be done two ways: set it as a configuration parameter using &lt;code&gt;git config rerere.enabled true&lt;/code&gt;, or use it only when you think you might need it with &lt;code&gt;git rerere&lt;/code&gt; both before and after the resolution of a conflict.&lt;/p&gt;
-
-&lt;p&gt;*A more verbose explanation of &lt;code&gt;rerere&lt;/code&gt; exists in Scott Chacon&amp;rsquo;s &lt;strong&gt;Pro Git&lt;/strong&gt;*.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>git rebase --onto</title>
-      <link>http://www.krishicks.com/post/git-rebase-onto/</link>
+      <link>http://www.krishicks.com/post/2012/05/28/git-rebase---onto/</link>
       <pubDate>Mon, 28 May 2012 00:00:00 +0000</pubDate>
       
-      <guid>http://www.krishicks.com/post/git-rebase-onto/</guid>
+      <guid>http://www.krishicks.com/post/2012/05/28/git-rebase---onto/</guid>
       <description>&lt;p&gt;Have you ever dug into the &lt;code&gt;git rebase&lt;/code&gt; documentation and noticed there&amp;rsquo;s a three-argument form of it?&lt;/p&gt;
 
-&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git add -e</title>
+      <link>http://www.krishicks.com/post/2012/05/21/git-add--e/</link>
+      <pubDate>Mon, 21 May 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/2012/05/21/git-add--e/</guid>
+      <description>&lt;p&gt;&lt;code&gt;git add -e&lt;/code&gt; is like &lt;code&gt;git add -p&lt;/code&gt;, except instead of adding things at the hunk level, you edit the entire patch at once.&lt;/p&gt;
 
-&lt;p&gt;First, let&amp;rsquo;s look at the two-argument form, and build up to the three-argument form.&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git reset -p</title>
+      <link>http://www.krishicks.com/post/2012/05/16/git-reset--p/</link>
+      <pubDate>Wed, 16 May 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/2012/05/16/git-reset--p/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve been using &lt;code&gt;git reset -p&lt;/code&gt; a lot recently and I think it makes sense to clarify what it is that it does because when I first started using it I found it a little confusing.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-two-argument-form-of-git-rebase-onto&#34;&gt;The two-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git exec</title>
+      <link>http://www.krishicks.com/post/2012/04/06/git-exec/</link>
+      <pubDate>Fri, 06 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/2012/04/06/git-exec/</guid>
+      <description>&lt;p&gt;(Update #1 below)&lt;/p&gt;
 
-&lt;p&gt;Say there&amp;rsquo;s a commit C made on master that made a change to a configuration parameter that, it turns out, wasn&amp;rsquo;t actually necessary, so that commit needs to go. For the purposes of this demonstration, commits D and E don&amp;rsquo;t rely upon the changes made in C. &amp;#40;If D or E did rely on C, you&amp;rsquo;d end up with a conflict to resolve, which you&amp;rsquo;d be able to do at that point.&amp;#41;&lt;/p&gt;
+&lt;p&gt;Say you&amp;rsquo;re going to do an interactive rebase where you&amp;rsquo;re going to be squashing commits or reordering them. During this process you may want Git to execute a command after applying certain items of the todo list. An example of this would be when you want to run &lt;code&gt;rake&lt;/code&gt; or similar to ensure a newly-squashed commit is still green.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;A--B--C--D--E master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;One way to get rid of the offending commit would be to do an interactive rebase, deleting the line that has commit C on it:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git rebase -i C~1
-delete the line containing commit C
-save and close the editor
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;A quicker way is to use the two-argument &lt;code&gt;git rebase --onto&lt;/code&gt;, as going interactive just to delete a commit &amp;#40;or commits&amp;#41; is a little overkill, and considerably slower to do.&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;git rebase --onto&lt;/code&gt; takes a new base commit &amp;#40;which the manpage for git-rebase calls newbase&amp;#41; and an old base commit &amp;#40;oldbase&amp;#41; to use for the rebase operation.&lt;/p&gt;
-
-&lt;p&gt;So, what we want to do is tell Git to make commit B the newbase of commit D, making C go away. This looks like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git rebase --onto B C
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;But usually I like to talk about the commits I care about rather than the ones I don&amp;rsquo;t &amp;#40;in this case, I care about B and D, but not C&amp;#41;, so instead of the previous command I use a backreference from D:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git rebase --onto B D~1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This means that everything in the range from B &amp;#40;non-inclusive&amp;#41; to D~1 &amp;#40;inclusive&amp;#41; &lt;em&gt;will be removed&lt;/em&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;git rebase --onto&lt;/code&gt; allows you to, in a non-interactive way, change the base of a commit, or &lt;em&gt;rebase&lt;/em&gt; it. If you think about the commits as each having a &lt;strong&gt;base&lt;/strong&gt;, or &lt;strong&gt;parent&lt;/strong&gt; commit, you can see how you might be able to change the base of any commit to be another commit. In doing so, you remove everything that used to be in between the oldbase and the newbase.&lt;/p&gt;
-
-&lt;p&gt;It&amp;rsquo;s also good to know that it works exactly the same way as if you were to have done an interactive rebase and deleted the commit. Should a conflict arise while performing the rebase, Git will still pause and allow you to resolve the conflict before continuing.&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;ve also used the two-argument form when fixing a mistake: I had a branch from master, topicA, with some commits that I wanted to change via interactive rebase:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;A--B master
-    \
-     C--D--E topicA
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;But when I rebased, I went back too far, and rewrote a commit that I had gotten from master:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;A--B&#39; master
-    \
-     C&#39;--D&#39;--E&#39; topicA
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&amp;#40;Note that there was no change to the master branch here, just to topicA.&amp;#41;&lt;/p&gt;
-
-&lt;p&gt;What did I do to fix this situation? Well, I can&amp;rsquo;t fix this via interactive rebase. I can, however, fix it via &lt;code&gt;git rebase --onto&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git rebase --onto master C&#39;~1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Or, in other words: Replace the oldbase C&amp;rsquo;~1 with the newbase, master &amp;#40;which is HEAD of master, or B&amp;#41;.&lt;/p&gt;
-
-&lt;p&gt;It&amp;rsquo;s a handy undo mechanism.&lt;/p&gt;
-
-&lt;p&gt;If you forget to give the two-argument form of &amp;ndash;onto its second argument, such as:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git rebase --onto master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;..it will be the same as doing:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git reset --hard master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;You probably don&amp;rsquo;t want this.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Why is this? The second argument &amp;#40;the oldbase&amp;#41; is required if you want a range of commits to be applied on top of master. Without it, you haven&amp;rsquo;t supplied a range of commits to be applied on top of master, so HEAD of the branch gets reset to the HEAD of master.&lt;/p&gt;
-
-&lt;p&gt;What that means is any commits you have on your branch will be removed from the branch, and the branch will resemble master at that point. These commits are still in Git until garbage collection happens, accessible via the reflog &amp;#40;&lt;code&gt;git reflog&lt;/code&gt;&amp;#41;.&lt;/p&gt;
-
-&lt;h1 id=&#34;part-two&#34;&gt;Part Two:&lt;/h1&gt;
-
-&lt;h2 id=&#34;the-three-argument-form-of-git-rebase-onto&#34;&gt;The three-argument form of git rebase &amp;ndash;onto&lt;/h2&gt;
-
-&lt;p&gt;Say there is a branch &amp;lsquo;topicA&amp;rsquo; that diverges from master at some point:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;A--B--C--D--E master
-    \
-     F--G--H topicA
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Let&amp;rsquo;s also say that someone else has branched from topicA to create topicB, and added more commits:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;A--B--C--D--E master
-    \
-     F--G--H topicA
-            \
-             I--J--K--L--M topicB
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is an example of a real-world case I came across, where topicA had only a couple very large commits that were hard to digest and could have been split into many smaller commits. topicB was created as a continuation of the work done on topicA.&lt;/p&gt;
-
-&lt;p&gt;I checked out my own local copy of topicA, and through much interactive rebasing and prodigious use of &lt;code&gt;git add -e&lt;/code&gt;, I was able to split topicA into smaller commits, making topicC:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;A--B--C--D--E master
-   |         \
-   |          F--G--H topicA
-   |                 \
-   |                  I--J--K--L--M topicB
-   |
-   N--O--P--Q--R--S--T--U--V--W topicC
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I talked with the person that made topicA and we agreed that my branch topicC should take the place of topicA. But what to do about the work that was done on topicB?&lt;/p&gt;
-
-&lt;p&gt;The operation that we wanted to do is: make topicC the new base of topicB, cutting it at the point topicB diverged from topicA, which looks like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;A--B--C--D--E master
-   |         \
-   |          F--G--H topicA
-   |                 \
-   |                  I--J--K--L--M topicB
-   |
-   N--O--P--Q--R--S--T--U--V--W--I&#39;--J&#39;--K&#39;--L&#39;--M&#39; topicC
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The five commits from topicB &amp;#40;I through M&amp;#41;, get played on top of topicC, starting from where topicB diverged from topicA, to create I&amp;rsquo;, J&amp;rsquo;, K&amp;rsquo;, L&amp;rsquo;, and M&amp;rsquo;.&lt;/p&gt;
-
-&lt;p&gt;The command to do this is:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git rebase --onto topicC topicA topicB
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Where topicC is the newbase, topicA is the oldbase, and topicB is the reference for what HEAD of topicC will become.&lt;/p&gt;</description>
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://www.krishicks.com/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/about/</guid>
+      <description>Hi, I&amp;rsquo;m Kris.
+I taught myself Ruby in 2007 to solve a data entry problem. I did a couple of presentations on the automation framework I wrote and ended up getting a job at ThoughtWorks, where I hoped to (and did) grow as a developer by learning from highly talented people.
+I then moved to NYC and joined Pivotal Labs, where I continued to grow and learn new technologies: I helped write an iOS app, had my first foray into Java at Intent Media, and continued to build my knowledge of Rails.</description>
     </item>
     
   </channel>

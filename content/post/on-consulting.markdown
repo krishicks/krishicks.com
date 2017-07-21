@@ -1,5 +1,4 @@
 ---
-layout: post
 title: "On Consulting"
 date: "2013-03-17"
 comments: true

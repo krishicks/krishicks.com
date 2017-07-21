@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on krishicks.com</title>
+    <link>http://www.krishicks.com/tags/</link>
+    <description>Recent content in Tags on krishicks.com</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 02 Feb 2013 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://www.krishicks.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Clojure</title>
+      <link>http://www.krishicks.com/tags/clojure/</link>
+      <pubDate>Sat, 02 Feb 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/tags/clojure/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Git</title>
+      <link>http://www.krishicks.com/tags/git/</link>
+      <pubDate>Sat, 16 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/tags/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ketosoy</title>
+      <link>http://www.krishicks.com/tags/ketosoy/</link>
+      <pubDate>Mon, 18 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/tags/ketosoy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Osx</title>
+      <link>http://www.krishicks.com/tags/osx/</link>
+      <pubDate>Sat, 02 Feb 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/tags/osx/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
