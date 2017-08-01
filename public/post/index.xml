@@ -6,10 +6,20 @@
     <description>Recent content in Posts on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 07 Jan 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 31 Jul 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.krishicks.com/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Experience Report: Viral Meningitis</title>
+      <link>http://www.krishicks.com/post/2017/07/31/experience-report-viral-meningitis/</link>
+      <pubDate>Mon, 31 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/2017/07/31/experience-report-viral-meningitis/</guid>
+      <description>A few weeks ago I experienced some mild stomach cramps that reminded me of food poisoning at the beginning of the week. As the week dragged on and the stomach cramps came and went. I figured it was just mild food poisoning, and it&amp;rsquo;d be gone soon enough. I chewed some bismuth subsalicylate tablets and didn&amp;rsquo;t think too much more about it.
+At the end of the week there was a small bit of lethargy that I experienced, enough to make me go home early from work.</description>
+    </item>
     
     <item>
       <title>Thoughts on Pipeline Design with Concourse</title>

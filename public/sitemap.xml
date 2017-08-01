@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://www.krishicks.com/post/2017/07/31/experience-report-viral-meningitis/</loc>
+    <lastmod>2017-07-31T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.krishicks.com/post/2017/01/07/thoughts-on-pipeline-design-with-concourse/</loc>
     <lastmod>2017-01-07T00:00:00+00:00</lastmod>
   </url>
@@ -145,7 +150,7 @@
   
   <url>
     <loc>http://www.krishicks.com/post/</loc>
-    <lastmod>2017-01-07T00:00:00+00:00</lastmod>
+    <lastmod>2017-07-31T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -163,7 +168,7 @@
   
   <url>
     <loc>http://www.krishicks.com/</loc>
-    <lastmod>2017-01-07T00:00:00+00:00</lastmod>
+    <lastmod>2017-07-31T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
