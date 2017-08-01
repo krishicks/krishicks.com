@@ -3,7 +3,7 @@ title: "Experience Report: Viral Meningitis"
 date: "2017-07-31"
 ---
 
-A few weeks ago I experienced some mild stomach cramps that reminded me of food poisoning at the beginning of the week. As the week dragged on and the stomach cramps came and went. I figured it was just mild food poisoning, and it'd be gone soon enough. I chewed some bismuth subsalicylate tablets and didn't think too much more about it.
+A few weeks ago I experienced some mild stomach cramps that reminded me of food poisoning at the beginning of the week. As the week dragged on the stomach cramps came and went. I figured it was just mild food poisoning, and it'd be gone soon enough. I chewed some bismuth subsalicylate tablets and didn't think too much more about it.
 
 At the end of the week there was a small bit of lethargy that I experienced, enough to make me go home early from work.
 
