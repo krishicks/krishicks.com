@@ -6,10 +6,20 @@
     <description>Recent content in Posts on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 31 Jul 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 27 Aug 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.krishicks.com/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The Case Against Non-Technical PMs of Technical Projects</title>
+      <link>http://www.krishicks.com/post/2017/08/27/the-case-against-non-technical-pms-of-technical-projects/</link>
+      <pubDate>Sun, 27 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/2017/08/27/the-case-against-non-technical-pms-of-technical-projects/</guid>
+      <description>What is a PM? In agile software development there exists a role called Project Manager (PM). The person in this role is charged with understanding the needs of and empathizing with their stakeholders and the end users of their product(s). The PM converts the needs of stakeholders and desires of end users into units of work that can be executed by the engineering team.
+These units of work (&amp;ldquo;user stories&amp;rdquo; in agile parlance) are written and prioritized by the PM.</description>
+    </item>
     
     <item>
       <title>Experience Report: Viral Meningitis</title>
