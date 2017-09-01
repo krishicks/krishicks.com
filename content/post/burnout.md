@@ -2,7 +2,7 @@
 title: "Burnout"
 date: "2017-09-01"
 ---
-This is a post about me being taking on too much responsibility and not doing enough to reduce it when I started to crack. I realized somewhat early on that I had taken on too much, but I didn't see any way to offload the work while continuing to develop products at the pace I'd maintained.
+***This is a post about me being taking on too much responsibility and not doing enough to reduce it when I started to crack. I realized somewhat early on that I had taken on too much, but I didn't see any way to offload the work while continuing to develop products at the pace I'd maintained.***
 
 In January 2017 I joined a team which had been in existence for about 3 months.
 
