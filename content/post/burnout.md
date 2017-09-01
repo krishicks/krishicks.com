@@ -22,7 +22,7 @@ I eventually decided it wasn't healthy and that I had to make a change. I reques
 
 By then I had distanced myself from the rest of the team pretty aggressively, still doing all the roles that I had taken on but not able to hide the fact that I didn't want to do them all anymore, and that I resented that I was doing all this work which I should have let others do, and without being compensated or recognized for it.
 
-The others did take note of my soured mood among them, however. They gave feedback to their managers that I was unpleasant to work with.
+The others did take note of my soured mood among them, however, and made their feelings known.
 
 Looking back on things, I realize I made some mistakes. I took on too much work, ending up becoming a one-man product development shop, siloed in many ways from the rest of the team, while not giving enough feedback to my manager about the effect it was having on me. I was also breaking the rules; at Pivotal everyone is meant to pair-program but I'd skirted that since I joined this team, having discovered previously I was burned out on that, too.
 
