@@ -6,7 +6,7 @@ date: "2017-09-01"
 
 In January 2017 I joined a new team at Pivotal.
 
-Due to a variety of factors, I ended up taking on additional roles on top of my role as software engineer. Leaning on my decade of experience delivering software, I instituted rigorous testing and continuous integration and delivery pipelines. I pushed the team away from existing products that had few or zero users towards new products that better fit the immediate needs of the users. These new products became very popular, and became an addictive feedback loop for me.
+Due to a variety of factors, I ended up taking on additional roles on top of my role as software engineer. Leaning on my decade of experience delivering software, I instituted rigorous testing and continuous integration and delivery pipelines. I pushed the team away from existing products that had few or zero users towards new products that better fit the immediate needs of users. These new products became very popular, and became an addictive feedback loop for me.
 
 I was nearly, if not actually the sole creator of products like [pcf-pipelines](https://github.com/pivotal-cf/pcf-pipelines), [pg2mysql](https://github.com/pivotal-cf/pg2mysql), and [yaml-patch](https://github.com/krishicks/yaml-patch). I also [created](https://github.com/concourse/s3-resource/pull/75) [numerous](https://github.com/concourse/s3-resource/pull/78) [pull](https://github.com/concourse/fly/pull/171) [requests](https://github.com/concourse/atc/pull/190) to Concourse when I realized parts of pcf-pipelines that I'd designed required them. I also led major refactoring efforts related to legacy code that I'd adopted from people that were no longer on the team.
 
@@ -20,7 +20,7 @@ I started having issues sleeping. I developed tight stress knots in muscles in m
 
 I eventually decided it wasn't healthy and that I had to make a change. I requested to be moved to a different team as a way to force myself to relinquish the duties I'd taken on. At that point it was too late, however, and my request only made things worse.
 
-By then I had distanced myself from the rest of the team pretty aggressively, still doing all the roles that I had taken on but not able to hide the fact that I didn't want to do them all anymore, and that I resented that I was doing all this work which could have been done by others, and without being compensated or recognized for it.
+By then I had distanced myself from the rest of the team pretty aggressively, still doing all the roles that I had taken on but not able to hide the fact that I didn't want to do them all anymore, and that I resented that I was doing all this work which I should have let others do, and without being compensated or recognized for it.
 
 The others did take note of my soured mood among them, however. They gave feedback to their managers that I was unpleasant to work with.
 
