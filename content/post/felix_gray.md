@@ -35,4 +35,6 @@ So far they were a much better buy than the GUNNAR Optiks glasses: they came wit
 
 After wearing the Felix Gray lenses for a single day I had the first eye strain I'd experienced in longer than I can remember. I thought this was maybe a fluke, so I repeated the test for the rest of the week. I occasionally switched back to using the GUNNAR Optiks glasses, but perhaps because my eyes were already strained, the switch didn't result in relief. It's possible the magnification of the Felix Gray lenses is just more than my eyes are willing to accept, or perhaps something else about the lenses that leads to strain.
 
-At the end of the week I declared the experiment a failure and opted to return the Felix Gray glasses. If I didn't find the mild magnification of the GUNNAR Optiks lenses so pleasing I'd exchange the Felix Gray glasses for ones without magnification.
+At the end of the week I declared the experiment a failure and opted to return the Felix Gray glasses. If I didn't find the mild magnification of the GUNNAR Optiks lenses so pleasing I'd exchange the Felix Gray glasses for ones without magnification and see if those fared any better.
+
+For now, I'll keep my GUNNAR Optiks Intercept glasses.
