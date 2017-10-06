@@ -4,7 +4,7 @@ title = "krishicks.com"
 theme = "hugo-xmin"
 
 [params]
-  footer = "&copy; [Kris Hicks](https://keybase.io/krishicks) 2017 | [github](https://www.github.com/krishicks) | [twitter](https://www.twitter.com/krishicks) | [flickr](http://www.flickr.com/krishicks)"
+  footer = "&copy; Kris Hicks 2017 | [Resume](https://github.com/krishicks/resume) | [GitHub](https://www.github.com/krishicks) | [Twitter](https://www.twitter.com/krishicks) | [Flickr](http://www.flickr.com/krishicks)"
 
 [permalinks]
   post = "/post/:year/:month/:day/:slug/"
