@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Migrating Concourse Resources to S3 | krishicks.com</title>
+    <link rel="stylesheet" href="/css/main.css" />
+    
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/about">About</a></li>
+      
+      <li><a href="/categories">Categories</a></li>
+      
+      <li><a href="/tags">Tags</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Migrating Concourse Resources to S3</span></h1>
+
+<h2 class="date">2017/10/06</h2>
+</div>
+
+<main>
+
+
+<p>One of the great things about Concourse is the <a href="http://concourse.ci/single-page.html#resources">resource</a> abstraction it gives you for defining inputs and outputs to jobs in a pipeline. This abstraction allows you to redefine a resource while leaving the job that uses the resource unmodified. For example, if I have a resource, <code>my-source-code</code>, that normally is provided via a <code>git</code> resource:</p>
+
+<pre><code class="language-yaml">resources:
+- name: my-source-code
+  type: git
+  source:
+    uri: git@example.com/some-owner/some-repo.git
+</code></pre>
+
+<p>I can change that resource to be provided by S3 instead by changing the resource definition:</p>
+
+<pre><code class="language-yaml">resources:
+- name: my-source-code
+  type: s3
+  source:
+    bucket: some-bucket
+</code></pre>
+
+<p>Assuming the contents I put in that S3 bucket are the same as I would have gotten from git, the job should continue to work without being any the wiser.</p>
+
+<p>In this post I&rsquo;ll talk about how to take an existing pipeline and migrate its resources to S3 in an automated way.</p>
+
+<h3 id="overview">Overview</h3>
+
+<p>The general idea is to create an artifact, typically a tarball, that can be placed in S3, and which contains the same contents that you&rsquo;d get from the original resource type, for each resource the pipeline requires. You can even put the <code>image_resource</code> Docker image in S3!</p>
+
+<p>After that, you need to modify your pipeline to switch out the old resource definitions for new S3 resource definitions. It&rsquo;s also a good idea to make any necessary changes to the <code>get</code> of those resources (for example, removing params that no longer apply).</p>
+
+<p>We&rsquo;ll want to do this all programmatically, and we&rsquo;ll use Concourse to do it for us.</p>
+
+<h3 id="making-a-pipeline-to-put-resources-in-s3">Making a Pipeline to Put Resources in S3</h3>
+
+<p>While you could manually download the existing resource, create a tarball, and put that in S3 manually, that wouldn&rsquo;t be a good use of your time and is prone to errors. Instead, we can have Concourse do that for us.</p>
+
+<p>The job structure for each resource is simple:</p>
+
+<ol>
+<li>Do a <code>get</code> of the old, non-S3 resource</li>
+<li>Create a versioned tarball from the contents of the downloaded resource&rsquo;s directory</li>
+<li>Do a <code>put</code> to the <code>s3</code> resource with the tarball</li>
+</ol>
+
+<p>This method results in putting a tarball in S3 that has the exact same contents that were pulled down via the non-S3 resource.</p>
+
+<p>An example of a pipeline that does this for multiple resource types can be seen <a href="https://github.com/pivotal-cf/pcf-pipelines/blob/master/download-offline-resources/pipeline.yml">here</a>.</p>
+
+<p>We&rsquo;ll use a git resource example:</p>
+
+<pre><code class="language-yaml">resources:
+- name: some-resource
+  type: git
+  source:
+    uri: git@example.com/some-resource.git
+</code></pre>
+
+<p>Its associated S3 resource looks something like this:</p>
+
+<pre><code class="language-yaml">- name: some-resource-s3
+  type: s3
+  source:
+    access_key_id: some-access-key-id
+    secret_access_key: some-secret-access-key
+    bucket: some-bucket
+    regexp: &quot;resources/some-resource-v(.*).tgz&quot;
+</code></pre>
+
+<p>This S3 resource is not using a versioned bucket, so it has a <code>regexp</code> field in the source that uses globs that the resource will use for determining new versions. See <a href="https://github.com/concourse/s3-resource#file-names">here</a> for more explanation.</p>
+
+<p>The resource&rsquo;s <code>bucket</code> and <code>regexp</code> fields are important as you need to use the same values in the pipeline that will consume this S3 resource.</p>
+
+<p>The job that creates the tarball to be placed in S3 looks like this:</p>
+
+<pre><code class="language-yaml">jobs:
+- name: copy-some-resource-to-s3
+  plan:
+  - get: some-resource
+    trigger: true
+  - get: some-resource-version
+    params: {bump: major}
+  - task: create-tarball
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: busybox
+      inputs:
+      - name: some-resource
+      - name: some-resource-version
+      outputs:
+      - name: some-resource-tarball
+      run:
+        path: bash
+        args:
+        - -c
+        - |
+          set -eu
+          version=$(cat some-resource-version/version)
+          echo &quot;Creating tarball with version v${version}...&quot;
+          tar czf &quot;resources/some-resource-v${version}.tgz&quot; -C some-resource .
+  - put: some-resource-version
+    params: {bump: major}
+  - put: some-resource-s3
+    params:
+      file: &quot;resources/some-resource-*.tgz&quot;
+</code></pre>
+
+<p><em>Note: This job uses a <code>semver</code> resource to create a semantic version for use in the tarball&rsquo;s filename. Some resource types will include a file that contains a compatible version, in which case you could just copy it over.</em></p>
+
+<p>This job follows the structure described above:</p>
+
+<ol>
+<li>Do a <code>get</code> of the git resource, <code>some-resource</code></li>
+<li>Create a tarball from the contents of the downloaded resource&rsquo;s directory with a version</li>
+<li>Do a <code>put</code> to the s3 resource, <code>some-resource-s3</code>, with the tarball</li>
+</ol>
+
+<h3 id="modifying-a-pipeline-to-use-resources-from-s3">Modifying a Pipeline to Use Resources From S3</h3>
+
+<p>Once you&rsquo;ve got a pipeline that&rsquo;s pulling all your resources, packaging them up as tarballs, and putting them in S3, you&rsquo;ll want to modify the pipeline that uses those resources to actually pull resources from the new S3 locations.</p>
+
+<p>The modifications to the pipeline will be:</p>
+
+<ol>
+<li>Replace non-S3 resource definitions with new S3 resource definitions</li>
+<li>Remove any unnecessary params from the <code>get</code>s of those resources</li>
+</ol>
+
+<p>The best tool for doing this is <a href="https://github.com/krishicks/yaml-patch">yaml-patch</a>, a tool I wrote for modifying YAML documents.</p>
+
+<p>Using <code>yaml-patch</code> to replace the <code>git</code> resource described above, we&rsquo;d write a yaml-patch operation file (&ldquo;opfile&rdquo;) like the following:</p>
+
+<pre><code class="language-yaml">- op: replace
+  path: /resources/name=some-resource
+  value:
+    name: some-resource
+    type: s3
+    source:
+      access_key_id: some-readonly-access-key-id
+      secret_access_key: some-readonly-secret-access-key
+      bucket: some-bucket
+      regexp: &quot;resources/some-resource-v(.*).tgz&quot;
+</code></pre>
+
+<p>In this case there aren&rsquo;t any params that need to be modified, but if there were, we could do so with the following:</p>
+
+<pre><code class="language-yaml">- op: remove
+  path: /jobs/get=some-resource/params/globs
+</code></pre>
+
+<p>This operation will remove the <code>globs:</code> entry from the <code>params:</code> of every job that does a <code>get</code> of the named resource.</p>
+
+<p><em>Note: This may leave an empty params hash, which Concourse ignores.</em></p>
+
+<p>Doing this in a pipeline would look something like the following:</p>
+
+<pre><code class="language-yaml">resources:
+- name: yaml-patch
+  type: github-release
+  source:
+    owner: krishicks
+    repository: yaml-patch
+    access_token: github-access-token
+
+- name: standard-pipeline
+  type: git
+  source:
+    uri: git@example.com/pipeline.git
+
+- name: offline-pipeline
+  type: git
+  source:
+    uri: git@example.com/offline-pipeline.git
+
+jobs:
+- name: apply-patch
+  plan:
+  - get: yaml-patch
+  - get: standard-pipeline
+    trigger: true
+  - task: apply-patch
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: concourse/git-resource
+      inputs:
+      - name: yaml-patch
+        globs: [*linux*]
+      - name: standard-pipeline
+      outputs:
+      - name: modified-pipeline
+      run:
+        path: bash
+        args:
+        - -c
+        - |
+          set -eu
+
+          chmod +x yaml-patch/yaml_patch_linux
+
+          cat &gt; opfile &lt;&lt;EOF
+          - op: replace
+            path: /resources/name=some-resource
+            value:
+              name: some-resource
+              type: s3
+              source:
+                access_key_id: some-readonly-access-key-id
+                secret_access_key: some-readonly-secret-access-key
+                bucket: some-bucket
+                regexp: &quot;resources/some-resource-v(.*).tgz&quot;
+          EOF
+
+          git clone ./standard-pipeline modified-pipeline
+
+          cat standard-pipeline/pipeline.yml | yaml-patch/yaml_patch_linux -o opfile &gt; modified-pipeline/pipeline.yml
+
+          cd modified-pipeline
+
+          git config --global user.email &quot;user@example.com&quot;
+          git config --global user.name &quot;Some User&quot;
+          git add -A
+          git commit -m &quot;Updated pipeline&quot;&quot;
+  - put: offline-pipeline
+    params:
+      repository: modified-pipeline
+
+</code></pre>
+
+<p><em>Note: Since YAML maps don&rsquo;t preserve order you may find elements of your pipeline YAML are re-ordered after running them through yaml-patch. To fix this, you&rsquo;ll want to use the <code>fly</code> command <code>format-pipeline</code>: <a href="http://concourse.ci/single-page.html#fly-format-pipeline">http://concourse.ci/single-page.html#fly-format-pipeline</a>. This is a stylistic choice; the functionality is unaffected.</em></p>
+
+<p><em>Note: To target the <code>image_resource</code> in a pipeline, use <code>/jobs/type=docker-image</code> as the path to replace.</em></p>
+
+<p>At this point you&rsquo;ll have two pipelines, one which pulls new versions of the resource(s) as they&rsquo;re detected, packages them up and puts them in S3, and another that automatically generates a version of your pipeline that pulls from S3 when a new version of the standard pipeline is pushed.</p>
+
+<h3 id="airgapped-environments">Airgapped Environments</h3>
+
+<p>The above pipelines are sufficient for when you have an S3-compatible blobstore that you can access both from an environment with Internet access and one that does not. But what about when you have an environment that is completely offline and requires manual transfer of artifacts? In that case you&rsquo;ll want to create a single artifact that contains all of the resources the pipeline requires, including the pipeline itself, that you can move between environments manually.</p>
+
+<p>To achieve this you&rsquo;ll want to extend your pipeline that creates the offline version of the pipeline to create a new artifact (again, a tarball) that contains all of the resource tarballs plus the pipeline YAML.</p>
+
+<p>A working example of this can be seen in the <code>create-pcf-pipelines-combined</code> job <a href="https://github.com/pivotal-cf/pcf-pipelines/blob/master/create-offline-pinned-pipelines/pipeline.yml">here</a>.</p>
+
+<p>This job:</p>
+
+<ol>
+<li>Pulls the latest tarball for each resource from S3</li>
+<li>Creates a SHA manifest for verification on the other side</li>
+<li>Creates a single tarball with all of the other tarballs inside it</li>
+<li>Encrypts the single tarball</li>
+</ol>
+
+<p>Encrypting the tarball is optional, but it&rsquo;s a good security measure and ensures the bits haven&rsquo;t been tampered with during transfer.</p>
+
+<p>This single tarball then needs to be copied into a location on the destination S3-compatible blobstore, where another pipeline can unpack it and put the contents in the correct bucket and path within S3. A working example of a pipeline that unpacks such an archive can be seen <a href="https://github.com/pivotal-cf/pcf-pipelines/blob/master/unpack-pcf-pipelines-combined/pipeline.yml">here</a>.</p>
+
+<p>This pipeline:</p>
+
+<ol>
+<li>Looks for new versions of the single tarball that contains the resource tarballs</li>
+<li>Decrypts the tarball</li>
+<li>Unpacks the tarball</li>
+<li>Does SHA sum verification</li>
+<li>Puts the resource tarballs in the locations within S3 referred to by the pipeline that has been modified to use S3</li>
+</ol>
+
+<h3 id="pinning-versions">Pinning Versions</h3>
+
+<p>You can go a few steps further than what was described above when modifying your pipeline to pull artifacts from S3. You may want to do testing on a set of resources with particular versions, and after you&rsquo;ve done the testing modify your pipeline to pull <em>only those versions</em>. You can do this by pinning versions within the <code>get</code> of each resource.</p>
+
+<p>The way to achieve this is via adding a <a href="http://concourse.ci/single-page.html#image-resource-version">version</a> field to the <code>get</code>:</p>
+
+<pre><code class="language-yaml"># ...snip...
+get: some-resource
+version:
+  path: &quot;some-resource-v1.2.0.tar&quot;
+</code></pre>
+
+<p><em>Note: The above example is specific to pinning the version of an S3 resource; different resources require different fields and values.</em></p>
+
+<p>You can do the above with an opfile like this:</p>
+
+<pre><code class="language-yaml">- op: add
+  path: /jobs/get=some-resource/version
+  value:
+    path: &quot;some-resource-v1.2.0.tar&quot;
+</code></pre>
+
+<p><em>Note: To pin the version of the <code>image_resource</code>, use <code>/jobs/type=s3/version</code> after having modified the pipeline to use s3 as its <code>image_resource</code> type.</em></p>
+
+<p>I hope the information above is helpful in you translating your pipelines to pull from S3 rather than the existing resource types in as automated a fashion as possible.</p>
+
+</main>
+
+  <footer>
+  
+  
+  <hr/>
+  &copy; <a href="https://keybase.io/krishicks">Kris Hicks</a> 2017 | <a href="https://www.github.com/krishicks">github</a> | <a href="https://www.twitter.com/krishicks">twitter</a> | <a href="http://www.flickr.com/krishicks">flickr</a>
+  
+  </footer>
+  </body>
+</html>
+

@@ -6,10 +6,20 @@
     <description>Recent content on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 04 Sep 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 06 Oct 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.krishicks.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Migrating Concourse Resources to S3</title>
+      <link>http://www.krishicks.com/post/2017/10/06/migrating-concourse-resources-to-s3/</link>
+      <pubDate>Fri, 06 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/2017/10/06/migrating-concourse-resources-to-s3/</guid>
+      <description>One of the great things about Concourse is the resource abstraction it gives you for defining inputs and outputs to jobs in a pipeline. This abstraction allows you to redefine a resource while leaving the job that uses the resource unmodified. For example, if I have a resource, my-source-code, that normally is provided via a git resource:
+resources: - name: my-source-code type: git source: uri: git@example.com/some-owner/some-repo.git  I can change that resource to be provided by S3 instead by changing the resource definition:</description>
+    </item>
     
     <item>
       <title>Felix Gray vs. GUNNAR Optiks</title>
