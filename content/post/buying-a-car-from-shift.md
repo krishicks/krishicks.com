@@ -5,7 +5,7 @@ categories: []
 tags:
 ---
 
-I decided to sell my 2012 MINI Cooper S and replace it with a Subaru WRX of the 2008-2014 vintage. The same week I sold the MINI I found a WRX for sale on [Shift](www.shift.com) in Los Angeles. I decided to fly down from San Francisco to Los Angeles to test drive and, assuming everything went well, buy it. Every step of the purchase has been a disaster.
+I decided to sell my 2012 MINI Cooper S and replace it with a Subaru WRX of the 2008-2014 vintage. The same week I sold the MINI I found a WRX for sale on [Shift](https://www.shift.com) in Los Angeles. I decided to fly down from San Francisco to Los Angeles to test drive and, assuming everything went well, buy it. Every step of the purchase has been a disaster.
 
 ## The Search
 
