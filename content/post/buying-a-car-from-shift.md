@@ -11,25 +11,25 @@ I decided to sell my 2012 MINI Cooper S and replace it with a Subaru WRX of the 
 
 As much as I liked my MINI Cooper S, I was growing a bit tired of FWD and wanted to get something with RWD or AWD. I happened to drive a friend's Subaru Forester and thought, "What about a WRX?" So began my search.
 
-I typically look for cars on Craigslist; I like single-owner cars where I can talk to the current owner and try to assess how they treated the vehicle. I also want to pepper them with questions: Did they do regular oil changes? Do they have all the service records? Did they race the car?
+I typically look for cars on Craigslist; I like single-owner cars where I can talk to the current owner and try to assess how they treated it. I also want to pepper them with questions: Did they do regular oil changes? Do they have all the service records? Did they race the car?
 
-I found a few WRXs locally and test drove a few, but either the price was too high, or the feature set wasn't what I wanted. I wanted a no-sunroof car in metallic gray, which limited my prospects. I ended up passing on a local vehicle that was being sold by a boutique dealer; it was sunroof-free and the right color, had been a single owner car and was only slightly modified. I passed it up because the car I ended up buying had half the mileage. That may have been mistake #1.
+I found a few WRXs locally and test drove a few, but either the price was too high, or the feature set wasn't what I wanted. I wanted a no-sunroof car in metallic gray, which limited my prospects. I ended up passing on a local car that was being sold by a boutique dealer; it was sunroof-free and the right color, had been a single owner car and was only slightly modified. I passed it up because the car I ended up buying had half the mileage. That may have been mistake #1.
 
 I found the car I ended up buying through a search on [AutoTempest](https://www.autotempest.com/). Living in San Francisco, I'd seen Shift's offices at the corner of Castro and Market streets but hadn't thought to search their inventory.
 
 ## The Listing
 
-The car looked great. The body appeared to be in good shape from their pictures, and the engine bay looked clean. I'd seen a couple of other vehicles at local dealers, and they all wanted way more for their cars than I thought they were worth. Shift's pricing was reasonable in comparison and within my budget. The listing page is clean, inviting, and informative. It was a breath of fresh air compared to the other sites I'd seen. I called them up, asked some questions about the car, and decided I'd put a deposit on the vehicle and schedule a test drive.
+The car looked great. The body appeared to be in good shape from their pictures, and the engine bay looked clean. I'd seen a couple of other cars at local dealers, and they all wanted way more for their cars than I thought they were worth. Shift's pricing was reasonable in comparison and within my budget. The listing page is clean, inviting, and informative. It was a breath of fresh air compared to the other sites I'd seen. I called them up, asked some questions about the car, and decided I'd put a deposit down and schedule a test drive.
 
 ## The Flight
 
 Shift operates on an appointment basis. You make an appointment to test drive the car and are met by a concierge (they don't call them salespeople) to take you on the test drive. You can either meet them at one of their facilities or have them come to you. I opted for the former: I'd fly down from San Francisco, test drive the car, and if everything went well, buy it and then drive back to San Francisco. It would be a 5-6 hour drive along scenic CA 1, which I thought would be an excellent introduction to the car.
 
-Given my plan to fly down to LA to test drive the car I decided to put a deposit on the vehicle to ensure the flight down wasn't a complete waste of time. I booked the trip a couple of days in advance, leaving just enough time for me to test drive the car before the deposit expired.
+I booked the trip a couple of days in advance, leaving just enough time for me to test drive the car before the deposit expired.
 
-My trip to the airport was uneventful; I made it to the terminal with time to spare and awaited the incoming flight.
+My trip to the airport was uneventful; I made it to the terminal with time to spare and awaited the incoming flight. Everything from here on out was downhill.
 
-The problems began when the inbound flight was delayed. High winds at SFO meant flights out of LAX were being held. This was problematic given the appointment mentioned above system Shift uses. I booked the trip so I'd end up having about 2 hours to get from LAX to Shift's location. The flight ended up being delayed several hours, meaning I'd get to LAX far too late and also have to fight rush hour traffic. I called Shift and let them know my flight was delayed and booked a new appointment based on when the plane was meant to arrive.
+The problems began when the inbound flight was delayed. High winds at SFO meant flights out of LAX were being held. This was problematic given the appointment mentioned above. I booked the trip so I'd end up having about 2 hours to get from LAX to Shift's location. The flight ended up being delayed several hours, meaning I'd get to LAX far too late and also have to fight rush hour traffic. I called Shift and let them know my flight was delayed and booked a new appointment based on when the plane was meant to arrive.
 
 When I arrived at LAX and looked at the estimated drive time to Shift's location, I realized I'd miss the new appointment, as well. I called them and let them know the situation. The person I talked to said the only appointments available at that point were about 4 hours later. The idea of having to wait at either LAX or Shift's offices for 4 hours wasn't tenable to me, so I asked if anything could be done to speed things along given I'd flown down from San Francisco and would very likely be buying the car. The previously unavailable time slots suddenly became available, so I found my way into a taxi and got on the road.
 
