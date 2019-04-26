@@ -6,10 +6,20 @@
     <description>Recent content on krishicks.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 06 Oct 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Apr 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://www.krishicks.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Buying a Car From Shift Was a Huge Mistake</title>
+      <link>http://www.krishicks.com/post/2019/04/25/buying-a-car-from-shift-was-a-huge-mistake/</link>
+      <pubDate>Thu, 25 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.krishicks.com/post/2019/04/25/buying-a-car-from-shift-was-a-huge-mistake/</guid>
+      <description>I decided to sell my 2012 MINI Cooper S and replace it with a Subaru WRX of the 2008-2014 vintage. The same week I sold the MINI I found a WRX for sale on Shift in Los Angeles. I decided to fly down from San Francisco to Los Angeles to test drive and, assuming everything went well, buy it. Every step of the purchase has been a disaster.
+The Search As much as I liked my MINI Cooper S, I was growing a bit tired of FWD and wanted to get something with RWD or AWD.</description>
+    </item>
     
     <item>
       <title>Migrating Concourse Resources to S3</title>
