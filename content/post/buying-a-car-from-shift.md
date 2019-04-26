@@ -39,7 +39,7 @@ I arrived at Shift and saw the car parked out front. It looked good! The light w
 
 Unlike the other test drives I had done, this one was unusually short. Because of the rush hour traffic situation, we ended up not getting to take the car on the highway, getting it up to speed. This proved to be one of the more fatal mistakes I made, as I will detail later.
 
-I noticed a faint rattling sound that ended up being the A-pillars; some searching online exposed this as a relatively common Subaru problem that's easily repaired. Otherwise, the car seemed to be in excellent mechanical condition. Given no apparent surprises, I decided to purchase the vehicle.
+I noticed a faint rattling sound that ended up being the A-pillars; some searching online exposed this as a relatively common Subaru problem that's easily repaired. Otherwise, the car seemed to be in excellent mechanical condition. Given no apparent surprises, I decided to purchase the car.
 
 ## The Purchase
 
@@ -87,7 +87,7 @@ I made it to their service center at about 9 pm, a full 12 hours after I'd left 
 
 ## The Repairs
 
-Shift's technicians discovered the power steering rack had been leaking, which I've lately found is also a somewhat common problem on Subarus, so they replaced the entire rack. They also repaired the weird knocking sound that came from the front end, which I discovered (though they did not confirm) was the sound a car makes when *a wheel is loose*. Add that to the list above of reasons I shouldn't have continued driving the vehicle, or even bought it at all. Shift didn't even so much as apologize for that, even though I'd driven the car at highway speeds for hundreds of miles with a loose wheel, a fact which terrifies me to this day. I was told I'd receive a technician's report when I picked the car up but did not.
+Shift's technicians discovered the power steering rack had been leaking, which I've lately found is also a somewhat common problem on Subarus, so they replaced the entire rack. They also repaired the weird knocking sound that came from the front end, which I discovered (though they did not confirm) was the sound a car makes when *a wheel is loose*. Add that to the list above of reasons I shouldn't have continued driving the car, or even bought it at all. Shift didn't even so much as apologize for that, even though I'd driven the car at highway speeds for hundreds of miles with a loose wheel, a fact which terrifies me to this day. I was told I'd receive a technician's report when I picked the car up but did not.
 
 Shift's technicians also helpfully used sheet metal screws to secure the front bumper cover to the plastic wheel splash guard, given it was worked loose and the plastic clips that usually affix it were lost.
 
@@ -116,19 +116,19 @@ The picture I now have in mind is that of a car that has had at least one headli
 
 I've given this new information to Shift, to which they have responded:
 
-> Paint overspray of a car does not indicate the car has been in an accident. Also if certain items of a vehicle have been replaced, that also does not necessarily mean the car was in a collision. 
+> Paint overspray of a car does not indicate the car has been in an accident. Also if certain items of a car have been replaced, that also does not necessarily mean the car was in a collision. 
 
 They have so far ignored the fact that the passenger headlight is holding a broken piece of the mounting bracket.
 
 When I asked what Shift's policy is in the situation where a car they've sold has been in an unreported collision, they responded:
 
-> If you find evidence that the vehicle has been in a collision. We would then bring the car in to take a look at the evidence that you have provided. If we do find the vehicle has been in a collision we would then determine the next plan of action.
+> If you find evidence that the car has been in a collision. We would then bring the car in to take a look at the evidence that you have provided. If we do find the car has been in a collision we would then determine the next plan of action.
 
 I am not sure if the above is an official statement or not, but that's where things are at this point.
 
 ## The End?
 
-The entire experience of buying a car from Shift has been a nightmare. The vehicle I purchased from what I thought would be a reputable dealer has had front-end damage that Shift believes does not necessarily mean it was in a collision (despite the broken plastics), that had power steering that leaked so badly it resulted in complete failure of the power steering system within 300 miles, and which was sold to me with a loose front driver side wheel.
+The entire experience of buying a car from Shift has been a nightmare. The car I purchased from what I thought would be a reputable dealer has had front-end damage that Shift believes does not necessarily mean it was in a collision (despite the broken plastics), that had power steering that leaked so badly it resulted in complete failure of the power steering system within 300 miles, and which was sold to me with a loose front driver side wheel.
 
 I cannot recommend anyone buy a car from Shift given my experience. My trust in them as a reputable dealer was greatly misplaced. I can only wonder what other surprises this car has in store for me.
 
