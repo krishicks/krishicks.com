@@ -20,9 +20,7 @@
       <description>&lt;p&gt;So, you want to use &lt;a href=&#34;http://www.grpc.io&#34;&gt;gRPC&lt;/a&gt;. Cool! And you want to use
 &lt;a href=&#34;https://en.wikipedia.org/wiki/Mutual_authentication&#34;&gt;mutual TLS&lt;/a&gt;, too. But
 maybe, like me, you couldn&amp;rsquo;t easily figure out how to accomplish this, given
-the documentation and examples out there. Here&amp;rsquo;s how I did it.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+the documentation and examples out there. Here&amp;rsquo;s how I did it.&lt;/p&gt;</description>
     </item>
     
   </channel>
