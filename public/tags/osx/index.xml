@@ -22,9 +22,7 @@
 &lt;pre&gt;&lt;code&gt;$ ruby -e &amp;quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;More information on Homebrew can be found on the &lt;a href=&#34;http://mxcl.github.com/homebrew/&#34; title=&#34;Homebrew home page&#34;&gt;Homebrew home page&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+&lt;p&gt;More information on Homebrew can be found on the &lt;a href=&#34;http://mxcl.github.com/homebrew/&#34; title=&#34;Homebrew home page&#34;&gt;Homebrew home page&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

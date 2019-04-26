@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Using git subtree with gh-pages | krishicks.com</title>
-    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
     
   </head>
 
@@ -32,8 +33,6 @@
 
 <main>
 <p>I recently switched to using <a href="http://www.gohugo.io">Hugo</a> to generate this site and needed a strategy to publish it. Previously I was using <a href="http://www.octopress.org">Octopress</a> which has scripts for managing the gh-pages branch automatically. The documentation on gohugo.io shows a workflow that uses <code>git subtree</code>, a tool I knew about but had never actually used before. I found the <a href="http://gohugo.io/tutorials/github-pages-blog#configure-git-workflow:fcefb200141ace3e7bfd6542457b7a72">tutorial</a> on the gohugo.io page to be confusing. Here, I describe the approach I used instead.</p>
-
-<p></p>
 
 <p>My goal is to have a clean <code>gh-pages</code> branch that contains the minimum content it needs to have a meaningful history, and a <code>master</code> branch that makes sense.</p>
 
