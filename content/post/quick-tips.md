@@ -1,5 +1,5 @@
 ---
-title: "git quick tips"
+title: "Random git tips"
 date: "2012-07-03"
 slug: quick-tips
 categories:

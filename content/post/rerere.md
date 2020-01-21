@@ -1,5 +1,5 @@
 ---
-title: "rerere"
+title: "Reuse Recorded Resolution"
 date: "2012-06-13"
 categories:
   - development

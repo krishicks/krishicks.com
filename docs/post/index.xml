@@ -7,30 +7,10 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; Kris Hicks 2012-2020</copyright>
-    <lastBuildDate>Thu, 25 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 04 Sep 2017 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Buying a Car From Shift Was a Huge Mistake</title>
-      <link>/post/buying-a-car-from-shift/</link>
-      <pubDate>Thu, 25 Apr 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/post/buying-a-car-from-shift/</guid>
-      <description>I decided to sell my 2012 MINI Cooper S and replace it with a Subaru WRX of the 2008-2014 vintage. The same week I sold the MINI I found a WRX for sale on Shift in Los Angeles. I decided to fly down from San Francisco to Los Angeles to test drive and, assuming everything went well, buy it. Every step of the purchase has been a disaster.
-The Search As much as I liked my MINI Cooper S, I was growing a bit tired of FWD and wanted to get something with RWD or AWD.</description>
-    </item>
-    
-    <item>
-      <title>Migrating Concourse Resources to S3</title>
-      <link>/post/migrating-concourse-resources-to-s3/</link>
-      <pubDate>Fri, 06 Oct 2017 00:00:00 +0000</pubDate>
-      
-      <guid>/post/migrating-concourse-resources-to-s3/</guid>
-      <description>One of the great things about Concourse is the resource abstraction it gives you for defining inputs and outputs to jobs in a pipeline. This abstraction allows you to redefine a resource while leaving the job that uses the resource unmodified. For example, if I have a resource, my-source-code, that normally is provided via a git resource:
-resources:-name:my-source-codetype:gitsource:uri:git@example.com/some-owner/some-repo.gitI can change that resource to be provided by S3 instead by changing the resource definition:</description>
-    </item>
     
     <item>
       <title>Felix Gray vs. GUNNAR Optiks</title>
@@ -40,17 +20,6 @@ resources:-name:my-source-codetype:gitsource:uri:git@example.com/some-owner/some
       <guid>/post/felix_gray/</guid>
       <description>f.lux Back in 2012 or so I came across some software that was meant to reduce eye strain when looking at a computer screen, f.lux. The makers of that software claimed that, by blocking blue light in sync with the setting of the sun, it would allow you to sleep better as viewing blue light disrupts the sleep cycle.
 I tried it out and decided I liked the effect; I didn&#39;t do a scientific study to determine whether my sleep habits were improved, but I did notice I found screens far more pleasant to view at night than without running f.</description>
-    </item>
-    
-    <item>
-      <title>Burnout</title>
-      <link>/post/burnout/</link>
-      <pubDate>Fri, 01 Sep 2017 00:00:00 +0000</pubDate>
-      
-      <guid>/post/burnout/</guid>
-      <description>This is a post about me being taking on too much responsibility and not doing enough to reduce it when I started to crack. I realized somewhat early on that I had taken on too much, but I didn&#39;t see any way to offload the work while continuing to develop products at the pace I&#39;d maintained.
-In January 2017 I joined a new team at Pivotal.
-Due to a variety of factors, I ended up taking on additional roles on top of my role as software engineer.</description>
     </item>
     
     <item>
@@ -64,7 +33,7 @@ At the end of the week there was a small bit of lethargy that I experienced, eno
     </item>
     
     <item>
-      <title>Thoughts on Pipeline Design with Concourse</title>
+      <title>Pipeline Design with Concourse</title>
       <link>/post/pipeline-design-with-concourse/</link>
       <pubDate>Sat, 07 Jan 2017 00:00:00 +0000</pubDate>
       
@@ -75,19 +44,6 @@ At the end of the week there was a small bit of lethargy that I experienced, eno
 &lt;p&gt;I recently made a CI/CD pipeline in &lt;a href=&#34;https://concourse.ci&#34;target=&#34;_blank&#34;&gt;Concourse&lt;/a&gt; for deploying &lt;a href=&#34;https://github.com/pivotalservices/goulash/&#34;target=&#34;_blank&#34;&gt;Goulash&lt;/a&gt;. The pipeline definition can be found &lt;a href=&#34;https://github.com/pivotalservices/goulash/blob/master/ci/pipeline.yml&#34;target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Figuring out how to split up the work your pipeline needs to do in jobs and tasks in Concourse is not always obvious. The way you define jobs and tasks will determine how repeatable steps in your pipeline are, how fast jobs run, and how easily you can debug tasks.&lt;/p&gt;
 &lt;p&gt;In this post I will describe how I came to the job and task definitions in the pipeline for Goulash.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Notifications and Work</title>
-      <link>/post/notifications/</link>
-      <pubDate>Fri, 18 Nov 2016 00:00:00 +0000</pubDate>
-      
-      <guid>/post/notifications/</guid>
-      <description>&lt;p&gt;Call me old-fashioned.&lt;/p&gt;
-&lt;p&gt;Before I started writing software I worked a variety of jobs. I bagged groceries, received calls at an answering service, stocked shelves at an electronics retailer, did data entry at a tool coating company, and took phone orders for office supplies, to name a few.&lt;/p&gt;
-&lt;p&gt;Each of these jobs had two things in common: if you were late it was notable, and when you were at work, you &lt;em&gt;worked&lt;/em&gt;. Being habitually late and taking personal calls at all hours of the day was looked down upon, and could lead to termination. If you wanted to take a call, you&#39;d likely have to wait to do it on your break.&lt;/p&gt;
-&lt;p&gt;The jobs I held prior to writing software helped build my work ethic: I strive to always be early, and I come to work to &lt;em&gt;work&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;I have noticed in the past few years that this work ethic is not shared by many of my peers.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -113,66 +69,7 @@ the documentation and examples out there. Here&#39;s how I did it.&lt;/p&gt;</de
     </item>
     
     <item>
-      <title>Notes on Forza 6</title>
-      <link>/post/forza-6/</link>
-      <pubDate>Thu, 10 Sep 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/post/forza-6/</guid>
-      <description>&lt;p&gt;Here are some notes about Forza 6:&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>KetoSoy</title>
-      <link>/post/ketosoy/</link>
-      <pubDate>Mon, 18 May 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/post/ketosoy/</guid>
-      <description>&lt;p&gt;I&#39;ve been consuming &lt;a href=&#34;http://www.ketosoy.com&#34;target=&#34;_blank&#34;&gt;KetoSoy&lt;/a&gt; for about a month now.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Using git subtree with gh-pages</title>
-      <link>/post/subtree-gh-pages/</link>
-      <pubDate>Sat, 16 May 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/post/subtree-gh-pages/</guid>
-      <description>&lt;p&gt;I recently switched to using &lt;a href=&#34;http://www.gohugo.io&#34;target=&#34;_blank&#34;&gt;Hugo&lt;/a&gt; to generate this site and needed a strategy to publish it. Previously I was using &lt;a href=&#34;http://www.octopress.org&#34;target=&#34;_blank&#34;&gt;Octopress&lt;/a&gt; which has scripts for managing the gh-pages branch automatically. The documentation on gohugo.io shows a workflow that uses &lt;code&gt;git subtree&lt;/code&gt;, a tool I knew about but had never actually used before. I found the &lt;a href=&#34;http://gohugo.io/tutorials/github-pages-blog#configure-git-workflow:fcefb200141ace3e7bfd6542457b7a72&#34;target=&#34;_blank&#34;&gt;tutorial&lt;/a&gt; on the gohugo.io page to be confusing. Here, I describe the approach I used instead.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Phone Interviews are Useless</title>
-      <link>/post/phone-interviews/</link>
-      <pubDate>Fri, 23 May 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/post/phone-interviews/</guid>
-      <description>&lt;p&gt;&lt;em&gt;See discussion about this post on &lt;a href=&#34;https://news.ycombinator.com/item?id=9111310&#34;target=&#34;_blank&#34;&gt;Hacker News&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Yesterday, I did a coding challenge-based phone interview. When it ended, I had a mini retrospective with myself, and thought about what went well, and what didn&#39;t go well.&lt;/p&gt;
-&lt;p&gt;Mostly, it didn&#39;t go well.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>On Consulting</title>
-      <link>/post/on-consulting/</link>
-      <pubDate>Sun, 17 Mar 2013 00:00:00 +0000</pubDate>
-      
-      <guid>/post/on-consulting/</guid>
-      <description>&lt;p&gt;After four years being a consultant I jumped ship and joined a startup.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>How to set up a Clojure dev environment on Snow Leopard</title>
-      <link>/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</link>
-      <pubDate>Sat, 02 Feb 2013 00:00:00 +0000</pubDate>
-      
-      <guid>/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/</guid>
-      <description>&lt;h3 id=&#34;homebrew-package-manager&#34;&gt;Homebrew (package manager)&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;$ ruby -e &amp;quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;More information on Homebrew can be found on the &lt;a href=&#34;http://mxcl.github.com/homebrew/&#34;title=&#34;Homebrew home page&#34;target=&#34;_blank&#34;&gt;Homebrew home page&lt;/a&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>rewinding git pull</title>
+      <title>Rewinding git pull</title>
       <link>/post/rewinding-git-pull/</link>
       <pubDate>Mon, 09 Jul 2012 00:00:00 +0000</pubDate>
       
@@ -181,7 +78,7 @@ the documentation and examples out there. Here&#39;s how I did it.&lt;/p&gt;</de
     </item>
     
     <item>
-      <title>git quick tips</title>
+      <title>Random git tips</title>
       <link>/post/quick-tips/</link>
       <pubDate>Tue, 03 Jul 2012 00:00:00 +0000</pubDate>
       
@@ -190,7 +87,7 @@ the documentation and examples out there. Here&#39;s how I did it.&lt;/p&gt;</de
     </item>
     
     <item>
-      <title>rewinding git commit --amend</title>
+      <title>Rewinding git commit --amend</title>
       <link>/post/rewinding-git-commit-amend/</link>
       <pubDate>Mon, 25 Jun 2012 00:00:00 +0000</pubDate>
       
@@ -199,7 +96,7 @@ the documentation and examples out there. Here&#39;s how I did it.&lt;/p&gt;</de
     </item>
     
     <item>
-      <title>rerere</title>
+      <title>Reuse Recorded Resolution</title>
       <link>/post/rerere/</link>
       <pubDate>Wed, 13 Jun 2012 00:00:00 +0000</pubDate>
       

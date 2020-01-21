@@ -1,5 +1,5 @@
 ---
-title: "Thoughts on Pipeline Design with Concourse"
+title: "Pipeline Design with Concourse"
 date: "2017-01-07"
 ---
 

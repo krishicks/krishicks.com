@@ -1,5 +1,5 @@
 ---
-title: "rewinding git commit --amend"
+title: "Rewinding git commit --amend"
 date: "2012-06-25"
 categories:
   - development

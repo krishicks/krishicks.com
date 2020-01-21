@@ -1,5 +1,5 @@
 ---
-title: "rewinding git pull"
+title: "Rewinding git pull"
 date: "2012-07-09"
 categories:
   - development

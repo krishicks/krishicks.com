@@ -7,22 +7,13 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; Kris Hicks 2012-2020</copyright>
-    <lastBuildDate>Sat, 16 May 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 09 Jul 2012 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/tags/git/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Using git subtree with gh-pages</title>
-      <link>/post/subtree-gh-pages/</link>
-      <pubDate>Sat, 16 May 2015 00:00:00 +0000</pubDate>
-      
-      <guid>/post/subtree-gh-pages/</guid>
-      <description>&lt;p&gt;I recently switched to using &lt;a href=&#34;http://www.gohugo.io&#34;target=&#34;_blank&#34;&gt;Hugo&lt;/a&gt; to generate this site and needed a strategy to publish it. Previously I was using &lt;a href=&#34;http://www.octopress.org&#34;target=&#34;_blank&#34;&gt;Octopress&lt;/a&gt; which has scripts for managing the gh-pages branch automatically. The documentation on gohugo.io shows a workflow that uses &lt;code&gt;git subtree&lt;/code&gt;, a tool I knew about but had never actually used before. I found the &lt;a href=&#34;http://gohugo.io/tutorials/github-pages-blog#configure-git-workflow:fcefb200141ace3e7bfd6542457b7a72&#34;target=&#34;_blank&#34;&gt;tutorial&lt;/a&gt; on the gohugo.io page to be confusing. Here, I describe the approach I used instead.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>rewinding git pull</title>
+      <title>Rewinding git pull</title>
       <link>/post/rewinding-git-pull/</link>
       <pubDate>Mon, 09 Jul 2012 00:00:00 +0000</pubDate>
       
@@ -31,7 +22,7 @@
     </item>
     
     <item>
-      <title>git quick tips</title>
+      <title>Random git tips</title>
       <link>/post/quick-tips/</link>
       <pubDate>Tue, 03 Jul 2012 00:00:00 +0000</pubDate>
       
@@ -40,7 +31,7 @@
     </item>
     
     <item>
-      <title>rewinding git commit --amend</title>
+      <title>Rewinding git commit --amend</title>
       <link>/post/rewinding-git-commit-amend/</link>
       <pubDate>Mon, 25 Jun 2012 00:00:00 +0000</pubDate>
       
@@ -49,7 +40,7 @@
     </item>
     
     <item>
-      <title>rerere</title>
+      <title>Reuse Recorded Resolution</title>
       <link>/post/rerere/</link>
       <pubDate>Wed, 13 Jun 2012 00:00:00 +0000</pubDate>
       

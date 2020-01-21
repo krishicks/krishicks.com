@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.62.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<meta name="supported-color-schemes" content="light dark"><title>rewinding git commit --amend&nbsp;&ndash;&nbsp;Kris Hicks</title><link rel="stylesheet" href="/css/core.min.b205b19b9a75a820052cb0911b902c2844e883e541dfca1c352abe539a7ef586c930f3b0dd7037cdac5286a416a8fbc1.css" integrity="sha384-sgWxm5p1qCAFLLCRG5AsKETog&#43;VB38ocNSq&#43;U5p&#43;9YbJMPOw3XA3zaxShqQWqPvB"><body>
+<meta name="supported-color-schemes" content="light dark"><title>Rewinding git commit --amend&nbsp;&ndash;&nbsp;Kris Hicks</title><link rel="stylesheet" href="/css/core.min.b205b19b9a75a820052cb0911b902c2844e883e541dfca1c352abe539a7ef586c930f3b0dd7037cdac5286a416a8fbc1.css" integrity="sha384-sgWxm5p1qCAFLLCRG5AsKETog&#43;VB38ocNSq&#43;U5p&#43;9YbJMPOw3XA3zaxShqQWqPvB"><body>
     <div class="base-body"><section id="header" class="site header max-body-width">
     <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">Kris Hicks</span></a></span>
         <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a></nav></div></span></div></section><div id="content" class="max-body-width"><section class="article header">
-    <h1 class="article title">rewinding git commit --amend</h1><p class="article date">25 June 2012</p></section><article class="article markdown-body"><p>It may come to pass that you will run <code>git commit --amend</code> by mistake. When this happens, you'll want to unwind the operation you just did.</p>
+    <h1 class="article title">Rewinding git commit --amend</h1><p class="article date">25 June 2012</p></section><article class="article markdown-body"><p>It may come to pass that you will run <code>git commit --amend</code> by mistake. When this happens, you'll want to unwind the operation you just did.</p>
 <p>In some cases the changes are simple enough that you can use <a href="/blog/2012/05/16/git-reset-p/"title="git reset -p">git reset -p</a> to remove those lines from the commit. However, sometimes <code>git reset -p</code> isn't up to the task, as in the case when the changeset is very large. Luckily, git has a ticker tape of the changes you make to each branch, which is called the reflog.</p>
 <p>The reflog records when the tip of a branch is updated. The tip is updated any time you create a new commit, amend a commit, reset a commit, switch branches, etc. Basically, any time HEAD changes, you will get a reflog entry. The reflog therefore is a great tool for understanding how the repository came to be in a particular state.</p>
 <p><code>git reflog -2</code> will give you the last two operations that Git performed. In the case of an amend, it will look something like this:</p>
@@ -49,7 +49,7 @@ $ git commit
 <p>Then you can rebase either now or at a later time to do the &lsquo;amend&rsquo; you had originally intended:</p>
 <pre><code>$ git rebase --i --autosquash A~1
 </code></pre>
-<p>So don't fret when you do an accidental amend. It's just a couple commands away from being unwound and applied to the correct commit.</p></article><section class="article labels"><a class="category" href=/categories/development/>development</a><a class="tag" href=/tags/git/>git</a></section><section class="article navigation"><p><a class="link" href="/post/quick-tips/"><span class="li">&larr;</span>git quick tips</a></p><p><a class="link" href="/post/rerere/"><span class="li">&rarr;</span>rerere</a class="link">
+<p>So don't fret when you do an accidental amend. It's just a couple commands away from being unwound and applied to the correct commit.</p></article><section class="article labels"><a class="category" href=/categories/development/>development</a><a class="tag" href=/tags/git/>git</a></section><section class="article navigation"><p><a class="link" href="/post/quick-tips/"><span class="li">&larr;</span>Random git tips</a></p><p><a class="link" href="/post/rerere/"><span class="li">&rarr;</span>Reuse Recorded Resolution</a class="link">
     </p></section></div><section id="footer" class="footer max-body-width"><div class="footer-wrap">
     <p class="copyright">&copy; Kris Hicks 2012-2020</p>
     <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
