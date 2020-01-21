@@ -8,4 +8,4 @@ Find me on:
 * [Keybase](https://keybase.io/krishicks)
 * [Goodreads](https://www.goodreads.com/krishicks)
 
-View my public key [here](/khicks.asc).
+View my public key [here](/khicks.txt).
