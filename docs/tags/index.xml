@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Kris Hicks</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on Kris Hicks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Kris Hicks 2012-2020</copyright>
+    <lastBuildDate>Fri, 06 Oct 2017 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>concourse</title>
+      <link>/tags/concourse/</link>
+      <pubDate>Fri, 06 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/concourse/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ketosoy</title>
+      <link>/tags/ketosoy/</link>
+      <pubDate>Mon, 18 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/ketosoy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>git</title>
+      <link>/tags/git/</link>
+      <pubDate>Sat, 16 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>clojure</title>
+      <link>/tags/clojure/</link>
+      <pubDate>Sat, 02 Feb 2013 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/clojure/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>osx</title>
+      <link>/tags/osx/</link>
+      <pubDate>Sat, 02 Feb 2013 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/osx/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

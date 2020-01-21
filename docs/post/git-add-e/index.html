@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.62.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>git add -e&nbsp;&ndash;&nbsp;Kris Hicks</title><link rel="stylesheet" href="/css/core.min.b205b19b9a75a820052cb0911b902c2844e883e541dfca1c352abe539a7ef586c930f3b0dd7037cdac5286a416a8fbc1.css" integrity="sha384-sgWxm5p1qCAFLLCRG5AsKETog&#43;VB38ocNSq&#43;U5p&#43;9YbJMPOw3XA3zaxShqQWqPvB"><body>
+    <div class="base-body"><section id="header" class="site header max-body-width">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">Kris Hicks</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a></nav></div></span></div></section><div id="content" class="max-body-width"><section class="article header">
+    <h1 class="article title">git add -e</h1><p class="article date">21 May 2012</p></section><article class="article markdown-body"><p><code>git add -e</code> is like <code>git add -p</code>, except instead of adding things at the hunk level, you edit the entire patch at once.</p>
+<p>Or, in other words, whereas <code>git add -p</code> will show you each hunk for every file and ask what you want to do for each of them, <code>git add -e</code> will show you the entire patch and allow you to edit it at will. I used this trick to recently split apart one massive commit into 28 smaller, digestible ones.</p>
+<p>Say you've replaced a line containing &ldquo;baz&rdquo; with one containing &ldquo;bar&rdquo;. When you <code>git add -e</code>, you'll be presented with a diff like so:</p>
+<pre><code>foo
+- baz
++ bar
+</code></pre>
+<p>From here you can decide, actually, you don't want to delete baz, you just want to add bar. And you want to add it above baz.</p>
+<p>From this spot you can just change the minus to a space, making that line context for the diff. Then you can move the line that adds bar above baz, with this result:</p>
+<pre><code>foo
++ bar
+baz
+</code></pre>
+<p>After saving and closing the editor you'll be able to look at the result of your work in the index with <code>git diff --cached</code>:</p>
+<pre><code>foo
++ bar
+baz
+</code></pre>
+<p>And the line you made into context remains in your working directory, which you can see with <code>git diff</code>:</p>
+<pre><code>foo
+bar
+-baz
+</code></pre>
+<p>But what if you end up modifying the diff in a way that makes it a patch that doesn't apply? Git's got you covered there.</p>
+<p>Let's say that when you moved bar above baz, after removing the minus from baz, you added an extra line on accident, making the patch invalid:</p>
+<pre><code>foo
+
++ bar
+baz
+</code></pre>
+<p>When you save and close the editor Git will tell you of the problem:</p>
+<pre><code>error: patch failed: &amp;lt;some_filename&amp;gt;:1
+error: file.txt: patch does not apply
+fatal: Could not apply '.git/ADD_EDIT.patch'
+</code></pre>
+<p>In which case you'll be able to attempt the <code>add -e</code> again, as Git will not have made any changes to the working directory or index at this point.</p>
+<p>In some cases Git will attempt to apply the patch and give you the option of retrying the add, re-opening the editor with the modified .git/ADD_EDIT.patch if you choose to retry. If you don't choose to retry, Git will delete .git/ADD_EDIT.patch.</p>
+<p>In addition to editing the patch wholesale via <code>git add -e</code>, you can also choose <em>during <code>git add -p</code></em> to edit a particular hunk manually by choosing &lsquo;e&rsquo; to edit it instead of simply adding it via &lsquo;a&rsquo;. You can also add a file glob to the end of <code>add -e</code> as you would any other command to limit the size of the patch you're about to edit.</p></article><section class="article labels"><a class="category" href=/categories/development/>development</a><a class="tag" href=/tags/git/>git</a></section><section class="article navigation"><p><a class="link" href="/post/git-rebase-onto/"><span class="li">&larr;</span>git rebase --onto</a></p><p><a class="link" href="/post/git-reset-p/"><span class="li">&rarr;</span>git reset -p</a class="link">
+    </p></section></div><section id="footer" class="footer max-body-width"><div class="footer-wrap">
+    <p class="copyright">&copy; Kris Hicks 2012-2020</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

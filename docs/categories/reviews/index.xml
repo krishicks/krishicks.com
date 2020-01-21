@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>reviews on Kris Hicks</title>
+    <link>/categories/reviews/</link>
+    <description>Recent content in reviews on Kris Hicks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Kris Hicks 2012-2020</copyright>
+    <lastBuildDate>Mon, 04 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="/categories/reviews/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Felix Gray vs. GUNNAR Optiks</title>
+      <link>/post/felix_gray/</link>
+      <pubDate>Mon, 04 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/felix_gray/</guid>
+      <description>f.lux Back in 2012 or so I came across some software that was meant to reduce eye strain when looking at a computer screen, f.lux. The makers of that software claimed that, by blocking blue light in sync with the setting of the sun, it would allow you to sleep better as viewing blue light disrupts the sleep cycle.
+I tried it out and decided I liked the effect; I didn&#39;t do a scientific study to determine whether my sleep habits were improved, but I did notice I found screens far more pleasant to view at night than without running f.</description>
+    </item>
+    
+    <item>
+      <title>KetoSoy</title>
+      <link>/post/ketosoy/</link>
+      <pubDate>Mon, 18 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/post/ketosoy/</guid>
+      <description>&lt;p&gt;I&#39;ve been consuming &lt;a href=&#34;http://www.ketosoy.com&#34;target=&#34;_blank&#34;&gt;KetoSoy&lt;/a&gt; for about a month now.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

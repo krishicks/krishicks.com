@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.62.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Thoughts on Pipeline Design with Concourse&nbsp;&ndash;&nbsp;Kris Hicks</title><link rel="stylesheet" href="/css/core.min.b205b19b9a75a820052cb0911b902c2844e883e541dfca1c352abe539a7ef586c930f3b0dd7037cdac5286a416a8fbc1.css" integrity="sha384-sgWxm5p1qCAFLLCRG5AsKETog&#43;VB38ocNSq&#43;U5p&#43;9YbJMPOw3XA3zaxShqQWqPvB"><body>
+    <div class="base-body"><section id="header" class="site header max-body-width">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">Kris Hicks</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a></nav></div></span></div></section><div id="content" class="max-body-width"><section class="article header">
+    <h1 class="article title">Thoughts on Pipeline Design with Concourse</h1><p class="article date">7 January 2017</p></section><article class="article markdown-body"><p><span class="image-container"><span class="link"><a target="_blank" rel="noopener noreferrer" 
+  href="/goulash-pipeline.png"><img class="img" src="/goulash-pipeline.png"
+        alt="Goulash Pipeline"/></a></span><span class="caption"><span class="title">Goulash Pipeline in Concourse</span></span></span></p>
+<p>I recently made a CI/CD pipeline in <a href="https://concourse.ci"target="_blank">Concourse</a> for deploying <a href="https://github.com/pivotalservices/goulash/"target="_blank">Goulash</a>. The pipeline definition can be found <a href="https://github.com/pivotalservices/goulash/blob/master/ci/pipeline.yml"target="_blank">here</a>.</p>
+<p>Figuring out how to split up the work your pipeline needs to do in jobs and tasks in Concourse is not always obvious. The way you define jobs and tasks will determine how repeatable steps in your pipeline are, how fast jobs run, and how easily you can debug tasks.</p>
+<p>In this post I will describe how I came to the job and task definitions in the pipeline for Goulash.</p>
+<p>First, what does the pipeline do?</p>
+<p>On every push of code to the master branch, the pipeline automatically:</p>
+<ul>
+<li>Installs the vendored dependencies for the code</li>
+<li>Runs unit tests</li>
+<li>Builds a release candidate binary</li>
+<li>Bumps the release candidate version (1.0.1-rc.1 -&gt; 1.0.1-rc.2)</li>
+<li>Builds a tarball with the binary in it</li>
+<li>Uploads the tarball to a release candidate Google Cloud Storage bucket</li>
+<li>Deploys the binary in the tarball to a staging environment in Cloud Foundry</li>
+</ul>
+<p>When manually triggered, the pipeline:</p>
+<ul>
+<li>Downloads the latest release candidate tarball</li>
+<li>Unpacks the tarball</li>
+<li>Finalizes the release candidate version (1.0.1-rc.2 -&gt; 1.0.1)</li>
+<li>Uploads the release candidate tarball to a final release GCS bucket</li>
+<li>Creates a GitHub release with the final release tarball</li>
+<li>Deploys the binary in the tarball to the production environment in Cloud Foundry</li>
+</ul>
+<p>Attributes which were important to me in developing this pipeline:</p>
+<ul>
+<li>I wanted the same exact bits to be used for running tests and building the binary.</li>
+<li>I wanted the same exact binary to be deployed to both the staging and production environment. <em>(N.B. The binary is exactly the same in this case because it has no internal versioning)</em></li>
+<li>I wanted to be able to redeploy the binary to staging or production on demand without having to re-run other parts of the pipeline.</li>
+<li>I wanted it to be as fast as possible.</li>
+</ul>
+<p>Additionally, from a pipeline maintenance standpoint:</p>
+<ul>
+<li>I wanted to be able to <a href="http://concourse.ci/fly-execute.html"target="_blank">execute</a> tasks on the fly when necessary (for debugging, usually).</li>
+<li>I wanted tasks to be generic where possible, so they could be shared by different jobs.</li>
+</ul>
+<p>Below, I'll expand a bit on some of these.</p>
+<h2 id="defining-jobs">Defining jobs</h2>
+<p>For this pipeline I diverged from how I've done things in the past with respect to running unit tests and building release artifacts.</p>
+<p>In the past I would have made a job for running unit tests which does just that, with the thinking that the job should be focussed on doing one thing only. It shouldn't also build the binary, upload it somewhere, etc.</p>
+<p>With this pipeline I built the jobs thinking more holistically about what each job represents.</p>
+<p>There is a job, <code>create-rc</code>, which creates a release candidate. What does it mean to create a release candidate? It means:</p>
+<ol>
+<li>run the tests</li>
+<li>create a binary</li>
+<li>create a tarball with the binary in it</li>
+<li>put the tarball somewhere</li>
+</ol>
+<p>This approach makes the pipeline more understandable from a higher level, as the tasks which are required to create a release candidate are contained within a single job. It also allows me to easily share exact bits between tasks. Sharing bits between jobs means putting them in a resource, which I feel is a bit heavy-handed. I don't want to have to create additional resources <em>purely</em> to share bits between jobs.</p>
+<h2 id="sharing-bits-between-tasks">Sharing bits between tasks</h2>
+<p>Concourse runs each task in a container. One job may have many tasks. Each task may define <a href="http://concourse.ci/running-tasks.html#outputs"target="_blank">outputs</a> which downstream tasks in the same job may use.</p>
+<p>My tasks that run unit tests and build the binary are independent, but share the same bits. To ensure the same bits are used, I defined three tasks:</p>
+<ol>
+<li>install-dependencies</li>
+<li>unit</li>
+<li>build</li>
+</ol>
+<p>The <code>install-dependencies</code> <a href="https://github.com/pivotalservices/goulash/blob/master/ci/install-dependencies.yml"target="_blank">task</a> defines an <a href="http://concourse.ci/running-tasks.html#outputs"target="_blank">output</a>, <code>goulash-with-dependencies</code>, that both <code>unit</code> and <code>build</code> get as copy-on-write volumes. This ensures they operate on the same bits, and cannot change the bits in such a way as to affect the other task.</p>
+<h2 id="making-it-fast">Making it fast</h2>
+<p>The reason <code>unit</code> and <code>build</code> are split into two tasks is for two reasons:</p>
+<ol>
+<li>Running unit tests is not dependent on building the binary, nor is building the binary dependent on running unit tests</li>
+<li>They can be run in <a href="http://concourse.ci/aggregate-step.html"target="_blank">aggregate</a>, which makes the job faster</li>
+</ol>
+<p>Whenever I define a job I look at what tasks can be run in aggregate to make the job faster. Generally, the initial <code>get</code> steps in a job can be run concurrently; they just set up resources for downstream tasks. There may be other tasks, like <code>unit</code> and <code>build</code> above, that also make sense to run concurrently.</p>
+<h2 id="making-tasks-generic-where-possible">Making tasks generic where possible</h2>
+<p>Wherever possible, I make generic tasks so I can re-use them.</p>
+<p>My pipeline has a task, <code>unpack-release</code>, which is shared by both <code>deploy-staging</code> and <code>deploy-production</code>. The task is simple: it takes a release tarball (which is specific to this pipeline) as an input and gives the unpacked result as an output named <code>unpacked-release</code>.</p>
+<p>In Concourse, when you <code>get</code> a resource, the name of the resource is what is used as the directory the resource's volume is mounted to in the task container. The following <code>get</code> will result in a volume mounted as <code>goulash-rc</code> in downstream task containers:</p>
+<pre><code>    - get: goulash-rc
+      ...
+</code></pre><p>You can override this by using the <a href="http://concourse.ci/get-step.html#resource"target="_blank">resource</a> attribute on the <code>get</code> step. When you do this, the value passed to <code>get:</code> is what is used as the directory to mount the resource specified by <code>resource:</code>.</p>
+<pre><code>    - get: release
+      resource: goulash-rc
+      ...
+</code></pre><p>The generic task wants an input called &ldquo;release&rdquo;; it doesn't need to know that the release is actually &ldquo;goulash-rc&rdquo;.</p>
+<p>A later task in the same job knows about the outputs from <code>unpack-release</code>, and uses that path:</p>
+<pre><code>  - put: goulash-staging
+    params:
+      manifest: goulash/manifests/staging.yml
+      path: unpacked-release
+      ...
+</code></pre><p><em>N.B. You can also use <a href="https://concourse.ci/task-step.html#input_mapping"target="_blank">input_mapping</a> to achieve a similar result. <code>input_mapping</code> differs in that in renames the resources for only a specific task rather than for all downstream tasks.</em></p>
+<p>Additionally, to avoid duplicating the definition of the generic task in the pipeline YAML, the definition has been split into its <a href="https://github.com/pivotalservices/goulash/blob/master/ci/unpack-release.yml"target="_blank">own file</a> by using the <a href="http://concourse.ci/task-step.html#file"target="_blank">file</a> attribute on the task step.</p>
+<h2 id="running-tasks-on-the-fly">Running tasks on the fly</h2>
+<p>To <a href="http://concourse.ci/fly-execute.html"target="_blank">execute</a> a task on the fly, you need to separate its definition from the declaration in the pipeline YAML.</p>
+<p>You do this by specifying the <a href="http://concourse.ci/task-step.html#file"target="_blank">file</a> attribute in the task declaration in the pipeline that points to a <a href="http://concourse.ci/running-tasks.html#configuring-tasks"target="_blank">task YAML</a>.</p></article><section class="article navigation"><p><a class="link" href="/post/viral-meningitis/"><span class="li">&larr;</span>Experience Report: Viral Meningitis</a></p><p><a class="link" href="/post/notifications/"><span class="li">&rarr;</span>Notifications and Work</a class="link">
+    </p></section></div><section id="footer" class="footer max-body-width"><div class="footer-wrap">
+    <p class="copyright">&copy; Kris Hicks 2012-2020</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

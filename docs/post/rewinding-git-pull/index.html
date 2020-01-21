@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.62.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>rewinding git pull&nbsp;&ndash;&nbsp;Kris Hicks</title><link rel="stylesheet" href="/css/core.min.b205b19b9a75a820052cb0911b902c2844e883e541dfca1c352abe539a7ef586c930f3b0dd7037cdac5286a416a8fbc1.css" integrity="sha384-sgWxm5p1qCAFLLCRG5AsKETog&#43;VB38ocNSq&#43;U5p&#43;9YbJMPOw3XA3zaxShqQWqPvB"><body>
+    <div class="base-body"><section id="header" class="site header max-body-width">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">Kris Hicks</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a></nav></div></span></div></section><div id="content" class="max-body-width"><section class="article header">
+    <h1 class="article title">rewinding git pull</h1><p class="article date">9 July 2012</p></section><article class="article markdown-body"><p>If you're using a rebase strategy for the first time you may run <code>git pull</code> in a situation where Git practically tells you to do it, but you don't actually want to do it.</p>
+<p>The situation is described below, and the method to unwind it follows. I've added pictures of the branches between hashes to make it clear what the state of the world is at any given point prior to or after running a particular command, which I hope makes it easier to follow.</p>
+<p>First, you update master, as it's out of date:</p>
+<pre><code>#############################
+A--B--C--D origin/master
+A--B--C master
+#############################
+
+(master) $ git pull
+Updating C..D
+Fast-forward
+...snip...
+
+#############################
+A--B--C--D origin/master
+A--B--C--D master
+#############################
+</code></pre>
+<p>You create and checkout a topic branch, topicA:</p>
+<pre><code>(master) $ git checkout -b topicA
+Switched to a new branch 'topicA'
+
+#############################
+A--B--C--D origin/master
+A--B--C--D master
+          \
+           topicA
+#############################
+</code></pre>
+<p>You make some changes, commit, and push it to origin.</p>
+<pre><code>(topicA) $ git commit -am &quot;Changed README&quot;
+
+#############################
+A--B--C--D origin/master
+A--B--C--D master
+          \
+           E topicA
+#############################
+
+(topicA) $ git push -u origin
+(topicA) Counting objects: 28, done.
+...snip...
+(topicA)  * [new branch]      topicA -&amp;gt; topicA
+(topicA) Branch topicA set up to track remote branch topicA from origin.
+
+#############################
+A--B--C--D origin/master
+A--B--C--D master
+          \
+           E topicA
+A--B--C--D--E origin/topicA
+#############################
+</code></pre>
+<p>At this point you have your local topicA, and also origin has a copy of topicA:</p>
+<pre><code>(topicA) $ git branch -a
+* topicA
+remotes/origin/topicA
+</code></pre>
+<p>You continue doing work, making more commits on your branch. Some time has passed since you branched from master, and another commit, F, has been pushed to origin/master.</p>
+<pre><code>(topicA) $ git fetch # to update your local repository's knowledge of the remote
+
+#############################
+A--B--C--D--F origin/master
+A--B--C--D master
+          \
+           E--G--H topicA
+A--B--C--D--E origin/topicA
+#############################
+</code></pre>
+<p>At this point you want to rebase on top of origin/master to get the updates (in this case, F).</p>
+<pre><code>$ git rebase origin/master
+First, rewinding head to replay your work on top of it...
+...snip...
+
+#############################
+A--B--C--D--F origin/master
+             \
+              E'--G'--H' topicA
+A--B--C--D master
+A--B--C--D--E origin/topicA
+#############################
+</code></pre>
+<p>And then you want to push your updated topicA, with your new commits and the new commit from origin/master up to origin:</p>
+<p><strong>The following assumes you have <code>git config.push default upstream</code> set. This configuration parameter limits the branch that git will attempt to push. I highly recommend you set that value as the default is to push <em>all</em> branches, which you probably do not want.</strong></p>
+<pre><code>(topicA) $ git push
+To git@github.com:intentmedia/code.git
+! [rejected]        topicA -&amp;gt; topicA (non-fast-forward)
+error: failed to push some refs to 'git@github.com:krishicks/krishicks.git'
+To prevent you from losing history, non-fast-forward updates were rejected
+Merge the remote changes (e.g. 'git pull') before pushing again.  See the
+'Note about fast-forwards' section of 'git push --help' for details.
+</code></pre>
+<p>This is where trouble sets in.</p>
+<p>First, Git tells you the push was rejected because you would have lost history. Then comes the troublesome line: &ldquo;Merge the remote changes (e.g. &lsquo;git pull&rsquo;) before pushing again.&rdquo;</p>
+<p>If you were working on master and made some commits, and someone else made some commits on master as well and pushed before you did, you would end up with the same situation as above. The push would be rejected because you don't have the commits that the other person made. Thus, if your push were to succeed their work would be lost on origin/master. This is what Git is referring to when it says &ldquo;To prevent you from losing history..&rdquo; The history that would be lost would be the work the other person did.</p>
+<p>In the situation we've been building up, making commits and rebasing topicA, you're the only person committing to the branch and the history you would &ldquo;lose&rdquo; is the set of pre-rebase commits that you pushed to the remote originally (in this case, E). You've overwritten E with E&rsquo; during the rebase, and Git doesn't want you to lose the E that's on the remote.</p>
+<p>What you should do in this situation is <code>git push -f</code> to force-push the branch. You know you're going to lose E that's on the remote, but that's fine because you have E&rsquo; on your local topicA. You intend to replace whatever is on the remote with whatever you have locally.</p>
+<p>The problem is that it says to do a <code>git pull</code>, which will pull the remote E into your local, which you don't want. That will give you a merge commit, I:</p>
+<pre><code>A--B--C--D--F origin/master
+             \
+              E'--G'--H' topicA
+                       \
+                        I
+A--B--C--D master      /
+A--B--C--D------------E origin/topicA
+</code></pre>
+<p>If you did a git log at this point you'd see that the merge commit I brought in E, which has the same message but a different SHA than your rebased E&rsquo;.</p>
+<pre><code>(topicA) $ git log --graph --oneline
+* I Merge branch 'origin/topicA' into topicA
+|
+| * E
+* | H'
+* | G'
+* | E'
+|/
+* D
+* C
+* B
+* A
+</code></pre>
+<p>So, how do you fix this? You can hard reset back to H&rsquo;, which gets rid of the merge commit, but <strong>only if you didn't already make more commits after the faulty <code>git pull</code>.</strong></p>
+<pre><code>(topicA) $ git reset --hard H' # Only if you didn't make any more commits!
+</code></pre>
+<p>If you have made commits after, with your log looking like this:</p>
+<pre><code>(topicA) $ git log --graph --oneline
+* K
+* J
+* I Merge branch 'origin/topicA' into topicA
+|
+| * E
+* | H'
+* | G'
+* | E'
+|/
+* D
+* C
+* B
+* A
+</code></pre>
+<p>You need to use the two-argument form of <a href="https://pivotallabs.com/users/khicks/blog/articles/2118-git-rebase-onto"title="git rebase --onto"target="_blank">git rebase &ndash;onto</a>:</p>
+<pre><code>(topicA) $ git rebase --onto H' J~1
+</code></pre>
+<p>That will get rid of the merge commit, leaving you with:</p>
+<pre><code>(topicA) $ git log --graph --oneline
+* K
+* J
+* H'
+* G'
+* E'
+* D
+* C
+* B
+* A
+</code></pre>
+<p>And now you can <code>git push -f</code>. The <a href="http://linux.die.net/man/1/git-push"title="docs on git-push"target="_blank">docs on git-push</a> (or <code>git push --help</code>) do give you a better explanation than the message when the push is rejected, in the section NOTE ABOUT FAST-FORWARDS.</p>
+<p>A simple rule about <code>git pull</code> is to not ever use it unless you're on master and have made no commits that put you ahead of origin/master, which you can easily tell with:</p>
+<pre><code>(master) $ git fetch
+(master) $ git log @{u}..
+</code></pre>
+<p>or</p>
+<pre><code>(master) $ git fetch
+(master) $ git status
+# On branch master
+nothing to commit (working directory clean)
+</code></pre>
+<p>If the result from <code>git log @{u}</code> is empty or you don't get &ldquo;# Your branch is ahead of &lsquo;origin/master&rsquo; by  commit(s)&rdquo; message after <code>git status</code>, you're OK to <code>git pull</code>. In no other case do you need to, or should you, <code>git pull</code>.</p>
+<p>I generally recommend always working on a topic branch and keeping master clean to avoid accidentally running <code>git push -f</code> on master, and to enforce the idea that after you fetch, you're rebasing on top of origin/master directly instead of doing <code>git pull --rebase</code> while on master, which hides the fact that you're rebasing on top of origin/master.</p></article><section class="article labels"><a class="category" href=/categories/development/>development</a><a class="tag" href=/tags/git/>git</a></section><section class="article navigation"><p><a class="link" href="/post/how-to-set-up-a-clojure-dev-environment-on-snow-leopard/"><span class="li">&larr;</span>How to set up a Clojure dev environment on Snow Leopard</a></p><p><a class="link" href="/post/quick-tips/"><span class="li">&rarr;</span>git quick tips</a class="link">
+    </p></section></div><section id="footer" class="footer max-body-width"><div class="footer-wrap">
+    <p class="copyright">&copy; Kris Hicks 2012-2020</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

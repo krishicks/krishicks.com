@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.62.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>git quick tips&nbsp;&ndash;&nbsp;Kris Hicks</title><link rel="stylesheet" href="/css/core.min.b205b19b9a75a820052cb0911b902c2844e883e541dfca1c352abe539a7ef586c930f3b0dd7037cdac5286a416a8fbc1.css" integrity="sha384-sgWxm5p1qCAFLLCRG5AsKETog&#43;VB38ocNSq&#43;U5p&#43;9YbJMPOw3XA3zaxShqQWqPvB"><body>
+    <div class="base-body"><section id="header" class="site header max-body-width">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">Kris Hicks</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a></nav></div></span></div></section><div id="content" class="max-body-width"><section class="article header">
+    <h1 class="article title">git quick tips</h1><p class="article date">3 July 2012</p></section><article class="article markdown-body"><p>The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.</p>
+<h2 id="go-headless">Go HEADless</h2>
+<p>In many (and perhaps all) cases HEAD is implied when no ref is given, such as the following equivalent statements:</p>
+<pre><code>$ git log origin/master..HEAD
+$ git log origin/master..
+</code></pre>
+<h2 id="upstream-reference">Upstream reference</h2>
+<p>Before you start referring to the upstream, you'll want to do a <code>git fetch</code> to update your refs/heads:</p>
+<pre><code>$ git fetch
+</code></pre>
+<p>You only need to do this once in a while, or whenever you know the upstream to have changed.</p>
+<p>You can refer to the upstream of any branchname or otherwise symbolic-ref by appending <code>@{u}</code> to the ref, such as:</p>
+<pre><code>$ git log master@{u}
+</code></pre>
+<p>If you just want the upstream of the current branch, whatever it may be, you can replace master from above with HEAD:</p>
+<pre><code>$ git log HEAD@{u}
+</code></pre>
+<h2 id="upstream-difference">Upstream difference</h2>
+<p>Often, I'll want to see what commits are on upstream that I don't have. I usually will do this via:</p>
+<pre><code>$ git log @{u}..
+</code></pre>
+<p>Which, when on master, is equivalent to:</p>
+<pre><code>$ git log origin/master..HEAD
+</code></pre>
+<p>You can see the reverse difference, or the commits are on the remote that you don't have, by reversing the range:</p>
+<pre><code>$ git log ..@{u}
+</code></pre>
+<p>Which, again on master, is equivalent to:</p>
+<pre><code>$ git log HEAD..origin/master
+</code></pre>
+<p><em>To see the full list of formats recognizable, see <code>git revisions --help</code></em></p>
+<p>If you want to see both of the above at the same time, you can use <code>git log</code> with the &ndash;left-right parameter. I've also included &ndash;format=&rsquo;&rsquo; and &ndash;oneline (which must be passed in that order), which may be optional depending on your format configuration, but for me are not:</p>
+<pre><code>$ git log HEAD@{u}...HEAD --left-right --format='' --oneline
+</code></pre>
+<p>Which can be shortened to:</p>
+<pre><code>$ git log @{u}... --left-right --format='' --oneline
+</code></pre>
+<p><em>Note: The above example uses three dots, not two, to show only the commits which are reachable as ancestors of one branch but not the other.</em></p>
+<p>You can replace HEAD in the above with any symbolic-ref or branchname to use as a reference instead. The output (with the format given previously) will look like:</p>
+<pre><code>&lt; e86bd83 D
+&lt; 6ea2155 C
+&gt; eb2de55 B
+&gt; 74829bd A
+</code></pre>
+<p>Commits beginning with &ldquo;&lt;&rdquo; are only on the left side of the triple-dot (in this case, the upstream), commits beginning with &ldquo;&gt;&rdquo; are only on the right side (in this case, the current branch). A..D are the commit messages.</p>
+<h2 id="is-it-merged">Is it merged?</h2>
+<p>To find out if a particular branch has been merged into origin/master, you could dig through the log on master and search for it:</p>
+<pre><code>$ git log origin/master
+</code></pre>
+<p>Or, if you knew who would have merged it, you could limit the above with that:</p>
+<pre><code>$ git log origin/master --author Kris
+</code></pre>
+<p>I wanted a better way, and I found it. I wanted to see if a particular branch had been merged to master without changing branches or having to dig through a log looking for the merge of the branch.</p>
+<p>The situation that prompted this was that I had a topic branch, topicB, which depended on another topic branch, topicA. I wanted to see if topicA had been merged into master to find out if I could rebase onto master to get up to date, or if I should continue rebasing on top of the branch.</p>
+<pre><code>$ git fetch
+$ git branch --contains topicB@{u} -r
+</code></pre>
+<p>This gives you a list of all the remote branches that can reach (as an ancestor) the ref given. origin/master will be right at the top if the branch has been merged into it.</p>
+<p>Many thanks to <a href="http://newartisans.com/2008/04/git-from-the-bottom-up/"title="John Wiegley"target="_blank">John Wiegley</a>, <a href="http://www.git-scm.com/book"title="Scott Chacon"target="_blank">Scott Chacon</a> and <a href="http://serverfault.com/a/384862"title="Mark Longair"target="_blank">Mark Longair</a> for the sources of the tips.</p></article><section class="article labels"><a class="category" href=/categories/development/>development</a><a class="tag" href=/tags/git/>git</a></section><section class="article navigation"><p><a class="link" href="/post/rewinding-git-pull/"><span class="li">&larr;</span>rewinding git pull</a></p><p><a class="link" href="/post/rewinding-git-commit-amend/"><span class="li">&rarr;</span>rewinding git commit --amend</a class="link">
+    </p></section></div><section id="footer" class="footer max-body-width"><div class="footer-wrap">
+    <p class="copyright">&copy; Kris Hicks 2012-2020</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.62.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>Migrating Concourse Resources to S3&nbsp;&ndash;&nbsp;Kris Hicks</title><link rel="stylesheet" href="/css/core.min.b205b19b9a75a820052cb0911b902c2844e883e541dfca1c352abe539a7ef586c930f3b0dd7037cdac5286a416a8fbc1.css" integrity="sha384-sgWxm5p1qCAFLLCRG5AsKETog&#43;VB38ocNSq&#43;U5p&#43;9YbJMPOw3XA3zaxShqQWqPvB"><body>
+    <div class="base-body"><section id="header" class="site header max-body-width">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">Kris Hicks</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a></nav></div></span></div></section><div id="content" class="max-body-width"><section class="article header">
+    <h1 class="article title">Migrating Concourse Resources to S3</h1><p class="article date">6 October 2017</p></section><article class="article markdown-body"><p>One of the great things about Concourse is the <a href="http://concourse.ci/single-page.html#resources"target="_blank">resource</a> abstraction it gives you for defining inputs and outputs to jobs in a pipeline. This abstraction allows you to redefine a resource while leaving the job that uses the resource unmodified. For example, if I have a resource, <code>my-source-code</code>, that normally is provided via a <code>git</code> resource:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">resources<span class="p">:</span><span class="w">
+</span><span class="w"></span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>my-source-code<span class="w">
+</span><span class="w">  </span>type<span class="p">:</span><span class="w"> </span>git<span class="w">
+</span><span class="w">  </span>source<span class="p">:</span><span class="w">
+</span><span class="w">    </span>uri<span class="p">:</span><span class="w"> </span>git@example.com/some-owner/some-repo.git<span class="w">
+</span></code></pre></div><p>I can change that resource to be provided by S3 instead by changing the resource definition:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">resources<span class="p">:</span><span class="w">
+</span><span class="w"></span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>my-source-code<span class="w">
+</span><span class="w">  </span>type<span class="p">:</span><span class="w"> </span>s3<span class="w">
+</span><span class="w">  </span>source<span class="p">:</span><span class="w">
+</span><span class="w">    </span>bucket<span class="p">:</span><span class="w"> </span>some-bucket<span class="w">
+</span></code></pre></div><p>Assuming the contents I put in that S3 bucket are the same as I would have gotten from git, the job should continue to work without being any the wiser.</p>
+<p>In this post I'll talk about how to take an existing pipeline and migrate its resources to S3 in an automated way.</p>
+<h3 id="overview">Overview</h3>
+<p>The general idea is to create an artifact, typically a tarball, that can be placed in S3, and which contains the same contents that you'd get from the original resource type, for each resource the pipeline requires. You can even put the <code>image_resource</code> Docker image in S3!</p>
+<p>After that, you need to modify your pipeline to switch out the old resource definitions for new S3 resource definitions. It's also a good idea to make any necessary changes to the <code>get</code> of those resources (for example, removing params that no longer apply).</p>
+<p>We'll want to do this all programmatically, and we'll use Concourse to do it for us.</p>
+<h3 id="making-a-pipeline-to-put-resources-in-s3">Making a Pipeline to Put Resources in S3</h3>
+<p>While you could manually download the existing resource, create a tarball, and put that in S3 manually, that wouldn't be a good use of your time and is prone to errors. Instead, we can have Concourse do that for us.</p>
+<p>The job structure for each resource is simple:</p>
+<ol>
+<li>Do a <code>get</code> of the old, non-S3 resource</li>
+<li>Create a versioned tarball from the contents of the downloaded resource's directory</li>
+<li>Do a <code>put</code> to the <code>s3</code> resource with the tarball</li>
+</ol>
+<p>This method results in putting a tarball in S3 that has the exact same contents that were pulled down via the non-S3 resource.</p>
+<p>An example of a pipeline that does this for multiple resource types can be seen <a href="https://github.com/pivotal-cf/pcf-pipelines/blob/master/download-offline-resources/pipeline.yml"target="_blank">here</a>.</p>
+<p>We'll use a git resource example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">resources<span class="p">:</span><span class="w">
+</span><span class="w"></span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>some-resource<span class="w">
+</span><span class="w">  </span>type<span class="p">:</span><span class="w"> </span>git<span class="w">
+</span><span class="w">  </span>source<span class="p">:</span><span class="w">
+</span><span class="w">    </span>uri<span class="p">:</span><span class="w"> </span>git@example.com/some-resource.git<span class="w">
+</span></code></pre></div><p>Its associated S3 resource looks something like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>some-resource-s3<span class="w">
+</span><span class="w">  </span>type<span class="p">:</span><span class="w"> </span>s3<span class="w">
+</span><span class="w">  </span>source<span class="p">:</span><span class="w">
+</span><span class="w">    </span>access_key_id<span class="p">:</span><span class="w"> </span>some-access-key-id<span class="w">
+</span><span class="w">    </span>secret_access_key<span class="p">:</span><span class="w"> </span>some-secret-access-key<span class="w">
+</span><span class="w">    </span>bucket<span class="p">:</span><span class="w"> </span>some-bucket<span class="w">
+</span><span class="w">    </span>regexp<span class="p">:</span><span class="w"> </span><span class="s2">&#34;resources/some-resource-v(.*).tgz&#34;</span><span class="w">
+</span></code></pre></div><p>This S3 resource is not using a versioned bucket, so it has a <code>regexp</code> field in the source that uses globs that the resource will use for determining new versions. See <a href="https://github.com/concourse/s3-resource#file-names"target="_blank">here</a> for more explanation.</p>
+<p>The resource's <code>bucket</code> and <code>regexp</code> fields are important as you need to use the same values in the pipeline that will consume this S3 resource.</p>
+<p>The job that creates the tarball to be placed in S3 looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">jobs<span class="p">:</span><span class="w">
+</span><span class="w"></span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>copy-some-resource-to-s3<span class="w">
+</span><span class="w">  </span>plan<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>get<span class="p">:</span><span class="w"> </span>some-resource<span class="w">
+</span><span class="w">    </span>trigger<span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>get<span class="p">:</span><span class="w"> </span>some-resource-version<span class="w">
+</span><span class="w">    </span>params<span class="p">:</span><span class="w"> </span>{bump<span class="p">:</span><span class="w"> </span>major}<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>task<span class="p">:</span><span class="w"> </span>create-tarball<span class="w">
+</span><span class="w">    </span>config<span class="p">:</span><span class="w">
+</span><span class="w">      </span>platform<span class="p">:</span><span class="w"> </span>linux<span class="w">
+</span><span class="w">      </span>image_resource<span class="p">:</span><span class="w">
+</span><span class="w">        </span>type<span class="p">:</span><span class="w"> </span>docker-image<span class="w">
+</span><span class="w">        </span>source<span class="p">:</span><span class="w">
+</span><span class="w">          </span>repository<span class="p">:</span><span class="w"> </span>busybox<span class="w">
+</span><span class="w">      </span>inputs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>some-resource<span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>some-resource-version<span class="w">
+</span><span class="w">      </span>outputs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>some-resource-tarball<span class="w">
+</span><span class="w">      </span>run<span class="p">:</span><span class="w">
+</span><span class="w">        </span>path<span class="p">:</span><span class="w"> </span>bash<span class="w">
+</span><span class="w">        </span>args<span class="p">:</span><span class="w">
+</span><span class="w">        </span>-<span class="w"> </span>-c<span class="w">
+</span><span class="w">        </span>-<span class="w"> </span><span class="sd">|
+</span><span class="sd">         </span><span class="sd"> </span><span class="sd">set -eu</span><span class="w">
+</span><span class="w">          </span>version=$(cat<span class="w"> </span>some-resource-version/version)<span class="w">
+</span><span class="w">          </span>echo<span class="w"> </span><span class="s2">&#34;Creating tarball with version v${version}...&#34;</span><span class="w">
+</span><span class="w">          </span>tar<span class="w"> </span>czf<span class="w"> </span><span class="s2">&#34;resources/some-resource-v${version}.tgz&#34;</span><span class="w"> </span>-C<span class="w"> </span>some-resource<span class="w"> </span>.<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>put<span class="p">:</span><span class="w"> </span>some-resource-version<span class="w">
+</span><span class="w">    </span>params<span class="p">:</span><span class="w"> </span>{bump<span class="p">:</span><span class="w"> </span>major}<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>put<span class="p">:</span><span class="w"> </span>some-resource-s3<span class="w">
+</span><span class="w">    </span>params<span class="p">:</span><span class="w">
+</span><span class="w">      </span>file<span class="p">:</span><span class="w"> </span><span class="s2">&#34;resources/some-resource-*.tgz&#34;</span><span class="w">
+</span></code></pre></div><p><em>Note: This job uses a <code>semver</code> resource to create a semantic version for use in the tarball's filename. Some resource types will include a file that contains a compatible version, in which case you could just copy it over.</em></p>
+<p>This job follows the structure described above:</p>
+<ol>
+<li>Do a <code>get</code> of the git resource, <code>some-resource</code></li>
+<li>Create a tarball from the contents of the downloaded resource's directory with a version</li>
+<li>Do a <code>put</code> to the s3 resource, <code>some-resource-s3</code>, with the tarball</li>
+</ol>
+<h3 id="modifying-a-pipeline-to-use-resources-from-s3">Modifying a Pipeline to Use Resources From S3</h3>
+<p>Once you've got a pipeline that's pulling all your resources, packaging them up as tarballs, and putting them in S3, you'll want to modify the pipeline that uses those resources to actually pull resources from the new S3 locations.</p>
+<p>The modifications to the pipeline will be:</p>
+<ol>
+<li>Replace non-S3 resource definitions with new S3 resource definitions</li>
+<li>Remove any unnecessary params from the <code>get</code>s of those resources</li>
+</ol>
+<p>The best tool for doing this is <a href="https://github.com/krishicks/yaml-patch"target="_blank">yaml-patch</a>, a tool I wrote for modifying YAML documents.</p>
+<p>Using <code>yaml-patch</code> to replace the <code>git</code> resource described above, we'd write a yaml-patch operation file (&ldquo;opfile&rdquo;) like the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">-<span class="w"> </span>op<span class="p">:</span><span class="w"> </span>replace<span class="w">
+</span><span class="w">  </span>path<span class="p">:</span><span class="w"> </span>/resources/name=some-resource<span class="w">
+</span><span class="w">  </span>value<span class="p">:</span><span class="w">
+</span><span class="w">    </span>name<span class="p">:</span><span class="w"> </span>some-resource<span class="w">
+</span><span class="w">    </span>type<span class="p">:</span><span class="w"> </span>s3<span class="w">
+</span><span class="w">    </span>source<span class="p">:</span><span class="w">
+</span><span class="w">      </span>access_key_id<span class="p">:</span><span class="w"> </span>some-readonly-access-key-id<span class="w">
+</span><span class="w">      </span>secret_access_key<span class="p">:</span><span class="w"> </span>some-readonly-secret-access-key<span class="w">
+</span><span class="w">      </span>bucket<span class="p">:</span><span class="w"> </span>some-bucket<span class="w">
+</span><span class="w">      </span>regexp<span class="p">:</span><span class="w"> </span><span class="s2">&#34;resources/some-resource-v(.*).tgz&#34;</span><span class="w">
+</span></code></pre></div><p>In this case there aren't any params that need to be modified, but if there were, we could do so with the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">-<span class="w"> </span>op<span class="p">:</span><span class="w"> </span>remove<span class="w">
+</span><span class="w">  </span>path<span class="p">:</span><span class="w"> </span>/jobs/get=some-resource/params/globs<span class="w">
+</span></code></pre></div><p>This operation will remove the <code>globs:</code> entry from the <code>params:</code> of every job that does a <code>get</code> of the named resource.</p>
+<p><em>Note: This may leave an empty params hash, which Concourse ignores.</em></p>
+<p>Doing this in a pipeline would look something like the following:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">resources<span class="p">:</span><span class="w">
+</span><span class="w"></span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>yaml-patch<span class="w">
+</span><span class="w">  </span>type<span class="p">:</span><span class="w"> </span>github-release<span class="w">
+</span><span class="w">  </span>source<span class="p">:</span><span class="w">
+</span><span class="w">    </span>owner<span class="p">:</span><span class="w"> </span>krishicks<span class="w">
+</span><span class="w">    </span>repository<span class="p">:</span><span class="w"> </span>yaml-patch<span class="w">
+</span><span class="w">    </span>access_token<span class="p">:</span><span class="w"> </span>github-access-token<span class="w">
+</span><span class="w">
+</span><span class="w"></span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>standard-pipeline<span class="w">
+</span><span class="w">  </span>type<span class="p">:</span><span class="w"> </span>git<span class="w">
+</span><span class="w">  </span>source<span class="p">:</span><span class="w">
+</span><span class="w">    </span>uri<span class="p">:</span><span class="w"> </span>git@example.com/pipeline.git<span class="w">
+</span><span class="w">
+</span><span class="w"></span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>offline-pipeline<span class="w">
+</span><span class="w">  </span>type<span class="p">:</span><span class="w"> </span>git<span class="w">
+</span><span class="w">  </span>source<span class="p">:</span><span class="w">
+</span><span class="w">    </span>uri<span class="p">:</span><span class="w"> </span>git@example.com/offline-pipeline.git<span class="w">
+</span><span class="w">
+</span><span class="w"></span>jobs<span class="p">:</span><span class="w">
+</span><span class="w"></span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>apply-patch<span class="w">
+</span><span class="w">  </span>plan<span class="p">:</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>get<span class="p">:</span><span class="w"> </span>yaml-patch<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>get<span class="p">:</span><span class="w"> </span>standard-pipeline<span class="w">
+</span><span class="w">    </span>trigger<span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>task<span class="p">:</span><span class="w"> </span>apply-patch<span class="w">
+</span><span class="w">    </span>config<span class="p">:</span><span class="w">
+</span><span class="w">      </span>platform<span class="p">:</span><span class="w"> </span>linux<span class="w">
+</span><span class="w">      </span>image_resource<span class="p">:</span><span class="w">
+</span><span class="w">        </span>type<span class="p">:</span><span class="w"> </span>docker-image<span class="w">
+</span><span class="w">        </span>source<span class="p">:</span><span class="w">
+</span><span class="w">          </span>repository<span class="p">:</span><span class="w"> </span>concourse/git-resource<span class="w">
+</span><span class="w">      </span>inputs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>yaml-patch<span class="w">
+</span><span class="w">        </span>globs<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="cp">*linux*]</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>standard-pipeline<span class="w">
+</span><span class="w">      </span>outputs<span class="p">:</span><span class="w">
+</span><span class="w">      </span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span>modified-pipeline<span class="w">
+</span><span class="w">      </span>run<span class="p">:</span><span class="w">
+</span><span class="w">        </span>path<span class="p">:</span><span class="w"> </span>bash<span class="w">
+</span><span class="w">        </span>args<span class="p">:</span><span class="w">
+</span><span class="w">        </span>-<span class="w"> </span>-c<span class="w">
+</span><span class="w">        </span>-<span class="w"> </span><span class="sd">|
+</span><span class="sd">         </span><span class="sd"> </span><span class="sd">set -eu</span><span class="w">
+</span><span class="w">
+</span><span class="w">          </span>chmod<span class="w"> </span>+x<span class="w"> </span>yaml-patch/yaml_patch_linux<span class="w">
+</span><span class="w">
+</span><span class="w">          </span>cat<span class="w"> </span>&gt;<span class="w"> </span>opfile<span class="w"> </span>&lt;&lt;EOF<span class="w">
+</span><span class="w">          </span>-<span class="w"> </span>op<span class="p">:</span><span class="w"> </span>replace<span class="w">
+</span><span class="w">            </span>path<span class="p">:</span><span class="w"> </span>/resources/name=some-resource<span class="w">
+</span><span class="w">            </span>value<span class="p">:</span><span class="w">
+</span><span class="w">              </span>name<span class="p">:</span><span class="w"> </span>some-resource<span class="w">
+</span><span class="w">              </span>type<span class="p">:</span><span class="w"> </span>s3<span class="w">
+</span><span class="w">              </span>source<span class="p">:</span><span class="w">
+</span><span class="w">                </span>access_key_id<span class="p">:</span><span class="w"> </span>some-readonly-access-key-id<span class="w">
+</span><span class="w">                </span>secret_access_key<span class="p">:</span><span class="w"> </span>some-readonly-secret-access-key<span class="w">
+</span><span class="w">                </span>bucket<span class="p">:</span><span class="w"> </span>some-bucket<span class="w">
+</span><span class="w">                </span>regexp<span class="p">:</span><span class="w"> </span><span class="s2">&#34;resources/some-resource-v(.*).tgz&#34;</span><span class="w">
+</span><span class="w">          </span>EOF<span class="w">
+</span><span class="w">
+</span><span class="w">          </span>git<span class="w"> </span>clone<span class="w"> </span>./standard-pipeline<span class="w"> </span>modified-pipeline<span class="w">
+</span><span class="w">
+</span><span class="w">          </span>cat<span class="w"> </span>standard-pipeline/pipeline.yml<span class="w"> </span>|<span class="w"> </span>yaml-patch/yaml_patch_linux<span class="w"> </span>-o<span class="w"> </span>opfile<span class="w"> </span>&gt;<span class="w"> </span>modified-pipeline/pipeline.yml<span class="w">
+</span><span class="w">
+</span><span class="w">          </span>cd<span class="w"> </span>modified-pipeline<span class="w">
+</span><span class="w">
+</span><span class="w">          </span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&#34;user@example.com&#34;</span><span class="w">
+</span><span class="w">          </span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&#34;Some User&#34;</span><span class="w">
+</span><span class="w">          </span>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w">
+</span><span class="w">          </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&#34;Updated pipeline&#34;</span>&#34;<span class="w">
+</span><span class="w">  </span>-<span class="w"> </span>put<span class="p">:</span><span class="w"> </span>offline-pipeline<span class="w">
+</span><span class="w">    </span>params<span class="p">:</span><span class="w">
+</span><span class="w">      </span>repository<span class="p">:</span><span class="w"> </span>modified-pipeline<span class="w">
+</span><span class="w">
+</span></code></pre></div><p><em>Note: Since YAML maps don't preserve order you may find elements of your pipeline YAML are re-ordered after running them through yaml-patch. To fix this, you'll want to use the <code>fly</code> command <code>format-pipeline</code>: <a href="http://concourse.ci/single-page.html#fly-format-pipeline">http://concourse.ci/single-page.html#fly-format-pipeline</a>. This is a stylistic choice; the functionality is unaffected.</em></p>
+<p><em>Note: To target the <code>image_resource</code> in a pipeline, use <code>/jobs/type=docker-image</code> as the path to replace.</em></p>
+<p>At this point you'll have two pipelines, one which pulls new versions of the resource(s) as they're detected, packages them up and puts them in S3, and another that automatically generates a version of your pipeline that pulls from S3 when a new version of the standard pipeline is pushed.</p>
+<h3 id="airgapped-environments">Airgapped Environments</h3>
+<p>The above pipelines are sufficient for when you have an S3-compatible blobstore that you can access both from an environment with Internet access and one that does not. But what about when you have an environment that is completely offline and requires manual transfer of artifacts? In that case you'll want to create a single artifact that contains all of the resources the pipeline requires, including the pipeline itself, that you can move between environments manually.</p>
+<p>To achieve this you'll want to extend your pipeline that creates the offline version of the pipeline to create a new artifact (again, a tarball) that contains all of the resource tarballs plus the pipeline YAML.</p>
+<p>A working example of this can be seen in the <code>create-pcf-pipelines-combined</code> job <a href="https://github.com/pivotal-cf/pcf-pipelines/blob/master/create-offline-pinned-pipelines/pipeline.yml"target="_blank">here</a>.</p>
+<p>This job:</p>
+<ol>
+<li>Pulls the latest tarball for each resource from S3</li>
+<li>Creates a SHA manifest for verification on the other side</li>
+<li>Creates a single tarball with all of the other tarballs inside it</li>
+<li>Encrypts the single tarball</li>
+</ol>
+<p>Encrypting the tarball is optional, but it's a good security measure and ensures the bits haven't been tampered with during transfer.</p>
+<p>This single tarball then needs to be copied into a location on the destination S3-compatible blobstore, where another pipeline can unpack it and put the contents in the correct bucket and path within S3. A working example of a pipeline that unpacks such an archive can be seen <a href="https://github.com/pivotal-cf/pcf-pipelines/blob/master/unpack-pcf-pipelines-combined/pipeline.yml"target="_blank">here</a>.</p>
+<p>This pipeline:</p>
+<ol>
+<li>Looks for new versions of the single tarball that contains the resource tarballs</li>
+<li>Decrypts the tarball</li>
+<li>Unpacks the tarball</li>
+<li>Does SHA sum verification</li>
+<li>Puts the resource tarballs in the locations within S3 referred to by the pipeline that has been modified to use S3</li>
+</ol>
+<h3 id="pinning-versions">Pinning Versions</h3>
+<p>You can go a few steps further than what was described above when modifying your pipeline to pull artifacts from S3. You may want to do testing on a set of resources with particular versions, and after you've done the testing modify your pipeline to pull <em>only those versions</em>. You can do this by pinning versions within the <code>get</code> of each resource.</p>
+<p>The way to achieve this is via adding a <a href="http://concourse.ci/single-page.html#image-resource-version"target="_blank">version</a> field to the <code>get</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># ...snip...</span><span class="w">
+</span><span class="w"></span>get<span class="p">:</span><span class="w"> </span>some-resource<span class="w">
+</span><span class="w"></span>version<span class="p">:</span><span class="w">
+</span><span class="w">  </span>path<span class="p">:</span><span class="w"> </span><span class="s2">&#34;some-resource-v1.2.0.tar&#34;</span><span class="w">
+</span></code></pre></div><p><em>Note: The above example is specific to pinning the version of an S3 resource; different resources require different fields and values.</em></p>
+<p>You can do the above with an opfile like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">-<span class="w"> </span>op<span class="p">:</span><span class="w"> </span>add<span class="w">
+</span><span class="w">  </span>path<span class="p">:</span><span class="w"> </span>/jobs/get=some-resource/version<span class="w">
+</span><span class="w">  </span>value<span class="p">:</span><span class="w">
+</span><span class="w">    </span>path<span class="p">:</span><span class="w"> </span><span class="s2">&#34;some-resource-v1.2.0.tar&#34;</span><span class="w">
+</span></code></pre></div><p><em>Note: To pin the version of the <code>image_resource</code>, use <code>/jobs/type=s3/version</code> after having modified the pipeline to use s3 as its <code>image_resource</code> type.</em></p>
+<p>I hope the information above is helpful in you translating your pipelines to pull from S3 rather than the existing resource types in as automated a fashion as possible.</p>
+</article><section class="article labels"><a class="tag" href=/tags/concourse/>concourse</a></section><section class="article navigation"><p><a class="link" href="/post/buying-a-car-from-shift/"><span class="li">&larr;</span>Buying a Car From Shift Was a Huge Mistake</a></p><p><a class="link" href="/post/felix_gray/"><span class="li">&rarr;</span>Felix Gray vs. GUNNAR Optiks</a class="link">
+    </p></section></div><section id="footer" class="footer max-body-width"><div class="footer-wrap">
+    <p class="copyright">&copy; Kris Hicks 2012-2020</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

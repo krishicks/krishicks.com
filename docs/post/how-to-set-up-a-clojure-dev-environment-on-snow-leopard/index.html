@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.62.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>How to set up a Clojure dev environment on Snow Leopard&nbsp;&ndash;&nbsp;Kris Hicks</title><link rel="stylesheet" href="/css/core.min.b205b19b9a75a820052cb0911b902c2844e883e541dfca1c352abe539a7ef586c930f3b0dd7037cdac5286a416a8fbc1.css" integrity="sha384-sgWxm5p1qCAFLLCRG5AsKETog&#43;VB38ocNSq&#43;U5p&#43;9YbJMPOw3XA3zaxShqQWqPvB"><body>
+    <div class="base-body"><section id="header" class="site header max-body-width">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">Kris Hicks</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a></nav></div></span></div></section><div id="content" class="max-body-width"><section class="article header">
+    <h1 class="article title">How to set up a Clojure dev environment on Snow Leopard</h1><p class="article date">2 February 2013</p></section><article class="article markdown-body"><h3 id="homebrew-package-manager">Homebrew (package manager)</h3>
+<pre><code>$ ruby -e &quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&quot;
+</code></pre>
+<p>More information on Homebrew can be found on the <a href="http://mxcl.github.com/homebrew/"title="Homebrew home page"target="_blank">Homebrew home page</a></p>
+<h3 id="emacs-24-editor">Emacs 24 (editor)</h3>
+<pre><code>$ brew install emacs --cocoa --use-git-head --HEAD # this takes a while
+</code></pre>
+<h3 id="emacs-prelude-enhanced-emacs-24-configuration">Emacs Prelude (enhanced Emacs 24 configuration)</h3>
+<pre><code>$ git clone git://github.com/bbatsov/prelude.git /path/to/prelude
+$ ln -s /path/to/prelude ~/.emacs.d
+</code></pre>
+<p>More information on Prelude can be found on the <a href="http://batsov.com/prelude/"title="Prelude home page"target="_blank">Prelude home page</a>.</p>
+<h3 id="paredit-emacs-minor-mode-for-editing-parentheses">ParEdit (emacs minor mode for editing parentheses)</h3>
+<pre><code>$ emacs
+M-x package-install [RET] paredit [RET]
+</code></pre>
+<p>Add to ~/.emacs.d/init.el:</p>
+<pre><code>(add-hook 'nrepl-mode-hook 'paredit-mode)
+</code></pre>
+<p>See the EmacsWiki: <a href="http://emacswiki.org/emacs/ParEdit"title="ParEdit"target="_blank">ParEdit</a> and <a href="http://emacswiki.org/emacs/PareditCheatsheet"title="ParEdit Cheatsheet"target="_blank">ParEdit Cheatsheet</a>.</p>
+<h3 id="clojure">Clojure</h3>
+<pre><code>$ git clone https://github.com/clojure/clojure.git /path/to/clojure
+$ cd /path/to/clojure
+$ ./antsetup.sh
+$ ant
+$ mkdir ~/.clojure
+$ ln -s /path/to/clojure/clojure.jar ~/.clojure/clojure.jar
+</code></pre>
+<h3 id="leiningen-clojure-automation-tool">Leiningen (Clojure automation tool)</h3>
+<pre><code>$ wget -O /usr/local/bin/lein https://raw.github.com/technomancy/leiningen/preview/bin/lein
+$ chmod 755 /usr/local/bin/lein
+</code></pre>
+<p>More information on Leiningen can be found on the <a href="http://leiningen.org/"title="Leiningen home page"target="_blank">Leiningen home page</a>.</p>
+<hr>
+<p>Finally:</p>
+<pre><code>$ emacs
+M-x nrepl-jack-in
+</code></pre></article><section class="article labels"><a class="category" href=/categories/development/>development</a><a class="tag" href=/tags/osx/>osx</a><a class="tag" href=/tags/clojure/>clojure</a></section><section class="article navigation"><p><a class="link" href="/post/on-consulting/"><span class="li">&larr;</span>On Consulting</a></p><p><a class="link" href="/post/rewinding-git-pull/"><span class="li">&rarr;</span>rewinding git pull</a class="link">
+    </p></section></div><section id="footer" class="footer max-body-width"><div class="footer-wrap">
+    <p class="copyright">&copy; Kris Hicks 2012-2020</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

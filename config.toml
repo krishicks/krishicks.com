@@ -1,31 +1,43 @@
 baseurl = "http://www.krishicks.com"
+title = "Kris Hicks"
+theme = "hugo-notepadium"
+copyright = "&copy; Kris Hicks 2012-2020"
+
 languageCode = "en-us"
-title = "krishicks.com"
-theme = "hugo-xmin"
+enableRobotsTXT = true
+
+[markup.highlight]
+codeFences = true
+noClasses = false
+
+[markup.goldmark.renderer]
+unsafe = true  # enable raw HTML in Markdown
 
 [params]
-  footer = "&copy; Kris Hicks 2012-2019 | [Resume](https://github.com/krishicks/resume) | [GitHub](https://www.github.com/krishicks) | [Twitter](https://www.twitter.com/krishicks) | [Flickr](http://www.flickr.com/krishicks)"
+style = "auto"  # default: auto. light: light theme, dark: dark theme, auto: based on system.
+dateFormat = "2 January 2006"  # if unset, default is "2006-01-02"
+logo = ""  # if you have a logo png
+slogan = ""
+license = ""  # CC License
 
-[permalinks]
-  post = "/post/:year/:month/:day/:slug/"
-  note = "/note/:year/:month/:day/:slug/"
+[params.comments]
+enable = false  # En/Disable comments globally, default: false. You can always enable comments on per page.
 
-[[menu.main]]
-  url = "/"
-  name = "Home"
-  weight = 1
+[params.math]
+enable = false  # optional: true, false. Enable globally, default: false. You can always enable math on per page.
+use = "katex"  # option: "katex", "mathjax". default: "katex"
 
-[[menu.main]]
-  url = "/about"
-  name = "About"
-  weight = 2
+[params.syntax]
+use = "none"  # builtin: "prismjs", "hljs". "none" means Chroma
+theme = "dracula"
+darkTheme = "xcode-dark"  # apply this theme in dark mode
 
-[[menu.main]]
-  url = "/categories"
-  name = "Categories"
-  weight = 3
+[params.nav]
+showCategories = true       # /categories/
+showTags = true             # /tags/
 
-[[menu.main]]
-  url = "/tags"
-  name = "Tags"
-  weight = 4
+# custom navigation items
+
+[[params.nav.custom]]
+title = "About"
+url = "/about"

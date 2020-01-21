@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"><meta charset="utf-8"><meta name="generator" content="Hugo 0.62.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark"><title>git rebase --onto&nbsp;&ndash;&nbsp;Kris Hicks</title><link rel="stylesheet" href="/css/core.min.b205b19b9a75a820052cb0911b902c2844e883e541dfca1c352abe539a7ef586c930f3b0dd7037cdac5286a416a8fbc1.css" integrity="sha384-sgWxm5p1qCAFLLCRG5AsKETog&#43;VB38ocNSq&#43;U5p&#43;9YbJMPOw3XA3zaxShqQWqPvB"><body>
+    <div class="base-body"><section id="header" class="site header max-body-width">
+    <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">Kris Hicks</span></a></span>
+        <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a></nav></div></span></div></section><div id="content" class="max-body-width"><section class="article header">
+    <h1 class="article title">git rebase --onto</h1><p class="article date">28 May 2012</p></section><article class="article markdown-body"><p>Have you ever dug into the <code>git rebase</code> documentation and noticed there's a three-argument form of it?</p>
+<p>First, let's look at the two-argument form, and build up to the three-argument form.</p>
+<h2 id="the-two-argument-form-of-git-rebase---onto">The two-argument form of git rebase &ndash;onto</h2>
+<p>Say there's a commit C made on master that made a change to a configuration parameter that, it turns out, wasn't actually necessary, so that commit needs to go. For the purposes of this demonstration, commits D and E don't rely upon the changes made in C. (If D or E did rely on C, you'd end up with a conflict to resolve, which you'd be able to do at that point.)</p>
+<pre><code>A--B--C--D--E master
+</code></pre>
+<p>One way to get rid of the offending commit would be to do an interactive rebase, deleting the line that has commit C on it:</p>
+<pre><code>git rebase -i C~1
+delete the line containing commit C
+save and close the editor
+</code></pre>
+<p>A quicker way is to use the two-argument <code>git rebase --onto</code>, as going interactive just to delete a commit (or commits) is a little overkill, and considerably slower to do.</p>
+<p><code>git rebase --onto</code> takes a new base commit (which the manpage for git-rebase calls newbase) and an old base commit (oldbase) to use for the rebase operation.</p>
+<p>So, what we want to do is tell Git to make commit B the newbase of commit D, making C go away. This looks like:</p>
+<pre><code>git rebase --onto B C
+</code></pre>
+<p>But usually I like to talk about the commits I care about rather than the ones I don't (in this case, I care about B and D, but not C), so instead of the previous command I use a backreference from D:</p>
+<pre><code>git rebase --onto B D~1
+</code></pre>
+<p>This means that everything in the range from B (non-inclusive) to D~1 (inclusive) <em>will be removed</em>.</p>
+<p><code>git rebase --onto</code> allows you to, in a non-interactive way, change the base of a commit, or <em>rebase</em> it. If you think about the commits as each having a <strong>base</strong>, or <strong>parent</strong> commit, you can see how you might be able to change the base of any commit to be another commit. In doing so, you remove everything that used to be in between the oldbase and the newbase.</p>
+<p>It's also good to know that it works exactly the same way as if you were to have done an interactive rebase and deleted the commit. Should a conflict arise while performing the rebase, Git will still pause and allow you to resolve the conflict before continuing.</p>
+<p>I've also used the two-argument form when fixing a mistake: I had a branch from master, topicA, with some commits that I wanted to change via interactive rebase:</p>
+<pre><code>A--B master
+    \
+     C--D--E topicA
+</code></pre>
+<p>But when I rebased, I went back too far, and rewrote a commit that I had gotten from master:</p>
+<pre><code>A--B' master
+    \
+     C'--D'--E' topicA
+</code></pre>
+<p>(Note that there was no change to the master branch here, just to topicA.)</p>
+<p>What did I do to fix this situation? Well, I can't fix this via interactive rebase. I can, however, fix it via <code>git rebase --onto</code>:</p>
+<pre><code>git rebase --onto master C'~1
+</code></pre>
+<p>Or, in other words: Replace the oldbase C'~1 with the newbase, master (which is HEAD of master, or B).</p>
+<p>It's a handy undo mechanism.</p>
+<p>If you forget to give the two-argument form of &ndash;onto its second argument, such as:</p>
+<pre><code>git rebase --onto master
+</code></pre>
+<p>..it will be the same as doing:</p>
+<pre><code>git reset --hard master
+</code></pre>
+<p><strong>You probably don't want this.</strong></p>
+<p>Why is this? The second argument (the oldbase) is required if you want a range of commits to be applied on top of master. Without it, you haven't supplied a range of commits to be applied on top of master, so HEAD of the branch gets reset to the HEAD of master.</p>
+<p>What that means is any commits you have on your branch will be removed from the branch, and the branch will resemble master at that point. These commits are still in Git until garbage collection happens, accessible via the reflog (<code>git reflog</code>).</p>
+<h1 id="part-two">Part Two:</h1>
+<h2 id="the-three-argument-form-of-git-rebase---onto">The three-argument form of git rebase &ndash;onto</h2>
+<p>Say there is a branch &lsquo;topicA&rsquo; that diverges from master at some point:</p>
+<pre><code>A--B--C--D--E master
+    \
+     F--G--H topicA
+</code></pre>
+<p>Let's also say that someone else has branched from topicA to create topicB, and added more commits:</p>
+<pre><code>A--B--C--D--E master
+    \
+     F--G--H topicA
+            \
+             I--J--K--L--M topicB
+</code></pre>
+<p>This is an example of a real-world case I came across, where topicA had only a couple very large commits that were hard to digest and could have been split into many smaller commits. topicB was created as a continuation of the work done on topicA.</p>
+<p>I checked out my own local copy of topicA, and through much interactive rebasing and prodigious use of <code>git add -e</code>, I was able to split topicA into smaller commits, making topicC:</p>
+<pre><code>A--B--C--D--E master
+   |         \
+   |          F--G--H topicA
+   |                 \
+   |                  I--J--K--L--M topicB
+   |
+   N--O--P--Q--R--S--T--U--V--W topicC
+</code></pre>
+<p>I talked with the person that made topicA and we agreed that my branch topicC should take the place of topicA. But what to do about the work that was done on topicB?</p>
+<p>The operation that we wanted to do is: make topicC the new base of topicB, cutting it at the point topicB diverged from topicA, which looks like:</p>
+<pre><code>A--B--C--D--E master
+   |         \
+   |          F--G--H topicA
+   |                 \
+   |                  I--J--K--L--M topicB
+   |
+   N--O--P--Q--R--S--T--U--V--W--I'--J'--K'--L'--M' topicC
+</code></pre>
+<p>The five commits from topicB (I through M), get played on top of topicC, starting from where topicB diverged from topicA, to create I&rsquo;, J&rsquo;, K&rsquo;, L&rsquo;, and M&rsquo;.</p>
+<p>The command to do this is:</p>
+<pre><code>git rebase --onto topicC topicA topicB
+</code></pre>
+<p>Where topicC is the newbase, topicA is the oldbase, and topicB is the reference for what HEAD of topicC will become.</p></article><section class="article labels"><a class="category" href=/categories/development/>development</a><a class="tag" href=/tags/git/>git</a></section><section class="article navigation"><p><a class="link" href="/post/rerere/"><span class="li">&larr;</span>rerere</a></p><p><a class="link" href="/post/git-add-e/"><span class="li">&rarr;</span>git add -e</a class="link">
+    </p></section></div><section id="footer" class="footer max-body-width"><div class="footer-wrap">
+    <p class="copyright">&copy; Kris Hicks 2012-2020</p>
+    <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 
+        target="_blank">Hugo</a><span> and the </span><a href="https://themes.gohugo.io/hugo-notepadium/" 
+        target="_blank">Notepadium</a></p>
+</div></section></div>
+</body>
+
+</html>

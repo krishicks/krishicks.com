@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>git on Kris Hicks</title>
+    <link>/tags/git/</link>
+    <description>Recent content in git on Kris Hicks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Kris Hicks 2012-2020</copyright>
+    <lastBuildDate>Sat, 16 May 2015 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using git subtree with gh-pages</title>
+      <link>/post/subtree-gh-pages/</link>
+      <pubDate>Sat, 16 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/post/subtree-gh-pages/</guid>
+      <description>&lt;p&gt;I recently switched to using &lt;a href=&#34;http://www.gohugo.io&#34;target=&#34;_blank&#34;&gt;Hugo&lt;/a&gt; to generate this site and needed a strategy to publish it. Previously I was using &lt;a href=&#34;http://www.octopress.org&#34;target=&#34;_blank&#34;&gt;Octopress&lt;/a&gt; which has scripts for managing the gh-pages branch automatically. The documentation on gohugo.io shows a workflow that uses &lt;code&gt;git subtree&lt;/code&gt;, a tool I knew about but had never actually used before. I found the &lt;a href=&#34;http://gohugo.io/tutorials/github-pages-blog#configure-git-workflow:fcefb200141ace3e7bfd6542457b7a72&#34;target=&#34;_blank&#34;&gt;tutorial&lt;/a&gt; on the gohugo.io page to be confusing. Here, I describe the approach I used instead.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>rewinding git pull</title>
+      <link>/post/rewinding-git-pull/</link>
+      <pubDate>Mon, 09 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>/post/rewinding-git-pull/</guid>
+      <description>&lt;p&gt;If you&#39;re using a rebase strategy for the first time you may run &lt;code&gt;git pull&lt;/code&gt; in a situation where Git practically tells you to do it, but you don&#39;t actually want to do it.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git quick tips</title>
+      <link>/post/quick-tips/</link>
+      <pubDate>Tue, 03 Jul 2012 00:00:00 +0000</pubDate>
+      
+      <guid>/post/quick-tips/</guid>
+      <description>&lt;p&gt;The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>rewinding git commit --amend</title>
+      <link>/post/rewinding-git-commit-amend/</link>
+      <pubDate>Mon, 25 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>/post/rewinding-git-commit-amend/</guid>
+      <description>&lt;p&gt;It may come to pass that you will run &lt;code&gt;git commit --amend&lt;/code&gt; by mistake. When this happens, you&#39;ll want to unwind the operation you just did.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>rerere</title>
+      <link>/post/rerere/</link>
+      <pubDate>Wed, 13 Jun 2012 00:00:00 +0000</pubDate>
+      
+      <guid>/post/rerere/</guid>
+      <description>&lt;p&gt;There have been times where I performed a rebase and had to resolve conflicts as part of the rebase, and then decided to abort the rebase for one reason or another.&lt;/p&gt;
+&lt;p&gt;Without &lt;code&gt;rerere&lt;/code&gt; the next time I went to perform the rebase I&#39;d end up having to resolve at least some of the same conflicts I had previously, which is annoying.&lt;/p&gt;
+&lt;p&gt;This is where &lt;code&gt;rerere&lt;/code&gt; comes in.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git rebase --onto</title>
+      <link>/post/git-rebase-onto/</link>
+      <pubDate>Mon, 28 May 2012 00:00:00 +0000</pubDate>
+      
+      <guid>/post/git-rebase-onto/</guid>
+      <description>&lt;p&gt;Have you ever dug into the &lt;code&gt;git rebase&lt;/code&gt; documentation and noticed there&#39;s a three-argument form of it?&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git add -e</title>
+      <link>/post/git-add-e/</link>
+      <pubDate>Mon, 21 May 2012 00:00:00 +0000</pubDate>
+      
+      <guid>/post/git-add-e/</guid>
+      <description>&lt;p&gt;&lt;code&gt;git add -e&lt;/code&gt; is like &lt;code&gt;git add -p&lt;/code&gt;, except instead of adding things at the hunk level, you edit the entire patch at once.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git reset -p</title>
+      <link>/post/git-reset-p/</link>
+      <pubDate>Wed, 16 May 2012 00:00:00 +0000</pubDate>
+      
+      <guid>/post/git-reset-p/</guid>
+      <description>&lt;p&gt;I&#39;ve been using &lt;code&gt;git reset -p&lt;/code&gt; a lot recently and I think it makes sense to clarify what it is that it does because when I first started using it I found it a little confusing.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>git exec</title>
+      <link>/post/exec/</link>
+      <pubDate>Fri, 06 Apr 2012 00:00:00 +0000</pubDate>
+      
+      <guid>/post/exec/</guid>
+      <description>&lt;p&gt;(Update #1 below)&lt;/p&gt;
+&lt;p&gt;Say you&#39;re going to do an interactive rebase where you&#39;re going to be squashing commits or reordering them. During this process you may want Git to execute a command after applying certain items of the todo list. An example of this would be when you want to run &lt;code&gt;rake&lt;/code&gt; or similar to ensure a newly-squashed commit is still green.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

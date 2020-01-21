@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>interviews on Kris Hicks</title>
+    <link>/categories/interviews/</link>
+    <description>Recent content in interviews on Kris Hicks</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Kris Hicks 2012-2020</copyright>
+    <lastBuildDate>Fri, 23 May 2014 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="/categories/interviews/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Phone Interviews are Useless</title>
+      <link>/post/phone-interviews/</link>
+      <pubDate>Fri, 23 May 2014 00:00:00 +0000</pubDate>
+      
+      <guid>/post/phone-interviews/</guid>
+      <description>&lt;p&gt;&lt;em&gt;See discussion about this post on &lt;a href=&#34;https://news.ycombinator.com/item?id=9111310&#34;target=&#34;_blank&#34;&gt;Hacker News&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Yesterday, I did a coding challenge-based phone interview. When it ended, I had a mini retrospective with myself, and thought about what went well, and what didn&#39;t go well.&lt;/p&gt;
+&lt;p&gt;Mostly, it didn&#39;t go well.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
