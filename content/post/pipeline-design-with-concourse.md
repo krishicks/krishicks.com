@@ -1,6 +1,7 @@
 ---
 title: "Pipeline Design with Concourse"
 date: "2017-01-07"
+summary: My thought process when developing a CI pipeline in Concourse.
 ---
 
 ![Goulash Pipeline](/goulash-pipeline.png "Goulash Pipeline in Concourse")
@@ -10,8 +11,6 @@ I recently made a CI/CD pipeline in [Concourse](https://concourse.ci) for deploy
 Figuring out how to split up the work your pipeline needs to do in jobs and tasks in Concourse is not always obvious. The way you define jobs and tasks will determine how repeatable steps in your pipeline are, how fast jobs run, and how easily you can debug tasks.
 
 In this post I will describe how I came to the job and task definitions in the pipeline for Goulash.
-
-<!--more-->
 
 First, what does the pipeline do?
 

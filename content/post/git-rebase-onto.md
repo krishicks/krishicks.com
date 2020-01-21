@@ -5,11 +5,8 @@ categories:
   - development
 tags:
   - git
+summary: "Have you ever dug into the `git rebase` documentation and noticed there's a three-argument form of it?"
 ---
-
-Have you ever dug into the `git rebase` documentation and noticed there's a three-argument form of it?
-
-<!--more-->
 
 First, let's look at the two-argument form, and build up to the three-argument form.
 

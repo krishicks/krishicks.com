@@ -3,12 +3,10 @@ title: "There is Always a Better Way"
 date: "2016-11-05"
 categories:
   - development
+summary: "I got into software development because of a single idea: there is always a better way."
 ---
-I got into software development because of a single idea: there is always a better way.
 
 I was working at a title insurance company in the US during the housing boom of 2007. I was hired as a temp to do data entry for the calculation of fees associated with purchasing [title insurance](https://en.wikipedia.org/wiki/Title_insurance). It was a straightforward job, with one incredible hindrance: everyone was using adding machines, which is a fancy desktop calculator that prints out a receipt as you enter calculations.
-
-<!--more-->
 
 I found the usage of the adding machines remarkable because we were all sitting in front of computers with Microsoft Excel installed on them.
 

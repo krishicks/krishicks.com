@@ -3,6 +3,7 @@ title: "Felix Gray vs. GUNNAR Optiks"
 date: "2017-09-04"
 categories:
   - reviews
+summary: Random Amazon purchase vs. Warby Parker wannabe. Who wins?
 ---
 
 ### f.lux

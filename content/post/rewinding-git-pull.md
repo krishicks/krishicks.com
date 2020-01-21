@@ -5,10 +5,9 @@ categories:
   - development
 tags:
   - git
+summary: What to do when you accidentally git pull on a branch you've rebased.
 ---
 If you're using a rebase strategy for the first time you may run `git pull` in a situation where Git practically tells you to do it, but you don't actually want to do it.
-
-<!--more-->
 
 The situation is described below, and the method to unwind it follows. I've added pictures of the branches between hashes to make it clear what the state of the world is at any given point prior to or after running a particular command, which I hope makes it easier to follow.
 

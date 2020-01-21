@@ -6,11 +6,10 @@ categories:
   - development
 tags:
   - git
+summary: A grab-bag of git things I use all the time.
 ---
 
 The following are things I found very helpful, which you also may find make your day-to-day usage of Git more enjoyable.
-
-<!--more-->
 
 ## Go HEADless
 

@@ -4,14 +4,13 @@ date: "2016-11-01"
 categories:
   - development
   - golang
+summary: Example server and client code for using mutual TLS with gRPC.
 ---
 
 So, you want to use [gRPC](http://www.grpc.io). Cool! And you want to use
 [mutual TLS](https://en.wikipedia.org/wiki/Mutual_authentication), too. But
 maybe, like me, you couldn't easily figure out how to accomplish this, given
 the documentation and examples out there. Here's how I did it.
-
-<!--more-->
 
 This example code uses a CA, certs, and private keys which were generated using
 [certstrap](https://github.com/square/certstrap). Skip down

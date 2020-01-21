@@ -18,10 +18,7 @@
       <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
       
       <guid>/post/grpc-mutual-tls-golang/</guid>
-      <description>&lt;p&gt;So, you want to use &lt;a href=&#34;http://www.grpc.io&#34;target=&#34;_blank&#34;&gt;gRPC&lt;/a&gt;. Cool! And you want to use
-&lt;a href=&#34;https://en.wikipedia.org/wiki/Mutual_authentication&#34;target=&#34;_blank&#34;&gt;mutual TLS&lt;/a&gt;, too. But
-maybe, like me, you couldn&#39;t easily figure out how to accomplish this, given
-the documentation and examples out there. Here&#39;s how I did it.&lt;/p&gt;</description>
+      <description>Example server and client code for using mutual TLS with gRPC.</description>
     </item>
     
   </channel>

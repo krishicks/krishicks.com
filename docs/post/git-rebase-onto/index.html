@@ -6,8 +6,7 @@
     <div class="base-body"><section id="header" class="site header max-body-width">
     <div class="header wrap"><span class="header left-side"><a class="site home" href="/"><span class="site name">Kris Hicks</span></a></span>
         <span class="header right-side"><div class="nav wrap"><nav class="nav"><a class="nav item" href="/categories/">Categories</a><a class="nav item" href="/tags/">Tags</a><a class="nav item" href="/about">About</a></nav></div></span></div></section><div id="content" class="max-body-width"><section class="article header">
-    <h1 class="article title">git rebase --onto</h1><p class="article date">28 May 2012</p></section><article class="article markdown-body"><p>Have you ever dug into the <code>git rebase</code> documentation and noticed there's a three-argument form of it?</p>
-<p>First, let's look at the two-argument form, and build up to the three-argument form.</p>
+    <h1 class="article title">git rebase --onto</h1><p class="article date">28 May 2012</p></section><article class="article markdown-body"><p>First, let's look at the two-argument form, and build up to the three-argument form.</p>
 <h2 id="the-two-argument-form-of-git-rebase---onto">The two-argument form of git rebase &ndash;onto</h2>
 <p>Say there's a commit C made on master that made a change to a configuration parameter that, it turns out, wasn't actually necessary, so that commit needs to go. For the purposes of this demonstration, commits D and E don't rely upon the changes made in C. (If D or E did rely on C, you'd end up with a conflict to resolve, which you'd be able to do at that point.)</p>
 <pre><code>A--B--C--D--E master
@@ -91,7 +90,8 @@ save and close the editor
 <p>The command to do this is:</p>
 <pre><code>git rebase --onto topicC topicA topicB
 </code></pre>
-<p>Where topicC is the newbase, topicA is the oldbase, and topicB is the reference for what HEAD of topicC will become.</p></article><section class="article labels"><a class="category" href=/categories/development/>development</a><a class="tag" href=/tags/git/>git</a></section><section class="article navigation"><p><a class="link" href="/post/rerere/"><span class="li">&larr;</span>Reuse Recorded Resolution</a></p><p><a class="link" href="/post/git-add-e/"><span class="li">&rarr;</span>git add -e</a class="link">
+<p>Where topicC is the newbase, topicA is the oldbase, and topicB is the reference for what HEAD of topicC will become.</p>
+</article><section class="article labels"><a class="category" href=/categories/development/>development</a><a class="tag" href=/tags/git/>git</a></section><section class="article navigation"><p><a class="link" href="/post/rerere/"><span class="li">&larr;</span>Reuse Recorded Resolution (rerere)</a></p><p><a class="link" href="/post/git-add-e/"><span class="li">&rarr;</span>git add -e</a class="link">
     </p></section></div><section id="footer" class="footer max-body-width"><div class="footer-wrap">
     <p class="copyright">&copy; Kris Hicks 2012-2020</p>
     <p class="powerby"><span>Powered by </span><a href="https://gohugo.io" 

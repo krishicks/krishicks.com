@@ -5,11 +5,10 @@ categories:
   - development
 tags:
   - git
+summary: What to do when you amend the wrong commit.
 ---
 
 It may come to pass that you will run `git commit --amend` by mistake. When this happens, you'll want to unwind the operation you just did.
-
-<!--more-->
 
 In some cases the changes are simple enough that you can use [git reset -p](/blog/2012/05/16/git-reset-p/ "git reset -p") to remove those lines from the commit. However, sometimes `git reset -p` isn't up to the task, as in the case when the changeset is very large. Luckily, git has a ticker tape of the changes you make to each branch, which is called the reflog.
 

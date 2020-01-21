@@ -1,18 +1,17 @@
 ---
-title: "Reuse Recorded Resolution"
+title: "Reuse Recorded Resolution (rerere)"
 date: "2012-06-13"
 categories:
   - development
 tags:
   - git
+summary: Don't worry about abandoning that rebase halfway through!
 ---
 There have been times where I performed a rebase and had to resolve conflicts as part of the rebase, and then decided to abort the rebase for one reason or another.
 
 Without `rerere` the next time I went to perform the rebase I'd end up having to resolve at least some of the same conflicts I had previously, which is annoying.
 
 This is where `rerere` comes in.
-
-<!--more-->
 
 "rerere" stands for **re**use **re**corded **re**solution.
 

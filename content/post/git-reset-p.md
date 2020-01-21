@@ -5,11 +5,10 @@ categories:
   - development
 tags:
   - git
+summary: When you only want to reset _some_ of a commit.
 ---
 
 I've been using `git reset -p` a lot recently and I think it makes sense to clarify what it is that it does because when I first started using it I found it a little confusing.
-
-<!--more-->
 
 I sometimes realize that an earlier commit contains some change that I don't want, so I want to remove it from the commit. This also works when not rebasing, so for simplicity I'll use an example where the commit to be modified is already HEAD. Previously I would have done:
 

@@ -1,17 +1,16 @@
 ---
-title: "git exec"
+title: "Adventures with git exec"
 date: "2012-04-06"
 categories:
   - development
 tags:
   - git
+summary: Add some automation to your rebasing.
 ---
 
 (Update #1 below)
 
 Say you're going to do an interactive rebase where you're going to be squashing commits or reordering them. During this process you may want Git to execute a command after applying certain items of the todo list. An example of this would be when you want to run `rake` or similar to ensure a newly-squashed commit is still green.
-
-<!--more-->
 
 You can do this by adding a task to the todo list, `exec`, followed by the command you'd like Git to run at that point in the rebase. If the command you specify should return a non-zero exit code, Git will pause the rebase and allow you to sort it out, in the same way that it pauses when a conflict arises while applying the todo list during any other rebase.
 

@@ -6,10 +6,9 @@ categories:
   - development
 tags:
   - git
+summary: It's like add -p with as much context as you want.
 ---
 `git add -e` is like `git add -p`, except instead of adding things at the hunk level, you edit the entire patch at once.
-
-<!--more-->
 
 Or, in other words, whereas `git add -p` will show you each hunk for every file and ask what you want to do for each of them, `git add -e` will show you the entire patch and allow you to edit it at will. I used this trick to recently split apart one massive commit into 28 smaller, digestible ones.
 
